@@ -2,23 +2,33 @@ import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 
 interface StickySaveBarProps {
-    isDirty: boolean;
+    isDirty?: boolean;
+    show?: boolean;
     isSaving?: boolean;
+    isSubmitting?: boolean;
     onSave: () => void;
     onSaveAndClose?: () => void;
     onCancel?: () => void;
+    onDiscard?: () => void;
     saveLabel?: string;
 }
 
 export default function StickySaveBar({
     isDirty,
+    show,
     isSaving = false,
+    isSubmitting = false,
     onSave,
     onSaveAndClose,
     onCancel,
+    onDiscard,
     saveLabel = 'Save changes',
 }: StickySaveBarProps) {
-    if (!isDirty && !isSaving) {
+    const activeDirty = isDirty ?? show ?? false;
+    const activeSaving = isSaving || isSubmitting;
+    const cancelHandler = onCancel || onDiscard;
+
+    if (!activeDirty && !activeSaving) {
         return null;
     }
 
@@ -38,16 +48,16 @@ export default function StickySaveBar({
             </div>
 
             <div className="ml-auto flex items-center gap-2">
-                {onCancel && (
+                {cancelHandler && (
                     <Button
                         type="button"
                         variant="outline"
                         size="sm"
-                        disabled={isSaving}
-                        onClick={onCancel}
+                        disabled={activeSaving}
+                        onClick={cancelHandler}
                         className="border-[var(--surface-border)] text-xs text-[var(--text-muted)] hover:text-[var(--text)]"
                     >
-                        Cancel
+                        Discard
                     </Button>
                 )}
 
@@ -56,7 +66,7 @@ export default function StickySaveBar({
                         type="button"
                         variant="secondary"
                         size="sm"
-                        disabled={isSaving}
+                        disabled={activeSaving}
                         onClick={onSaveAndClose}
                         className="border border-[var(--surface-border)] bg-[var(--surface)] text-xs text-[var(--text)] hover:bg-[var(--surface)]/80"
                     >
@@ -67,11 +77,11 @@ export default function StickySaveBar({
                 <Button
                     type="button"
                     size="sm"
-                    disabled={isSaving}
+                    disabled={activeSaving}
                     onClick={onSave}
                     className="bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)] text-xs font-semibold text-white shadow-md hover:opacity-90"
                 >
-                    {isSaving && <Spinner className="mr-1.5 h-3.5 w-3.5" />}
+                    {activeSaving && <Spinner className="mr-1.5 h-3.5 w-3.5" />}
                     {saveLabel}
                 </Button>
             </div>

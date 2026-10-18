@@ -75,3 +75,91 @@ export interface SystemTelemetry {
     server_time: string;
     environment: string;
 }
+
+export interface SettingItem {
+    id: number;
+    group: string;
+    key: string;
+    value: string | null;
+    type:
+        | 'string'
+        | 'text'
+        | 'color'
+        | 'url'
+        | 'email'
+        | 'bool'
+        | 'int'
+        | 'media'
+        | 'json';
+    label: string;
+    created_at?: string;
+    updated_at?: string;
+}
+
+export interface SectionItem {
+    id: number;
+    key: string;
+    nav_label: string;
+    eyebrow: string | null;
+    title: string | null;
+    subtitle: string | null;
+    sort_order: number;
+    is_visible: boolean;
+    created_at?: string;
+    updated_at?: string;
+}
+
+export interface HeroRoleItem {
+    id: number;
+    hero_content_id: number;
+    text: string;
+    sort_order: number;
+    created_at?: string;
+    updated_at?: string;
+}
+
+export interface HeroContentItem {
+    id: number;
+    eyebrow: string | null;
+    name: string;
+    primary_button_label: string;
+    primary_button_url: string;
+    secondary_button_label: string;
+    secondary_button_url: string;
+    roles: HeroRoleItem[];
+    created_at?: string;
+    updated_at?: string;
+}
+
+export interface AboutFactItem {
+    id: number;
+    about_content_id: number;
+    kind: 'fact' | 'counter';
+    label: string;
+    value: string;
+    suffix: string | null;
+    sort_order: number;
+    created_at?: string;
+    updated_at?: string;
+}
+
+export interface AboutContentItem {
+    id: number;
+    heading: string | null;
+    bio: string;
+    facts: AboutFactItem[];
+    created_at?: string;
+    updated_at?: string;
+}
+
+export interface SkillItem {
+    id: number;
+    name: string;
+    category: string;
+    level: number;
+    icon: string | null;
+    sort_order: number;
+    is_published: boolean;
+    created_at?: string;
+    updated_at?: string;
+}

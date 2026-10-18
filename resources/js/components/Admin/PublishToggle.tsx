@@ -1,5 +1,6 @@
 interface PublishToggleProps {
-    checked: boolean;
+    checked?: boolean;
+    published?: boolean;
     onChange: (checked: boolean) => void;
     label?: string;
     disabled?: boolean;
@@ -8,21 +9,24 @@ interface PublishToggleProps {
 
 export default function PublishToggle({
     checked,
+    published,
     onChange,
     label,
     disabled = false,
     showStatusText = true,
 }: PublishToggleProps) {
+    const isChecked = checked ?? published ?? false;
+
     return (
         <div className="flex items-center gap-3">
             <button
                 type="button"
                 role="switch"
-                aria-checked={checked}
+                aria-checked={isChecked}
                 disabled={disabled}
-                onClick={() => !disabled && onChange(!checked)}
+                onClick={() => !disabled && onChange(!isChecked)}
                 className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:ring-2 focus:ring-[var(--secondary)] focus:ring-offset-2 focus:ring-offset-[var(--bg)] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${
-                    checked
+                    isChecked
                         ? 'bg-[var(--success)]'
                         : 'bg-[var(--surface-border)]'
                 }`}

@@ -12,12 +12,14 @@ interface IconPickerProps {
     value?: string;
     onChange: (iconName: string) => void;
     label?: string;
+    error?: string;
 }
 
 export default function IconPicker({
     value,
     onChange,
     label = 'Select icon',
+    error,
 }: IconPickerProps) {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState('');
@@ -73,6 +75,12 @@ export default function IconPicker({
                 </div>
                 <span className="text-xs text-[var(--text-muted)]">Change</span>
             </button>
+
+            {error && (
+                <p className="font-['JetBrains_Mono',monospace] text-xs text-[var(--danger)]">
+                    {error}
+                </p>
+            )}
 
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent className="max-h-[85vh] border-[var(--surface-border)] bg-[var(--bg-elevated)] p-6 backdrop-blur-2xl sm:max-w-2xl">

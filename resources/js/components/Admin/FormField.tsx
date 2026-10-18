@@ -119,3 +119,125 @@ export const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(
     },
 );
 FormSelect.displayName = 'FormSelect';
+
+export function TextInput({
+    label,
+    value,
+    onChange,
+    error,
+    hint,
+    required = false,
+    type = 'text',
+    placeholder,
+    className = '',
+}: {
+    label: string;
+    value: string | number;
+    onChange: (val: string) => void;
+    error?: string;
+    hint?: string;
+    required?: boolean;
+    type?: string;
+    placeholder?: string;
+    className?: string;
+}) {
+    return (
+        <FormField
+            label={label}
+            error={error}
+            hint={hint}
+            required={required}
+            className={className}
+        >
+            <FormInput
+                type={type}
+                value={value ?? ''}
+                onChange={(e) => onChange(e.target.value)}
+                placeholder={placeholder}
+                hasError={Boolean(error)}
+            />
+        </FormField>
+    );
+}
+
+export function Textarea({
+    label,
+    value,
+    onChange,
+    error,
+    hint,
+    required = false,
+    placeholder,
+    rows = 4,
+    className = '',
+}: {
+    label: string;
+    value: string;
+    onChange: (val: string) => void;
+    error?: string;
+    hint?: string;
+    required?: boolean;
+    placeholder?: string;
+    rows?: number;
+    className?: string;
+}) {
+    return (
+        <FormField
+            label={label}
+            error={error}
+            hint={hint}
+            required={required}
+            className={className}
+        >
+            <FormTextarea
+                value={value ?? ''}
+                onChange={(e) => onChange(e.target.value)}
+                placeholder={placeholder}
+                rows={rows}
+                hasError={Boolean(error)}
+            />
+        </FormField>
+    );
+}
+
+export function SelectInput({
+    label,
+    value,
+    onChange,
+    error,
+    hint,
+    required = false,
+    options,
+    className = '',
+}: {
+    label: string;
+    value: string | number;
+    onChange: (val: string) => void;
+    error?: string;
+    hint?: string;
+    required?: boolean;
+    options: Array<{ label: string; value: string | number }>;
+    className?: string;
+}) {
+    return (
+        <FormField
+            label={label}
+            error={error}
+            hint={hint}
+            required={required}
+            className={className}
+        >
+            <FormSelect
+                value={value ?? ''}
+                onChange={(e) => onChange(e.target.value)}
+                hasError={Boolean(error)}
+            >
+                {options.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                    </option>
+                ))}
+            </FormSelect>
+        </FormField>
+    );
+}
