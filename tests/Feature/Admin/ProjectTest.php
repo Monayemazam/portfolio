@@ -2,9 +2,6 @@
 
 use App\Models\Media;
 use App\Models\Project;
-use App\Models\ProjectFeature;
-use App\Models\ProjectMedia;
-use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
@@ -222,7 +219,7 @@ test('all six seeded projects can be edited and saved without data loss', functi
         ])->toArray();
 
         $originalTitle = $project->title;
-        $updatedSummary = $project->summary . ' (Verified)';
+        $updatedSummary = $project->summary.' (Verified)';
 
         $updateResponse = $this->put("/admin/projects/{$project->id}", [
             'title' => $originalTitle,

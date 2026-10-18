@@ -2,12 +2,18 @@
 
 use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ExperienceController;
 use App\Http\Controllers\Admin\HeroController;
 use App\Http\Controllers\Admin\MediaController;
+use App\Http\Controllers\Admin\MessageController;
+use App\Http\Controllers\Admin\ProcessStepController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\SectionController;
+use App\Http\Controllers\Admin\SeoController;
+use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SkillController;
+use App\Http\Controllers\Admin\TestimonialController;
 use Illuminate\Support\Facades\Route;
 
 Route::inertia('/', 'welcome')->name('home');
@@ -62,6 +68,38 @@ Route::middleware(['auth', 'verified', 'owner'])->group(function () {
         Route::patch('projects/{project}/toggle-publish', [ProjectController::class, 'togglePublish'])->name('projects.toggle-publish');
         Route::patch('projects/{project}/toggle-featured', [ProjectController::class, 'toggleFeatured'])->name('projects.toggle-featured');
         Route::resource('projects', ProjectController::class);
+
+        // Services
+        Route::post('services/reorder', [ServiceController::class, 'reorder'])->name('services.reorder');
+        Route::patch('services/{service}/toggle-publish', [ServiceController::class, 'togglePublish'])->name('services.toggle-publish');
+        Route::resource('services', ServiceController::class)->except(['create', 'show', 'edit']);
+
+        // Experience
+        Route::post('experience/reorder', [ExperienceController::class, 'reorder'])->name('experience.reorder');
+        Route::patch('experience/{experience}/toggle-publish', [ExperienceController::class, 'togglePublish'])->name('experience.toggle-publish');
+        Route::resource('experience', ExperienceController::class)->except(['create', 'show', 'edit']);
+
+        // Process Steps
+        Route::post('process/reorder', [ProcessStepController::class, 'reorder'])->name('process.reorder');
+        Route::patch('process/{processStep}/toggle-publish', [ProcessStepController::class, 'togglePublish'])->name('process.toggle-publish');
+        Route::resource('process', ProcessStepController::class)
+            ->parameters(['process' => 'processStep'])
+            ->except(['create', 'show', 'edit']);
+
+        // Testimonials
+        Route::post('testimonials/reorder', [TestimonialController::class, 'reorder'])->name('testimonials.reorder');
+        Route::patch('testimonials/{testimonial}/toggle-publish', [TestimonialController::class, 'togglePublish'])->name('testimonials.toggle-publish');
+        Route::resource('testimonials', TestimonialController::class)->except(['create', 'show', 'edit']);
+
+        // SEO
+        Route::get('seo', [SeoController::class, 'index'])->name('seo.index');
+        Route::put('seo', [SeoController::class, 'update'])->name('seo.update');
+
+        // Messages
+        Route::get('messages', [MessageController::class, 'index'])->name('messages.index');
+        Route::patch('messages/{message}/read', [MessageController::class, 'markRead'])->name('messages.read');
+        Route::patch('messages/{message}/unread', [MessageController::class, 'markUnread'])->name('messages.unread');
+        Route::delete('messages/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
     });
 });
 

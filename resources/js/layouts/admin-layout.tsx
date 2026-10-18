@@ -22,6 +22,7 @@ import {
     LogOut,
     Menu,
     X,
+    Globe,
 } from 'lucide-react';
 import type { BreadcrumbItem } from '@/types/navigation';
 
@@ -68,6 +69,7 @@ export default function AdminLayout({
             href: '/admin/testimonials',
             icon: MessageSquareQuote,
         },
+        { label: 'SEO & Meta', href: '/admin/seo', icon: Globe },
         { label: 'Messages', href: '/admin/messages', icon: Mail },
     ];
 
@@ -182,9 +184,26 @@ export default function AdminLayout({
                                     }`}
                                 />
                                 <span>{item.label}</span>
-                                {active && (
+                                {item.label === 'Messages' &&
+                                Boolean(
+                                    (
+                                        page.props as {
+                                            unread_messages_count?: number;
+                                        }
+                                    ).unread_messages_count,
+                                ) ? (
+                                    <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--danger)] px-1.5 font-['JetBrains_Mono',monospace] text-[10px] font-bold text-white shadow-sm">
+                                        {
+                                            (
+                                                page.props as {
+                                                    unread_messages_count?: number;
+                                                }
+                                            ).unread_messages_count
+                                        }
+                                    </span>
+                                ) : active ? (
                                     <span className="ml-auto h-1.5 w-1.5 rounded-full bg-[var(--secondary)] shadow-[var(--secondary)] shadow-sm" />
-                                )}
+                                ) : null}
                             </Link>
                         );
                     })}

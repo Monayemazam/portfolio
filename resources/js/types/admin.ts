@@ -226,3 +226,82 @@ export interface ProjectItem {
     features?: ProjectFeatureItem[];
     project_media?: ProjectMediaItem[];
 }
+
+export interface ServiceItem {
+    id: number;
+    title: string;
+    description: string;
+    icon: string | null;
+    sort_order: number;
+    is_published: boolean;
+    created_at?: string;
+    updated_at?: string;
+}
+
+export interface ExperienceItem {
+    id: number;
+    role: string;
+    company: string;
+    start_date: string;
+    end_date: string | null;
+    is_current: boolean;
+    description: string | null;
+    sort_order: number;
+    is_published: boolean;
+    created_at?: string;
+    updated_at?: string;
+}
+
+export interface ProcessStepItem {
+    id: number;
+    title: string;
+    description: string;
+    sort_order: number;
+    is_published: boolean;
+    created_at?: string;
+    updated_at?: string;
+}
+
+export interface TestimonialItem {
+    id: number;
+    quote: string;
+    author_name: string;
+    author_role: string | null;
+    company: string | null;
+    photo_media_id: number | null;
+    project_id: number | null;
+    sort_order: number;
+    is_published: boolean;
+    photo?: MediaItem | null;
+    project?: { id: number; title: string; slug: string } | null;
+    created_at?: string;
+    updated_at?: string;
+}
+
+export interface SeoMetaItem {
+    id: number;
+    page: string;
+    meta_title: string;
+    meta_description: string;
+    og_image_media_id: number | null;
+    canonical_url: string | null;
+    person_job_title: string | null;
+    person_same_as: string[] | null;
+    robots: string;
+    og_image?: MediaItem | null;
+    created_at?: string;
+    updated_at?: string;
+}
+
+export interface MessageItem {
+    id: number;
+    name: string;
+    email: string;
+    subject: string | null;
+    body: string;
+    ip_address: string | null;
+    user_agent: string | null;
+    read_at: string | null;
+    created_at: string;
+    updated_at: string;
+}
