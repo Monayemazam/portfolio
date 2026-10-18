@@ -47,6 +47,7 @@ class SettingController extends Controller
         }
 
         Cache::forget('portfolio.page.v1');
+        Cache::forget('portfolio.theme_settings');
 
         return back()->with('success', 'Settings updated successfully.');
     }

@@ -1,34 +1,65 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @class(['dark' => ($appearance ?? 'system') == 'dark'])>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        {{-- Inline script to detect system dark mode preference and apply it immediately --}}
+        {{-- Inline script to eliminate theme flashing before first paint --}}
         <script>
             (function() {
-                const appearance = '{{ $appearance ?? "system" }}';
+                try {
+                    const defaultTheme = {!! json_encode($themeSettings['default_theme'] ?? 'system') !!};
+                    window.__PORTFOLIO_DEFAULT_THEME__ = defaultTheme;
 
-                if (appearance === 'system') {
-                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    const stored = localStorage.getItem('theme');
+                    const activeTheme = (stored === 'dark' || stored === 'light' || stored === 'system') ? stored : defaultTheme;
+                    const isDark = activeTheme === 'dark' || (activeTheme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
-                    if (prefersDark) {
+                    if (isDark) {
                         document.documentElement.classList.add('dark');
+                        document.documentElement.setAttribute('data-theme', 'dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                        document.documentElement.setAttribute('data-theme', 'light');
+                    }
+                } catch (e) {
+                    // Fallback to system preference if localStorage access fails
+                    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        document.documentElement.classList.add('dark');
+                        document.documentElement.setAttribute('data-theme', 'dark');
                     }
                 }
             })();
         </script>
 
-        {{-- Inline style to set the HTML background color based on our theme in app.css --}}
+        {{-- Background and font color baseline to match Design Guideline Section 2 --}}
         <style>
             html {
-                background-color: oklch(1 0 0);
+                background-color: #F6F7FB;
+                color: #0F172A;
             }
 
-            html.dark {
-                background-color: oklch(0.145 0 0);
+            html.dark, html[data-theme="dark"] {
+                background-color: #05060F;
+                color: #E2E8F0;
             }
         </style>
+
+        {{-- Custom database theme token overrides --}}
+        @if(isset($themeSettings) && !empty($themeSettings))
+        <style id="custom-theme-vars">
+            :root {
+                @if(!empty($themeSettings['light_primary'])) --primary: {{ $themeSettings['light_primary'] }}; @endif
+                @if(!empty($themeSettings['light_secondary'])) --secondary: {{ $themeSettings['light_secondary'] }}; @endif
+                @if(!empty($themeSettings['light_accent'])) --accent: {{ $themeSettings['light_accent'] }}; @endif
+            }
+            .dark, [data-theme="dark"] {
+                @if(!empty($themeSettings['dark_primary'])) --primary: {{ $themeSettings['dark_primary'] }}; @endif
+                @if(!empty($themeSettings['dark_secondary'])) --secondary: {{ $themeSettings['dark_secondary'] }}; @endif
+                @if(!empty($themeSettings['dark_accent'])) --accent: {{ $themeSettings['dark_accent'] }}; @endif
+            }
+        </style>
+        @endif
 
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -39,10 +70,10 @@
         @viteReactRefresh
         @vite(['resources/css/app.css', 'resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])
         <x-inertia::head>
-            <title>{{ config('app.name', 'Laravel') }}</title>
+            <title>{{ config('app.name', 'Monayem Azam - Space Portfolio') }}</title>
         </x-inertia::head>
     </head>
-    <body class="font-sans antialiased">
+    <body class="font-sans antialiased overflow-x-hidden selection:bg-[var(--primary)] selection:text-white">
         <x-inertia::app />
     </body>
 </html>

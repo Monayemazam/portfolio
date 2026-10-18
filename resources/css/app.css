@@ -183,3 +183,19 @@
             transparent 50%
         );
 }
+
+.text-gradient {
+    background: linear-gradient(
+        135deg,
+        var(--secondary) 0%,
+        var(--primary) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+[data-theme='light'] body,
+:root:not(.dark) body {
+    background: linear-gradient(180deg, var(--bg) 0%, #e8ecfa 100%);
+    min-height: 100vh;
+}

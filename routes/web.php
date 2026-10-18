@@ -14,9 +14,10 @@ use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\PortfolioController;
 use Illuminate\Support\Facades\Route;
 
-Route::inertia('/', 'welcome')->name('home');
+Route::get('/', [PortfolioController::class, 'index'])->name('home');
 
 Route::middleware(['auth', 'verified', 'owner'])->group(function () {
     Route::get('admin', [DashboardController::class, 'index'])->name('dashboard');
