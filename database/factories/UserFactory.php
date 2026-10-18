@@ -47,4 +47,11 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => []);
     }
+
+    public function owner(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'email' => config('app.admin.email', 'monayem@example.com'),
+        ]);
+    }
 }

@@ -1,25 +1,18 @@
 <?php
 
-use Laravel\Fortify\Features;
+test('public registration URL returns 404', function () {
+    $response = $this->get('/register');
 
-beforeEach(function () {
-    $this->skipUnlessFortifyHas(Features::registration());
+    $response->assertNotFound();
 });
 
-test('registration screen can be rendered', function () {
-    $response = $this->get(route('register'));
-
-    $response->assertOk();
-});
-
-test('new users can register', function () {
-    $response = $this->post(route('register.store'), [
-        'name' => 'Test User',
-        'email' => 'test@example.com',
-        'password' => 'password',
-        'password_confirmation' => 'password',
+test('posting to registration endpoint returns 404', function () {
+    $response = $this->post('/register', [
+        'name' => 'Stranger',
+        'email' => 'stranger@example.com',
+        'password' => 'password123',
+        'password_confirmation' => 'password123',
     ]);
 
-    $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard', absolute: false));
+    $response->assertNotFound();
 });

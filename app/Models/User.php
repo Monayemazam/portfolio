@@ -44,4 +44,14 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Determine if the user is the portfolio owner.
+     */
+    public function isOwner(): bool
+    {
+        $ownerEmail = (string) config('app.admin.email', 'monayem@example.com');
+
+        return strtolower((string) $this->email) === strtolower($ownerEmail);
+    }
 }
