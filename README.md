@@ -19,6 +19,7 @@ A modern, database-driven space-themed portfolio web application for **Monayem A
 ## Specification Documents
 
 All primary project specifications and guidelines are preserved in `docs/`:
+
 - [`docs/implementation-plan.md`](docs/implementation-plan.md) — 14-prompt sequential implementation plan
 - [`docs/PRD Monayem Azam Space Portfolio.md`](docs/PRD%20Monayem%20Azam%20Space%20Portfolio.md) — Product Requirements Document (features and behaviour)
 - [`docs/Design Guideline Monayem Azam Space Portfolio.md`](docs/Design%20Guideline%20Monayem%20Azam%20Space%20Portfolio.md) — Visual design tokens, typography, planet styles, and motion
@@ -30,12 +31,14 @@ All primary project specifications and guidelines are preserved in `docs/`:
 ## Setup & Installation
 
 ### 1. Prerequisites
+
 - PHP 8.3 or higher with `pdo_mysql`, `mbstring`, `openssl`, `zip`, `gd`
 - Composer 2.x
 - Node.js 20.x or higher and npm 10+
 - MySQL 8.0+ or MariaDB 10.4+
 
 ### 2. Clone and Install Dependencies
+
 ```bash
 # Clone the repository
 git clone <repository-url> space-portfolio
@@ -49,16 +52,21 @@ npm install
 ```
 
 ### 3. Environment Configuration
+
 Copy `.env.example` to `.env`:
+
 ```bash
 cp .env.example .env
 ```
+
 Generate the application encryption key:
+
 ```bash
 php artisan key:generate
 ```
 
 Configure `.env` with your database credentials and admin details:
+
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -73,18 +81,22 @@ ADMIN_PASSWORD="password"
 ```
 
 ### 4. Database Setup & Migration
+
 Create the MySQL database if not already created:
+
 ```sql
 CREATE DATABASE IF NOT EXISTS space_portfolio CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE DATABASE IF NOT EXISTS space_portfolio_testing CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
 Run database migrations:
+
 ```bash
 php artisan migrate
 ```
 
 To run migrations and seeders (when seeders are implemented in Phase 2):
+
 ```bash
 php artisan migrate:fresh --seed
 ```
@@ -94,11 +106,13 @@ php artisan migrate:fresh --seed
 ## Local Development
 
 Start the development server (Laravel server, queue listener, and Vite dev server concurrently):
+
 ```bash
 composer run dev
 ```
 
 Or start processes individually:
+
 ```bash
 # Terminal 1: Laravel backend server
 php artisan serve
@@ -143,6 +157,7 @@ npm run build
 ---
 
 ## Git Workflow
+
 Commits follow the single-prompt convention:
 `prompt-NN: short title`
 Each phase is committed only after its Definition of Done is fully verified with real evidence.
