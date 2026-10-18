@@ -163,3 +163,66 @@ export interface SkillItem {
     created_at?: string;
     updated_at?: string;
 }
+
+export type PlanetStyle =
+    | 'rocky'
+    | 'station'
+    | 'amber'
+    | 'ringed'
+    | 'ocean'
+    | 'desert'
+    | 'generic';
+
+export interface TagItem {
+    id: number;
+    name: string;
+    slug: string;
+    sort_order?: number;
+    pivot?: {
+        sort_order: number;
+    };
+}
+
+export interface ProjectFeatureItem {
+    id?: number;
+    project_id?: number;
+    group_label: string;
+    text: string;
+    sort_order: number;
+}
+
+export interface ProjectMediaItem {
+    id?: number;
+    project_id?: number;
+    media_id: number;
+    kind: 'desktop' | 'mobile' | 'video' | 'other';
+    caption: string | null;
+    sort_order: number;
+    media?: MediaItem;
+}
+
+export interface ProjectItem {
+    id: number;
+    title: string;
+    slug: string;
+    summary: string;
+    description: string | null;
+    business_type: string | null;
+    role: string | null;
+    year: number | null;
+    live_url: string;
+    planet_style: PlanetStyle;
+    accent_color: string | null;
+    cover_media_id: number | null;
+    show_live_preview: boolean;
+    is_featured: boolean;
+    is_published: boolean;
+    sort_order: number;
+    deleted_at: string | null;
+    created_at?: string;
+    updated_at?: string;
+    cover_media?: MediaItem | null;
+    tags?: TagItem[];
+    features?: ProjectFeatureItem[];
+    project_media?: ProjectMediaItem[];
+}

@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HeroController;
 use App\Http\Controllers\Admin\MediaController;
+use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\SectionController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SkillController;
@@ -53,6 +54,14 @@ Route::middleware(['auth', 'verified', 'owner'])->group(function () {
         Route::post('skills/reorder', [SkillController::class, 'reorder'])->name('skills.reorder');
         Route::patch('skills/{skill}/toggle-publish', [SkillController::class, 'togglePublish'])->name('skills.toggle-publish');
         Route::resource('skills', SkillController::class)->except(['create', 'show', 'edit']);
+
+        // Projects
+        Route::post('projects/reorder', [ProjectController::class, 'reorder'])->name('projects.reorder');
+        Route::post('projects/{id}/restore', [ProjectController::class, 'restore'])->name('projects.restore');
+        Route::delete('projects/{id}/force-delete', [ProjectController::class, 'forceDelete'])->name('projects.force-delete');
+        Route::patch('projects/{project}/toggle-publish', [ProjectController::class, 'togglePublish'])->name('projects.toggle-publish');
+        Route::patch('projects/{project}/toggle-featured', [ProjectController::class, 'toggleFeatured'])->name('projects.toggle-featured');
+        Route::resource('projects', ProjectController::class);
     });
 });
 

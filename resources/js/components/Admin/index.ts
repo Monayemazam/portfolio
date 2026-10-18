@@ -5,6 +5,11 @@ export { default as IconPicker } from './IconPicker';
 export { default as MediaLibraryModal } from './MediaLibraryModal';
 export { default as MediaPicker } from './MediaPicker';
 export { default as PublishToggle } from './PublishToggle';
+export {
+    default as PlanetPreview,
+    PlanetStyleSelector,
+    PLANET_STYLE_OPTIONS,
+} from './PlanetPreview';
 export { default as StickySaveBar } from './StickySaveBar';
 export { default as UnsavedChangesWarning } from './UnsavedChangesWarning';
 export * from './FormField';
