@@ -19,8 +19,7 @@ import SpaceLoader from '@/components/Portfolio/Motion/SpaceLoader';
 import TopProgressBar from '@/components/Portfolio/Motion/TopProgressBar';
 import CometCursor from '@/components/Portfolio/Motion/CometCursor';
 import ReduceEffectsToggle from '@/components/Portfolio/Motion/ReduceEffectsToggle';
-import OrbitNav from '@/components/Portfolio/Shared/OrbitNav';
-import MobileMenu from '@/components/Portfolio/Shared/MobileMenu';
+import FloatingNav from '@/components/Portfolio/Shared/FloatingNav';
 import HeroSection from '@/components/Portfolio/Sections/HeroSection';
 import AboutSection from '@/components/Portfolio/Sections/AboutSection';
 
@@ -207,14 +206,12 @@ export default function PortfolioIndex({
             {/* Z-100: Pre-Flight Mission Loader (1.2s - 2.0s duration max) */}
             <SpaceLoader reducedMotion={isOff} />
 
-            {/* Z-50: Flight Telemetry & Top Progress Bar */}
-            <TopProgressBar progress={progress} distanceKm={distanceKm} />
-
-            {/* Z-50: Orbit-Dot Navigation (Desktop) */}
-            <OrbitNav sections={sections} activeSection={activeSection} />
-
-            {/* Z-50: Mobile Menu Action Button & Overlay */}
-            <MobileMenu sections={sections} activeSection={activeSection} />
+            {/* Z-50: Floating Navigation System */}
+            <FloatingNav
+                sections={sections}
+                activeSection={activeSection}
+                settings={settings}
+            />
 
             {/* Z-50: Corner Reduce Effects Toggle */}
             <ReduceEffectsToggle
@@ -316,6 +313,7 @@ export default function PortfolioIndex({
                                 <FooterSection
                                     key={section.key}
                                     section={section}
+                                    sections={sections}
                                     settings={settings}
                                 />
                             );

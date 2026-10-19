@@ -1,15 +1,23 @@
 import React from 'react';
-import { Github, Linkedin, Facebook, X, Youtube } from 'lineicons-react';
+import {
+    ArrowUp,
+    Facebook,
+    Github,
+    Linkedin,
+    X,
+    Youtube,
+} from '../Shared/Icons';
 import { PortfolioSection, PortfolioSettings } from '@/types/portfolio';
-import BackToTop from '../Shared/BackToTop';
 
 interface FooterSectionProps {
     section?: PortfolioSection;
+    sections?: PortfolioSection[];
     settings: PortfolioSettings;
 }
 
 export default function FooterSection({
     section: _section,
+    sections = [],
     settings,
 }: FooterSectionProps) {
     const siteTitle = settings.site_title || 'Monayem Azam';
@@ -43,47 +51,96 @@ export default function FooterSection({
         },
     ].filter((item) => Boolean(item.url));
 
+    const navLinks = sections.filter(
+        (s) => s.is_visible && s.key !== 'hero' && s.key !== 'footer',
+    );
+
+    const handleScrollTop = (e: React.MouseEvent) => {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     return (
         <footer
             id="footer"
             aria-label="Portfolio Footer"
-            className="w-full border-t border-[var(--surface-border)] bg-[var(--bg-elevated)]/60 px-4 py-12 backdrop-blur-md md:px-8 lg:px-16"
+            className="relative w-full border-t border-[var(--surface-border)] bg-[var(--bg-elevated)]/70 px-4 py-16 backdrop-blur-xl sm:px-6 sm:py-20 md:px-10 lg:px-16 xl:px-20"
         >
-            <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 md:flex-row">
-                {/* Copyright & Mission Log */}
-                <div className="flex flex-col items-center text-center md:items-start md:text-left">
-                    <span className="font-display text-sm font-bold tracking-wider text-[var(--text)] uppercase">
-                        {siteTitle}
-                    </span>
-                    <span className="mt-1 font-mono text-xs text-[var(--text-muted)]">
-                        © {currentYear} • MISSION CONTROL • ALL SYSTEMS NOMINAL
-                    </span>
-                </div>
+            <div className="mx-auto w-full max-w-[1440px]">
+                <div className="flex flex-col justify-between gap-10 md:flex-row md:items-center">
+                    {/* Brand Info */}
+                    <div className="flex flex-col items-start gap-2">
+                        <div className="flex items-center gap-3">
+                            <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--surface-border)] bg-[var(--surface)] font-mono text-sm font-extrabold text-[var(--secondary)]">
+                                MA.
+                            </span>
+                            <span className="font-display text-lg font-bold tracking-wider text-[var(--text)]">
+                                {siteTitle}
+                            </span>
+                        </div>
+                        <p className="max-w-md font-sans text-xs text-[var(--text-muted)] sm:text-sm">
+                            Full-Stack Software Engineer & Digital Product
+                            Builder specializing in high-performance web
+                            ecosystems.
+                        </p>
+                    </div>
 
-                {/* Social Links */}
-                {socialLinks.length > 0 && (
-                    <div className="flex items-center gap-3">
-                        {socialLinks.map((item) => {
-                            const IconComponent = item.icon;
-                            return (
+                    {/* Navigation Links */}
+                    {navLinks.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+                            {navLinks.map((item) => (
                                 <a
                                     key={item.key}
-                                    href={item.url as string}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    aria-label={item.label}
-                                    className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--surface-border)] bg-[var(--surface)] text-[var(--text-muted)] transition-all hover:scale-110 hover:border-[var(--secondary)] hover:text-[var(--secondary)] hover:shadow-[0_0_12px_var(--secondary)] focus:ring-2 focus:ring-[var(--secondary)] focus:outline-none"
+                                    href={`#${item.key}`}
+                                    className="font-sans text-xs font-medium text-[var(--text-muted)] transition-colors hover:text-[var(--secondary)]"
                                 >
-                                    <IconComponent className="h-4 w-4" />
+                                    {item.nav_label || item.title}
                                 </a>
-                            );
-                        })}
-                    </div>
-                )}
+                            ))}
+                        </div>
+                    )}
 
-                {/* Back to top rocket button */}
-                <div>
-                    <BackToTop />
+                    {/* Socials & Back to Top */}
+                    <div className="flex items-center gap-4">
+                        {socialLinks.length > 0 && (
+                            <div className="flex items-center gap-2.5">
+                                {socialLinks.map((item) => {
+                                    const IconComponent = item.icon;
+                                    return (
+                                        <a
+                                            key={item.key}
+                                            href={item.url as string}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            aria-label={item.label}
+                                            className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--surface-border)] bg-[var(--surface)] text-[var(--text-muted)] transition-all hover:scale-105 hover:border-[var(--secondary)] hover:text-[var(--text)]"
+                                        >
+                                            <IconComponent className="h-4 w-4" />
+                                        </a>
+                                    );
+                                })}
+                            </div>
+                        )}
+
+                        <button
+                            type="button"
+                            onClick={handleScrollTop}
+                            aria-label="Back to top of page"
+                            className="group flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--surface-border)] bg-[var(--surface)] text-[var(--text-muted)] shadow-sm transition-all hover:border-[var(--secondary)] hover:text-[var(--secondary)] hover:scale-105 active:scale-95"
+                        >
+                            <ArrowUp className="h-4 w-4 transition-transform group-hover:-translate-y-0.5" />
+                        </button>
+                    </div>
+                </div>
+
+                {/* Bottom Copyright */}
+                <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-[var(--surface-border)]/40 pt-8 sm:flex-row">
+                    <span className="font-mono text-xs text-[var(--text-muted)]">
+                        © {currentYear} Monayem Azam · All rights reserved.
+                    </span>
+                    <span className="font-mono text-xs text-[var(--text-muted)]">
+                        Crafted with Laravel, React & Three.js
+                    </span>
                 </div>
             </div>
         </footer>

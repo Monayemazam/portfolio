@@ -1,8 +1,7 @@
 import React from 'react';
 import * as LineIcons from 'lineicons-react';
+import { ArrowAngularTopRight, Sparkle } from '../Shared/Icons';
 import { PortfolioSection, ServiceItem } from '@/types/portfolio';
-import GlassPanel from '../Shared/GlassPanel';
-import SectionHeading from '../Shared/SectionHeading';
 
 interface ServicesSectionProps {
     section: PortfolioSection;
@@ -20,80 +19,106 @@ export default function ServicesSection({
         React.ComponentType<{ className?: string }>
     >;
 
+    const resolveLineicon = (iconName?: string | null) => {
+        if (!iconName) return null;
+        if (iconMap[iconName]) return iconMap[iconName];
+        const clean = iconName.replace(/^lni-/, '');
+        const pascal = clean
+            .split(/[-_]/)
+            .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+            .join('');
+        return iconMap[pascal] || null;
+    };
+
+    const eyebrow = section.eyebrow || 'CAPABILITIES & SPECIALIZATIONS';
+    const title = section.title || 'What I Can Build';
+    const subtitle =
+        section.subtitle ||
+        'Engineered for speed, scale, and longevity. Tailored solutions from architecture to production deployment.';
+
     return (
         <section
             id="services"
-            aria-label="Services Space Stations"
-            className="w-full px-4 py-16 md:px-8 md:py-24 lg:px-16"
+            aria-label="Services Section"
+            className="relative w-full overflow-hidden px-4 py-24 sm:px-6 sm:py-32 md:px-10 lg:px-16 lg:py-36 xl:px-20"
         >
-            <div className="mx-auto max-w-6xl">
-                <SectionHeading
-                    eyebrow={section.eyebrow || 'MISSION 05 / SPACE STATIONS'}
-                    title={
-                        section.title || 'Engineering Services & Capabilities'
-                    }
-                    subtitle={
-                        section.subtitle ||
-                        'Specialized orbital architectures, high-performance web systems, and full-stack solutions.'
-                    }
-                    highlightWord="Capabilities"
-                />
+            {/* Ambient Lighting */}
+            <div
+                className="pointer-events-none absolute top-1/2 left-1/3 -translate-y-1/2 h-[500px] w-[500px] rounded-full bg-[var(--primary)]/10 blur-[140px]"
+                aria-hidden="true"
+            />
 
-                {/* 3 columns on desktop, 2 on tablet, 1 on mobile */}
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="mx-auto w-full max-w-[1440px]">
+                {/* Header Section */}
+                <div className="flex flex-col items-start max-w-3xl">
+                    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--surface-border)] bg-[var(--surface)] px-3.5 py-1.5 shadow-sm backdrop-blur-md">
+                        <Sparkle className="h-3.5 w-3.5 text-[var(--secondary)]" />
+                        <span className="font-mono text-xs font-semibold tracking-[0.14em] text-[var(--secondary)] uppercase">
+                            {eyebrow}
+                        </span>
+                    </div>
+
+                    <h2 className="font-display text-[clamp(2.2rem,4.5vw,3.75rem)] font-extrabold leading-[1.08] tracking-tight text-[var(--text)]">
+                        {title}
+                    </h2>
+
+                    <p className="mt-4 font-sans text-base leading-relaxed text-[var(--text-muted)] sm:text-lg">
+                        {subtitle}
+                    </p>
+                </div>
+
+                {/* Services Grid: 3 columns desktop, 2 tablet, 1 mobile */}
+                <div className="mt-12 sm:mt-16 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {services.map((service, index) => {
-                        const IconComponent = service.icon
-                            ? iconMap[service.icon]
-                            : null;
-                        const stationNumber = String(index + 1).padStart(
+                        const IconComponent = resolveLineicon(service.icon);
+                        const serviceNumber = String(index + 1).padStart(
                             2,
                             '0',
                         );
 
                         return (
-                            <GlassPanel
+                            <div
                                 key={service.id}
-                                variant="card"
-                                interactive
-                                className="section-reveal group flex flex-col justify-between border-[var(--surface-border)]"
+                                className="group relative flex flex-col justify-between rounded-3xl border border-[var(--surface-border)] bg-[var(--surface)] p-8 shadow-xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-[var(--secondary)] hover:shadow-[0_20px_45px_rgba(83,224,247,0.12)]"
                             >
                                 <div>
-                                    {/* Icon & Station Index Header */}
-                                    <div className="mb-6 flex items-center justify-between">
-                                        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[var(--surface-border)] bg-[var(--surface)] text-[var(--secondary)] transition-all duration-300 group-hover:scale-110 group-hover:border-[var(--secondary)] group-hover:shadow-[0_0_16px_var(--secondary)]">
+                                    {/* Icon & Index Number */}
+                                    <div className="mb-8 flex items-center justify-between">
+                                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[var(--surface-border)] bg-[var(--bg-elevated)] text-[var(--secondary)] shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:border-[var(--secondary)] group-hover:shadow-[0_0_20px_rgba(83,224,247,0.3)]">
                                             {IconComponent ? (
-                                                <IconComponent className="h-6 w-6 text-[var(--secondary)]" />
+                                                <IconComponent className="h-7 w-7" />
                                             ) : (
-                                                <span className="font-mono text-sm font-bold text-[var(--secondary)]">
-                                                    #{stationNumber}
+                                                <span className="font-mono text-base font-bold">
+                                                    {serviceNumber}
                                                 </span>
                                             )}
                                         </div>
-                                        <span className="font-mono text-xs tracking-wider text-[var(--text-muted)]">
-                                            STATION {stationNumber}
+                                        <span className="font-mono text-xs font-bold text-[var(--text-muted)] group-hover:text-[var(--secondary)] transition-colors">
+                                            0{index + 1}
                                         </span>
                                     </div>
 
                                     {/* Title & Description */}
-                                    <h3 className="font-display text-xl font-bold text-[var(--text)] transition-colors group-hover:text-[var(--secondary)]">
+                                    <h3 className="font-display text-2xl font-bold text-[var(--text)] transition-colors group-hover:text-[var(--secondary)]">
                                         {service.title}
                                     </h3>
-                                    <p className="mt-3 font-sans text-sm leading-relaxed text-[var(--text-muted)]">
+
+                                    <p className="mt-4 font-sans text-sm leading-relaxed text-[var(--text-muted)] sm:text-base">
                                         {service.description}
                                     </p>
                                 </div>
 
-                                {/* Station Telemetry Footer */}
-                                <div className="mt-6 flex items-center justify-between border-t border-[var(--surface-border)]/50 pt-4 font-mono text-[10px] text-[var(--text-muted)]">
-                                    <div className="flex items-center gap-1.5">
-                                        <span className="h-1.5 w-1.5 rounded-full bg-[var(--success)]" />
-                                        <span>SYSTEM DEPLOYABLE</span>
-                                    </div>
-                                    <span className="font-semibold text-[var(--primary)]">
-                                        DOCK READY
-                                    </span>
+                                {/* Bottom Contact CTA */}
+                                <div className="mt-8 border-t border-[var(--surface-border)]/50 pt-5">
+                                    <a
+                                        href="#contact"
+                                        className="inline-flex items-center gap-1.5 font-sans text-xs font-bold text-[var(--secondary)] transition-transform duration-200 group-hover:translate-x-1"
+                                    >
+                                        <span>Start a project like this</span>
+                                        <ArrowAngularTopRight className="h-3.5 w-3.5" />
+                                    </a>
                                 </div>
-                            </GlassPanel>
+                            </div>
                         );
                     })}
                 </div>

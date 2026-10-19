@@ -66,19 +66,21 @@
 }
 
 :root {
-    /* Design Guideline Section 2: Solar (Light) Tokens */
-    --bg: #f6f7fb;
+    /* Design Guideline: Solar (Light) Tokens */
+    --bg: #f6f8fd;
     --bg-elevated: #ffffff;
-    --surface: rgba(255, 255, 255, 0.7);
-    --surface-border: rgba(91, 33, 182, 0.2);
-    --text: #0f172a;
-    --text-muted: #475569;
-    --primary: #6d28d9;
-    --secondary: #0e7490;
-    --accent: #b45309;
-    --success: #047857;
-    --danger: #b91c1c;
-    --star: #6d28d9;
+    --bg-secondary: #eef2fb;
+    --surface: rgba(255, 255, 255, 0.85);
+    --surface-border: rgba(139, 108, 255, 0.18);
+    --surface-border-hover: rgba(83, 224, 247, 0.40);
+    --text: #0a0f24;
+    --text-muted: #4c5975;
+    --primary: #7452fa;
+    --secondary: #088395;
+    --accent: #d97706;
+    --success: #059669;
+    --danger: #dc2626;
+    --star: #7452fa;
 
     /* Theme bindings */
     --background: var(--bg);
@@ -89,19 +91,19 @@
     --popover-foreground: var(--text);
     --primary-foreground: #ffffff;
     --secondary-foreground: #ffffff;
-    --muted: rgba(226, 232, 240, 0.6);
+    --muted: rgba(226, 232, 240, 0.7);
     --muted-foreground: var(--text-muted);
     --destructive: var(--danger);
     --destructive-foreground: #ffffff;
     --border: var(--surface-border);
     --input: var(--surface-border);
     --ring: var(--secondary);
-    --radius: 0.625rem;
+    --radius: 0.75rem;
     --sidebar: var(--bg-elevated);
     --sidebar-foreground: var(--text);
     --sidebar-primary: var(--primary);
     --sidebar-primary-foreground: #ffffff;
-    --sidebar-accent: rgba(91, 33, 182, 0.08);
+    --sidebar-accent: rgba(116, 82, 250, 0.08);
     --sidebar-accent-foreground: var(--text);
     --sidebar-border: var(--surface-border);
     --sidebar-ring: var(--secondary);
@@ -109,19 +111,21 @@
 
 .dark,
 [data-theme='dark'] {
-    /* Design Guideline Section 2: Deep Space (Dark) Tokens */
-    --bg: #05060f;
-    --bg-elevated: #0b0e1f;
-    --surface: rgba(18, 22, 48, 0.55);
-    --surface-border: rgba(124, 58, 237, 0.35);
-    --text: #e2e8f0;
-    --text-muted: #94a3b8;
-    --primary: #7c3aed;
-    --secondary: #22d3ee;
-    --accent: #f59e0b;
+    /* Design Guideline: Deep Space (Dark) Tokens - Monayem Azam Digital Universe */
+    --bg: #080d1c;
+    --bg-elevated: #10182b;
+    --bg-secondary: #17223a;
+    --surface: rgba(16, 24, 43, 0.72);
+    --surface-border: rgba(83, 224, 247, 0.14);
+    --surface-border-hover: rgba(139, 108, 255, 0.35);
+    --text: #f4f7ff;
+    --text-muted: #a5b2cc;
+    --primary: #8b6cff;
+    --secondary: #53e0f7;
+    --accent: #ffb547;
     --success: #34d399;
     --danger: #f87171;
-    --star: #ffffff;
+    --star: #f4f7ff;
 
     /* Theme bindings */
     --background: var(--bg);
@@ -131,11 +135,11 @@
     --popover: var(--bg-elevated);
     --popover-foreground: var(--text);
     --primary-foreground: #ffffff;
-    --secondary-foreground: #05060f;
-    --muted: rgba(30, 41, 59, 0.6);
+    --secondary-foreground: #080d1c;
+    --muted: rgba(23, 34, 58, 0.7);
     --muted-foreground: var(--text-muted);
     --destructive: var(--danger);
-    --destructive-foreground: #05060f;
+    --destructive-foreground: #080d1c;
     --border: var(--surface-border);
     --input: var(--surface-border);
     --ring: var(--secondary);
@@ -143,7 +147,7 @@
     --sidebar-foreground: var(--text);
     --sidebar-primary: var(--primary);
     --sidebar-primary-foreground: #ffffff;
-    --sidebar-accent: rgba(124, 58, 237, 0.15);
+    --sidebar-accent: rgba(139, 108, 255, 0.15);
     --sidebar-accent-foreground: var(--text);
     --sidebar-border: var(--surface-border);
     --sidebar-ring: var(--secondary);
@@ -163,10 +167,35 @@
 
 .glass-panel {
     background-color: var(--surface);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--surface-border);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-panel:hover {
+    border-color: var(--surface-border-hover);
+}
+
+.glass-nav {
+    background-color: var(--surface);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--surface-border);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.glow-cyan {
+    box-shadow: 0 0 25px rgba(83, 224, 247, 0.35);
+}
+
+.glow-violet {
+    box-shadow: 0 0 25px rgba(139, 108, 255, 0.35);
+}
+
+.glow-amber {
+    box-shadow: 0 0 25px rgba(255, 181, 71, 0.35);
 }
 
 .admin-bg-quiet {
@@ -174,12 +203,12 @@
     background-image:
         radial-gradient(
             circle at 85% 15%,
-            rgba(124, 58, 237, 0.08) 0%,
+            rgba(139, 108, 255, 0.08) 0%,
             transparent 45%
         ),
         radial-gradient(
             circle at 15% 85%,
-            rgba(34, 211, 238, 0.05) 0%,
+            rgba(83, 224, 247, 0.05) 0%,
             transparent 50%
         );
 }

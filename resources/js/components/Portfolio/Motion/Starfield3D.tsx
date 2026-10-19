@@ -39,10 +39,32 @@ export default function Starfield3D({ isDark = true }: Starfield3DProps) {
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
 
-        // Colors based on theme
-        const starColor1 = isDark ? 0xffffff : 0x6d28d9;
-        const starColor2 = isDark ? 0x22d3ee : 0x0e7490;
-        const starColor3 = isDark ? 0x7c3aed : 0x8b5cf6;
+        // Helper to generate soft circular radial textures
+        const createRadialTexture = (innerOpacity = 1, outerOpacity = 0) => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 64;
+            canvas.height = 64;
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+                const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+                gradient.addColorStop(0, `rgba(255, 255, 255, ${innerOpacity})`);
+                gradient.addColorStop(0.3, `rgba(255, 255, 255, ${innerOpacity * 0.6})`);
+                gradient.addColorStop(0.7, `rgba(255, 255, 255, ${innerOpacity * 0.15})`);
+                gradient.addColorStop(1, `rgba(255, 255, 255, ${outerOpacity})`);
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, 64, 64);
+            }
+            const texture = new THREE.CanvasTexture(canvas);
+            return texture;
+        };
+
+        const starTexture = createRadialTexture(1, 0);
+        const nebulaTexture = createRadialTexture(0.5, 0);
+
+        // Colors based on theme - Monayem Azam Digital Universe
+        const starColor1 = isDark ? 0xf4f7ff : 0x7452fa;
+        const starColor2 = isDark ? 0x53e0f7 : 0x088395;
+        const starColor3 = isDark ? 0x8b6cff : 0x7452fa;
 
         // Helper to create star layers
         const createStarLayer = (
@@ -68,27 +90,29 @@ export default function Starfield3D({ isDark = true }: Starfield3DProps) {
             const material = new THREE.PointsMaterial({
                 color,
                 size,
+                map: starTexture,
                 transparent: true,
-                opacity: isDark ? 0.85 : 0.7,
+                opacity: isDark ? 0.85 : 0.65,
                 blending: isDark
                     ? THREE.AdditiveBlending
                     : THREE.NormalBlending,
+                depthWrite: false,
             });
 
             return new THREE.Points(geometry, material);
         };
 
         // 3 Layers of stars for parallax depth
-        const layerDistant = createStarLayer(1000, 1.2, 500, starColor1);
-        const layerMid = createStarLayer(500, 2.0, 400, starColor2);
-        const layerClose = createStarLayer(150, 2.8, 300, starColor3);
+        const layerDistant = createStarLayer(800, 1.8, 500, starColor1);
+        const layerMid = createStarLayer(400, 2.8, 400, starColor2);
+        const layerClose = createStarLayer(120, 3.6, 300, starColor3);
 
         scene.add(layerDistant);
         scene.add(layerMid);
         scene.add(layerClose);
 
-        // Soft Nebula particles
-        const nebulaCount = 80;
+        // Soft Nebula particles - large subtle glowing clouds
+        const nebulaCount = 50;
         const nebulaGeo = new THREE.BufferGeometry();
         const nebulaPos = new Float32Array(nebulaCount * 3);
         for (let i = 0; i < nebulaCount * 3; i += 3) {
@@ -101,11 +125,13 @@ export default function Starfield3D({ isDark = true }: Starfield3DProps) {
             new THREE.BufferAttribute(nebulaPos, 3),
         );
         const nebulaMat = new THREE.PointsMaterial({
-            color: isDark ? 0x7c3aed : 0x8b5cf6,
-            size: 35,
+            color: isDark ? 0x8b6cff : 0x7452fa,
+            size: 60,
+            map: nebulaTexture,
             transparent: true,
-            opacity: isDark ? 0.08 : 0.04,
+            opacity: isDark ? 0.09 : 0.04,
             blending: isDark ? THREE.AdditiveBlending : THREE.NormalBlending,
+            depthWrite: false,
         });
         const nebula = new THREE.Points(nebulaGeo, nebulaMat);
         scene.add(nebula);
