@@ -33,13 +33,13 @@ export default function OrbitNav({
             aria-label="Orbit section navigation"
             className="fixed top-1/2 right-6 z-50 hidden -translate-y-1/2 flex-col items-end gap-3.5 lg:flex"
         >
-            {sections.map((section) => {
+            {sections.map((section, idx) => {
                 const isActive = activeSection === section.key;
                 const isHovered = hoveredKey === section.key;
 
                 return (
                     <div
-                        key={section.key}
+                        key={`orbit-${section.key || section.id || idx}`}
                         className="relative flex items-center"
                         onMouseEnter={() => setHoveredKey(section.key)}
                         onMouseLeave={() => setHoveredKey(null)}

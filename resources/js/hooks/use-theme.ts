@@ -55,6 +55,13 @@ export function useTheme(defaultConfigured: Theme = 'system') {
             }
             setThemeState(newTheme);
             applyTheme(newTheme);
+            if (typeof window !== 'undefined') {
+                window.dispatchEvent(
+                    new CustomEvent('theme-change', {
+                        detail: { theme: newTheme },
+                    }),
+                );
+            }
         },
         [applyTheme],
     );
@@ -67,13 +74,30 @@ export function useTheme(defaultConfigured: Theme = 'system') {
     useEffect(() => {
         applyTheme(theme);
 
+        const handleThemeChange = (e: Event) => {
+            const custom = e as CustomEvent<{ theme: Theme }>;
+            if (custom.detail?.theme && custom.detail.theme !== theme) {
+                setThemeState(custom.detail.theme);
+                applyTheme(custom.detail.theme);
+            }
+        };
+
+        window.addEventListener('theme-change', handleThemeChange);
+
         if (theme === 'system' && typeof window !== 'undefined') {
             const media = window.matchMedia('(prefers-color-scheme: dark)');
             const handleChange = () => applyTheme('system');
 
             media.addEventListener('change', handleChange);
-            return () => media.removeEventListener('change', handleChange);
+            return () => {
+                window.removeEventListener('theme-change', handleThemeChange);
+                media.removeEventListener('change', handleChange);
+            };
         }
+
+        return () => {
+            window.removeEventListener('theme-change', handleThemeChange);
+        };
     }, [theme, applyTheme]);
 
     return {

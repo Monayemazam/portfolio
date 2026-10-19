@@ -10,59 +10,43 @@ export function useMotionLevel({
     adminLevel = 'full',
 }: UseMotionLevelOptions = {}) {
     // Visitor's local reduce effects toggle preference
-    const [reduceEffects, setReduceEffectsState] = useState<boolean>(() => {
+    const [reduceEffects, setReduceEffectsState] = useState<boolean>(false);
+    const [prefersReducedMotion, setPrefersReducedMotion] =
+        useState<boolean>(false);
+    const [isWeakDevice, setIsWeakDevice] = useState<boolean>(false);
+
+    useEffect(() => {
+        // Safe client initialization after hydration
         try {
             const saved = localStorage.getItem('reduce_effects');
             if (saved !== null) {
-                return saved === 'true';
+                setReduceEffectsState(saved === 'true');
             }
         } catch {
             // LocalStorage inaccessible
         }
-        return false;
-    });
 
-    // OS prefers-reduced-motion
-    const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean>(
-        () => {
-            if (typeof window !== 'undefined' && window.matchMedia) {
-                return (
-                    window.matchMedia('(prefers-color-scheme: reduce)')
-                        .matches ||
-                    window.matchMedia('(prefers-reduced-motion: reduce)')
-                        .matches
-                );
-            }
-            return false;
-        },
-    );
+        if (typeof window !== 'undefined' && window.matchMedia) {
+            const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+            setPrefersReducedMotion(media.matches);
 
-    // Detect low-power / weak devices
-    const [isWeakDevice] = useState<boolean>(() => {
-        if (typeof window !== 'undefined') {
-            const nav = window.navigator as {
-                hardwareConcurrency?: number;
-                deviceMemory?: number;
-            };
-            const lowCores = nav.hardwareConcurrency
-                ? nav.hardwareConcurrency <= 4
-                : false;
-            const lowMemory = nav.deviceMemory ? nav.deviceMemory < 4 : false;
-            return lowCores || lowMemory;
+            const handler = (e: MediaQueryListEvent) =>
+                setPrefersReducedMotion(e.matches);
+            media.addEventListener('change', handler);
+            return () => media.removeEventListener('change', handler);
         }
-        return false;
-    });
 
-    // Listen to OS prefers-reduced-motion changes
-    useEffect(() => {
-        if (typeof window === 'undefined' || !window.matchMedia) return;
-
-        const media = window.matchMedia('(prefers-reduced-motion: reduce)');
-        const handler = (e: MediaQueryListEvent) =>
-            setPrefersReducedMotion(e.matches);
-
-        media.addEventListener('change', handler);
-        return () => media.removeEventListener('change', handler);
+        const nav = window.navigator as {
+            hardwareConcurrency?: number;
+            deviceMemory?: number;
+        };
+        const lowCores = nav.hardwareConcurrency
+            ? nav.hardwareConcurrency <= 2
+            : false;
+        const lowMemory = nav.deviceMemory ? nav.deviceMemory < 4 : false;
+        if (lowCores || lowMemory) {
+            setIsWeakDevice(true);
+        }
     }, []);
 
     const toggleReduceEffects = useCallback(() => {

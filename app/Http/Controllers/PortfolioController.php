@@ -109,10 +109,18 @@ class PortfolioController extends Controller
 
             $settings = [
                 ...$settingsMap,
-                'logo_media' => isset($settingsMap['logo_media_id']) ? $mediaItems->get((int) $settingsMap['logo_media_id']) : null,
-                'favicon_media' => isset($settingsMap['favicon_media_id']) ? $mediaItems->get((int) $settingsMap['favicon_media_id']) : null,
-                'photo_media' => isset($settingsMap['photo_media_id']) ? $mediaItems->get((int) $settingsMap['photo_media_id']) : null,
-                'resume_media' => isset($settingsMap['resume_media_id']) ? $mediaItems->get((int) $settingsMap['resume_media_id']) : null,
+                'logo_media' => isset($settingsMap['logo_media_id']) && $mediaItems->has((int) $settingsMap['logo_media_id'])
+                    ? $mediaItems->get((int) $settingsMap['logo_media_id'])?->toArray()
+                    : null,
+                'favicon_media' => isset($settingsMap['favicon_media_id']) && $mediaItems->has((int) $settingsMap['favicon_media_id'])
+                    ? $mediaItems->get((int) $settingsMap['favicon_media_id'])?->toArray()
+                    : null,
+                'photo_media' => isset($settingsMap['photo_media_id']) && $mediaItems->has((int) $settingsMap['photo_media_id'])
+                    ? $mediaItems->get((int) $settingsMap['photo_media_id'])?->toArray()
+                    : null,
+                'resume_media' => isset($settingsMap['resume_media_id']) && $mediaItems->has((int) $settingsMap['resume_media_id'])
+                    ? $mediaItems->get((int) $settingsMap['resume_media_id'])?->toArray()
+                    : null,
             ];
 
             $seo = SeoMeta::query()
@@ -121,17 +129,17 @@ class PortfolioController extends Controller
                 ->first();
 
             return [
-                'sections' => $sections->values()->all(),
-                'hero' => $hero,
-                'about' => $about,
-                'skills' => $skills->values()->all(),
-                'projects' => $projects->values()->all(),
-                'services' => $services->values()->all(),
-                'experiences' => $experiences->values()->all(),
-                'processSteps' => $processSteps->values()->all(),
-                'testimonials' => $testimonials->values()->all(),
+                'sections' => $sections->map(fn (Section $s) => $s->toArray())->values()->all(),
+                'hero' => $hero?->toArray(),
+                'about' => $about?->toArray(),
+                'skills' => $skills->map(fn (Skill $s) => $s->toArray())->values()->all(),
+                'projects' => $projects->map(fn (Project $p) => $p->toArray())->values()->all(),
+                'services' => $services->map(fn (Service $s) => $s->toArray())->values()->all(),
+                'experiences' => $experiences->map(fn (Experience $e) => $e->toArray())->values()->all(),
+                'processSteps' => $processSteps->map(fn (ProcessStep $p) => $p->toArray())->values()->all(),
+                'testimonials' => $testimonials->map(fn (Testimonial $t) => $t->toArray())->values()->all(),
                 'settings' => $settings,
-                'seo' => $seo,
+                'seo' => $seo?->toArray(),
             ];
         });
 

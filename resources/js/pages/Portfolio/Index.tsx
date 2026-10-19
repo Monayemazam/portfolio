@@ -24,30 +24,14 @@ import MobileMenu from '@/components/Portfolio/Shared/MobileMenu';
 import HeroSection from '@/components/Portfolio/Sections/HeroSection';
 import AboutSection from '@/components/Portfolio/Sections/AboutSection';
 
-const SkillsSection = React.lazy(
-    () => import('@/components/Portfolio/Sections/SkillsSection'),
-);
-const ProjectsSection = React.lazy(
-    () => import('@/components/Portfolio/Sections/ProjectsSection'),
-);
-const ServicesSection = React.lazy(
-    () => import('@/components/Portfolio/Sections/ServicesSection'),
-);
-const ExperienceSection = React.lazy(
-    () => import('@/components/Portfolio/Sections/ExperienceSection'),
-);
-const ProcessSection = React.lazy(
-    () => import('@/components/Portfolio/Sections/ProcessSection'),
-);
-const TestimonialsSection = React.lazy(
-    () => import('@/components/Portfolio/Sections/TestimonialsSection'),
-);
-const ContactSection = React.lazy(
-    () => import('@/components/Portfolio/Sections/ContactSection'),
-);
-const FooterSection = React.lazy(
-    () => import('@/components/Portfolio/Sections/FooterSection'),
-);
+import SkillsSection from '@/components/Portfolio/Sections/SkillsSection';
+import ProjectsSection from '@/components/Portfolio/Sections/ProjectsSection';
+import ServicesSection from '@/components/Portfolio/Sections/ServicesSection';
+import ExperienceSection from '@/components/Portfolio/Sections/ExperienceSection';
+import ProcessSection from '@/components/Portfolio/Sections/ProcessSection';
+import TestimonialsSection from '@/components/Portfolio/Sections/TestimonialsSection';
+import ContactSection from '@/components/Portfolio/Sections/ContactSection';
+import FooterSection from '@/components/Portfolio/Sections/FooterSection';
 
 export default function PortfolioIndex({
     sections: rawSections,
@@ -243,96 +227,100 @@ export default function PortfolioIndex({
 
             {/* Z-10: Main Content Stream in Database sort_order */}
             <main className="relative z-10 flex w-full flex-col">
-                <React.Suspense fallback={null}>
-                    {sections.map((section) => {
-                        switch (section.key) {
-                            case 'hero':
-                                return (
-                                    <HeroSection
-                                        key={section.key}
-                                        section={section}
-                                        hero={hero}
-                                        settings={settings}
-                                    />
-                                );
-                            case 'about':
-                                return (
-                                    <AboutSection
-                                        key={section.key}
-                                        section={section}
-                                        about={about}
-                                        settings={settings}
-                                    />
-                                );
-                            case 'skills':
-                                return (
-                                    <SkillsSection
-                                        key={section.key}
-                                        section={section}
-                                        skills={skills}
-                                    />
-                                );
-                            case 'projects':
-                                return (
-                                    <ProjectsSection
-                                        key={section.key}
-                                        section={section}
-                                        projects={projects}
-                                    />
-                                );
-                            case 'services':
-                                return (
-                                    <ServicesSection
-                                        key={section.key}
-                                        section={section}
-                                        services={services}
-                                    />
-                                );
-                            case 'experience':
-                                return (
-                                    <ExperienceSection
-                                        key={section.key}
-                                        section={section}
-                                        experiences={experiences}
-                                    />
-                                );
-                            case 'process':
-                                return (
-                                    <ProcessSection
-                                        key={section.key}
-                                        section={section}
-                                        processSteps={processSteps}
-                                    />
-                                );
-                            case 'testimonials':
-                                return (
-                                    <TestimonialsSection
-                                        key={section.key}
-                                        section={section}
-                                        testimonials={testimonials}
-                                    />
-                                );
-                            case 'contact':
-                                return (
-                                    <ContactSection
-                                        key={section.key}
-                                        section={section}
-                                        settings={settings}
-                                    />
-                                );
-                            case 'footer':
-                                return (
-                                    <FooterSection
-                                        key={section.key}
-                                        section={section}
-                                        settings={settings}
-                                    />
-                                );
-                            default:
-                                return null;
-                        }
-                    })}
-                </React.Suspense>
+                {sections.map((section) => {
+                    switch (section.key) {
+                        case 'hero':
+                            return (
+                                <HeroSection
+                                    key={section.key}
+                                    section={section}
+                                    hero={hero}
+                                    settings={settings}
+                                    isFull={isFull}
+                                    isOff={isOff}
+                                    isDark={isDark}
+                                />
+                            );
+                        case 'about':
+                            return (
+                                <AboutSection
+                                    key={section.key}
+                                    section={section}
+                                    about={about}
+                                    settings={settings}
+                                    isOff={isOff}
+                                />
+                            );
+                        case 'skills':
+                            return (
+                                <SkillsSection
+                                    key={section.key}
+                                    section={section}
+                                    skills={skills}
+                                    isOff={isOff}
+                                    isDark={isDark}
+                                />
+                            );
+                        case 'projects':
+                            return (
+                                <ProjectsSection
+                                    key={section.key}
+                                    section={section}
+                                    projects={projects}
+                                />
+                            );
+                        case 'services':
+                            return (
+                                <ServicesSection
+                                    key={section.key}
+                                    section={section}
+                                    services={services}
+                                />
+                            );
+                        case 'experience':
+                            return (
+                                <ExperienceSection
+                                    key={section.key}
+                                    section={section}
+                                    experiences={experiences}
+                                />
+                            );
+                        case 'process':
+                            return (
+                                <ProcessSection
+                                    key={section.key}
+                                    section={section}
+                                    processSteps={processSteps}
+                                />
+                            );
+                        case 'testimonials':
+                            return (
+                                <TestimonialsSection
+                                    key={section.key}
+                                    section={section}
+                                    testimonials={testimonials}
+                                />
+                            );
+                        case 'contact':
+                            return (
+                                <ContactSection
+                                    key={section.key}
+                                    section={section}
+                                    settings={settings}
+                                />
+                            );
+                        case 'footer':
+                            return (
+                                <FooterSection
+                                    key={section.key}
+                                    section={section}
+                                    settings={settings}
+                                />
+                            );
+                        default:
+                            return null;
+                    }
+                })}
             </main>
         </div>
     );

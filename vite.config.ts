@@ -28,6 +28,9 @@ export default defineConfig({
             formVariants: true,
         }),
     ]),
+    ssr: {
+        external: ['lineicons-react'],
+    },
     server: {
         watch: {
             ignored: [

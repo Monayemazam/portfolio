@@ -25,6 +25,8 @@ export interface HeroRoleItem {
     sort_order: number;
 }
 
+export type HeroRole = HeroRoleItem;
+
 export interface HeroData {
     id: number;
     eyebrow?: string | null;

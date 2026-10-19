@@ -23,7 +23,12 @@ export default function Starfield3D({ isDark = true }: Starfield3DProps) {
             0.1,
             1000,
         );
-        camera.position.z = 200;
+        const PUSH_DURATION = 2200; // 2.2s total hero camera push
+        const START_Z = 290;
+        const BASE_Z = 200;
+        const pushStartTime = performance.now();
+
+        camera.position.z = START_Z;
 
         const renderer = new THREE.WebGLRenderer({
             alpha: true,
@@ -167,6 +172,15 @@ export default function Starfield3D({ isDark = true }: Starfield3DProps) {
                 targetY += (-mouseY * 15 - targetY) * 0.05;
                 camera.position.x = targetX;
                 camera.position.y = targetY;
+                // Camera forward push over 2.2s
+                const elapsed = performance.now() - pushStartTime;
+                let currentZ = BASE_Z;
+                if (elapsed < PUSH_DURATION) {
+                    const t = Math.min(1, elapsed / PUSH_DURATION);
+                    const ease = 1 - Math.pow(1 - t, 3);
+                    currentZ = START_Z - (START_Z - BASE_Z) * ease;
+                }
+                camera.position.z = currentZ;
 
                 // Slow ambient drift
                 layerDistant.rotation.y += 0.00015;

@@ -7,6 +7,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
     href?: string;
     target?: string;
     rel?: string;
+    download?: boolean | string;
     icon?: React.ReactNode;
     showArrow?: boolean;
     children: React.ReactNode;
@@ -18,6 +19,7 @@ export default function Button({
     href,
     target,
     rel,
+    download,
     icon,
     showArrow = false,
     className = '',
@@ -85,6 +87,7 @@ export default function Button({
                 href={href}
                 target={target}
                 rel={target === '_blank' ? rel || 'noopener noreferrer' : rel}
+                download={download}
                 className={`group ${baseClasses}`}
                 style={styleObj}
             >

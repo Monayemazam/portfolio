@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ArrowDownward, Rocket5 } from '../Shared/Icons';
 import {
     HeroData,
@@ -7,34 +7,27 @@ import {
 } from '@/types/portfolio';
 import Button from '../Shared/Button';
 import ThemeToggle from '../Shared/ThemeToggle';
+import ParticleName from '../Motion/ParticleName';
+import TypewriterRoles from '../Motion/TypewriterRoles';
 
 interface HeroSectionProps {
     section: PortfolioSection;
     hero: HeroData | null;
     settings: PortfolioSettings;
+    isFull?: boolean;
+    isOff?: boolean;
+    isDark?: boolean;
 }
 
 export default function HeroSection({
     section,
     hero,
     settings,
+    isFull = true,
+    isOff = false,
+    isDark = true,
 }: HeroSectionProps) {
     const roles = hero?.roles || [];
-    const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
-
-    // Rotate through roles
-    useEffect(() => {
-        if (roles.length <= 1) return;
-        const interval = setInterval(() => {
-            setCurrentRoleIndex((prev) => (prev + 1) % roles.length);
-        }, 3200);
-        return () => clearInterval(interval);
-    }, [roles]);
-
-    const activeRoleText =
-        roles.length > 0
-            ? roles[currentRoleIndex]?.text
-            : 'Full-Stack Developer';
 
     const eyebrow = hero?.eyebrow || section.eyebrow || 'MISSION 01 / LAUNCH';
     const name = hero?.name || 'MONAYEM AZAM';
@@ -56,7 +49,7 @@ export default function HeroSection({
             <header className="mx-auto flex w-full max-w-7xl items-center justify-between py-2">
                 <a
                     href="#hero"
-                    className="flex items-center gap-3 transition-opacity hover:opacity-85"
+                    className="flex items-center gap-3 transition-opacity hover:opacity-85 focus-visible:ring-2 focus-visible:ring-[var(--secondary)] focus-visible:outline-none"
                 >
                     {logoUrl ? (
                         <img
@@ -82,7 +75,7 @@ export default function HeroSection({
             </header>
 
             {/* Central Hero Content */}
-            <div className="section-reveal mx-auto my-auto flex w-full max-w-5xl flex-col items-center py-12 text-center md:py-20">
+            <div className="section-reveal mx-auto my-auto flex w-full max-w-5xl flex-col items-center py-12 text-center md:py-16">
                 {/* Eyebrow */}
                 <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--surface-border)] bg-[var(--surface)] px-4 py-1.5 backdrop-blur-md">
                     <Rocket5 className="h-3.5 w-3.5 animate-bounce text-[var(--secondary)]" />
@@ -91,21 +84,20 @@ export default function HeroSection({
                     </span>
                 </div>
 
-                {/* Hero Name with Fluid Sizing */}
-                <h1 className="max-w-5xl font-display text-[clamp(2.75rem,7vw,5.5rem)] leading-[1.05] font-extrabold tracking-[0.02em] text-[var(--text)] uppercase">
-                    {name}
-                </h1>
+                {/* Hero Name assembling from particles on desktop, with simple fade fallback */}
+                <ParticleName
+                    name={name}
+                    isFull={isFull}
+                    isDark={isDark}
+                    className="w-full"
+                />
 
-                {/* Rotating Role Line */}
-                <div className="mt-6 flex h-8 items-center justify-center font-sans text-[clamp(1.125rem,2.5vw,1.5rem)] font-medium text-[var(--text-muted)]">
-                    <span>Specializing in&nbsp;</span>
-                    <span
-                        key={activeRoleText}
-                        className="text-gradient animate-in font-bold transition-all duration-500 fade-in slide-in-from-bottom-2"
-                    >
-                        {activeRoleText}
-                    </span>
-                </div>
+                {/* Rotating, Typed Role Line */}
+                <TypewriterRoles
+                    roles={roles}
+                    isReducedMotion={isOff}
+                    className="mt-6 text-[clamp(1.125rem,2.5vw,1.5rem)]"
+                />
 
                 {/* Tagline */}
                 {settings.site_tagline && (
@@ -136,12 +128,12 @@ export default function HeroSection({
                 </div>
             </div>
 
-            {/* Scroll Cue (Rocket/Arrow) */}
+            {/* Scroll Cue (Flight Descent) */}
             <div className="mx-auto flex flex-col items-center pb-4 text-center">
                 <a
                     href="#about"
                     aria-label="Scroll down to mission briefing"
-                    className="group inline-flex flex-col items-center gap-1.5 font-mono text-xs text-[var(--text-muted)] transition-colors hover:text-[var(--secondary)]"
+                    className="group inline-flex flex-col items-center gap-1.5 font-mono text-xs text-[var(--text-muted)] transition-colors hover:text-[var(--secondary)] focus-visible:ring-2 focus-visible:ring-[var(--secondary)] focus-visible:outline-none"
                 >
                     <span className="text-[10px] tracking-widest uppercase">
                         FLIGHT DESCENT

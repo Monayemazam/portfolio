@@ -8,17 +8,20 @@ import {
 import GlassPanel from '../Shared/GlassPanel';
 import SectionHeading from '../Shared/SectionHeading';
 import Button from '../Shared/Button';
+import AnimatedCounter from '../Motion/AnimatedCounter';
 
 interface AboutSectionProps {
     section: PortfolioSection;
     about: AboutData | null;
     settings: PortfolioSettings;
+    isOff?: boolean;
 }
 
 export default function AboutSection({
     section,
     about,
     settings,
+    isOff = false,
 }: AboutSectionProps) {
     if (!about) return null;
 
@@ -100,14 +103,24 @@ export default function AboutSection({
                                         key={fact.id}
                                         variant="subtle"
                                         interactive
-                                        className="flex flex-col items-center justify-center border-[var(--surface-border)] !p-4 text-center"
+                                        className="flex flex-col items-center justify-center border-[var(--surface-border)] !p-4 text-center focus-within:ring-2 focus-within:ring-[var(--secondary)]"
                                     >
                                         <div className="font-display text-2xl font-bold tracking-tight text-[var(--secondary)] md:text-3xl">
-                                            {fact.value}
-                                            {fact.suffix && (
-                                                <span className="text-xl text-[var(--primary)]">
-                                                    {fact.suffix}
-                                                </span>
+                                            {fact.kind === 'counter' ? (
+                                                <AnimatedCounter
+                                                    value={fact.value}
+                                                    suffix={fact.suffix}
+                                                    isReducedMotion={isOff}
+                                                />
+                                            ) : (
+                                                <>
+                                                    {fact.value}
+                                                    {fact.suffix && (
+                                                        <span className="text-xl text-[var(--primary)]">
+                                                            {fact.suffix}
+                                                        </span>
+                                                    )}
+                                                </>
                                             )}
                                         </div>
                                         <span className="mt-1 font-mono text-xs tracking-wider text-[var(--text-muted)] uppercase">
@@ -118,13 +131,15 @@ export default function AboutSection({
                             </div>
                         )}
 
-                        {/* Resume Download Action */}
+                        {/* Resume Download Action (Hidden if no resume configured) */}
                         {resumeUrl && (
                             <div className="pt-2">
                                 <Button
                                     variant="secondary"
                                     href={resumeUrl}
+                                    download
                                     target="_blank"
+                                    rel="noopener noreferrer"
                                     icon={
                                         <Download1 className="h-4 w-4 text-[var(--secondary)]" />
                                     }
