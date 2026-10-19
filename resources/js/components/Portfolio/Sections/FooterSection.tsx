@@ -13,14 +13,29 @@ interface FooterSectionProps {
     section?: PortfolioSection;
     sections?: PortfolioSection[];
     settings: PortfolioSettings;
+    experiencesCount?: number;
+    testimonialsCount?: number;
 }
+
+const sectionLabels: Record<string, string> = {
+    about: 'ABOUT',
+    skills: 'SKILLS',
+    projects: 'EXHIBITS',
+    services: 'SERVICES',
+    experience: 'EXPERIENCE',
+    process: 'PROCESS',
+    testimonials: 'TESTIMONIALS',
+    contact: 'CONTACT',
+};
 
 export default function FooterSection({
     sections = [],
     settings,
+    experiencesCount = 0,
+    testimonialsCount = 0,
 }: FooterSectionProps) {
-    const siteTitle = settings.site_title || 'MONAYEM AZAM';
     const currentYear = new Date().getFullYear();
+    const siteTitle = settings.site_title || 'MONAYEM AZAM';
 
     const socialLinks = [
         {
@@ -50,9 +65,12 @@ export default function FooterSection({
         },
     ].filter((item) => Boolean(item.url));
 
-    const navLinks = sections.filter(
-        (s) => s.is_visible && s.key !== 'hero' && s.key !== 'footer',
-    );
+    const navLinks = sections.filter((s) => {
+        if (!s.is_visible || s.key === 'hero' || s.key === 'footer') return false;
+        if (s.key === 'experience' && experiencesCount === 0) return false;
+        if (s.key === 'testimonials' && testimonialsCount === 0) return false;
+        return true;
+    });
 
     const handleScrollTop = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -100,7 +118,7 @@ export default function FooterSection({
                                     href={`#${item.key}`}
                                     className="text-muted-foreground hover:text-foreground transition-colors uppercase py-1"
                                 >
-                                    {(idx + 1).toString().padStart(2, '0')} / {item.nav_label || item.title}
+                                    {(idx + 1).toString().padStart(2, '0')} / {sectionLabels[item.key] || item.nav_label || item.title}
                                 </a>
                             ))}
                         </div>
@@ -113,18 +131,46 @@ export default function FooterSection({
                                 DISPATCH CHANNELS //
                             </span>
                             <div className="flex flex-col gap-2 font-mono text-xs">
-                                {socialLinks.map((item) => (
-                                    <a
-                                        key={item.key}
-                                        href={item.url as string}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-muted-foreground hover:text-[var(--primary)] transition-colors uppercase flex items-center justify-between"
-                                    >
-                                        <span>{item.label}</span>
-                                        <span>[↗]</span>
-                                    </a>
-                                ))}
+                                {socialLinks.length > 0 ? (
+                                    socialLinks.map((item) => (
+                                        <a
+                                            key={item.key}
+                                            href={item.url as string}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-muted-foreground hover:text-[var(--primary)] transition-colors uppercase flex items-center justify-between"
+                                        >
+                                            <span>{item.label}</span>
+                                            <span>[↗]</span>
+                                        </a>
+                                    ))
+                                ) : (
+                                    <>
+                                        <a
+                                            href="#contact"
+                                            className="text-muted-foreground hover:text-[var(--primary)] transition-colors uppercase flex items-center justify-between"
+                                        >
+                                            <span>DIRECT INQUIRY</span>
+                                            <span>[→]</span>
+                                        </a>
+                                        <a
+                                            href="https://github.com"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-muted-foreground hover:text-[var(--primary)] transition-colors uppercase flex items-center justify-between"
+                                        >
+                                            <span>CODE ARCHIVE</span>
+                                            <span>[↗]</span>
+                                        </a>
+                                        <a
+                                            href="#about"
+                                            className="text-muted-foreground hover:text-[var(--primary)] transition-colors uppercase flex items-center justify-between"
+                                        >
+                                            <span>PROFILE DOSSIER</span>
+                                            <span>[↓]</span>
+                                        </a>
+                                    </>
+                                )}
                             </div>
                         </div>
 

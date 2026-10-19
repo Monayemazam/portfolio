@@ -7,12 +7,16 @@ interface FloatingNavProps {
     sections: PortfolioSection[];
     activeSection: string;
     settings: PortfolioSettings;
+    experiencesCount?: number;
+    testimonialsCount?: number;
 }
 
 export default function FloatingNav({
     sections,
     activeSection,
     settings,
+    experiencesCount = 0,
+    testimonialsCount = 0,
 }: FloatingNavProps) {
     const { isDark, toggleTheme } = useTheme(settings.default_theme);
     const [scrolled, setScrolled] = useState(false);
@@ -39,7 +43,11 @@ export default function FloatingNav({
     ];
 
     const navItems = candidateNavItems
-        .filter((item) => sections.some((s) => s.key === item.key && s.is_visible !== false))
+        .filter((item) => {
+            if (item.key === 'experience' && experiencesCount === 0) return false;
+            if (item.key === 'testimonials' && testimonialsCount === 0) return false;
+            return sections.some((s) => s.key === item.key && s.is_visible !== false);
+        })
         .map((item, idx) => ({
             ...item,
             index: (idx + 1).toString().padStart(2, '0'),

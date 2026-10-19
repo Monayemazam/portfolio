@@ -73,7 +73,7 @@ export default function ContactSection({
                 <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase">
                     <div className="flex items-center gap-3">
                         <span className="bg-[var(--primary)] text-white px-2 py-0.5 font-bold">
-                            SEC. 08
+                            SEC. 06
                         </span>
                         <span>DIRECT DISPATCH // INITIATE DIALOGUE</span>
                     </div>
@@ -95,16 +95,41 @@ export default function ContactSection({
                 {/* Two-Column Editorial Spread */}
                 <div className="mt-12 lg:mt-16 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
                     {/* Left Column: Direct Dispatches & Channels */}
-                    <div className="lg:col-span-5 flex flex-col justify-between">
+                    <div className="lg:col-span-5 flex flex-col justify-between space-y-8">
                         <div>
                             <p className="font-body text-base sm:text-lg leading-relaxed text-foreground/80">
-                                Open for architectural consulting, senior full-stack development,
-                                and bespoke creative digital installations. Direct channels are monitored daily.
+                                {section?.subtitle ||
+                                    'Open for architectural consulting, senior full-stack development, and bespoke creative digital installations. Direct channels are monitored daily.'}
                             </p>
+
+                            {/* Commissioning Checklist / Field Notes */}
+                            <div className="mt-8 border-2 border-foreground bg-surface p-6">
+                                <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase block pb-3 border-b border-border">
+                                    ENGAGEMENT PARAMETERS //
+                                </span>
+                                <ul className="mt-4 space-y-2.5 font-mono text-xs text-foreground/80">
+                                    <li className="flex items-start gap-2">
+                                        <span className="text-[var(--primary)] font-bold">01.</span>
+                                        <span>Full-Stack Web Platforms & Distributed Systems</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="text-[var(--primary)] font-bold">02.</span>
+                                        <span>Laravel 11, React 19, TypeScript, Tailwind</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="text-[var(--primary)] font-bold">03.</span>
+                                        <span>High-Conversion Editorial UX & Performance Audits</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="text-[var(--primary)] font-bold">04.</span>
+                                        <span>Guaranteed Response SLA within 24 Hours</span>
+                                    </li>
+                                </ul>
+                            </div>
 
                             {/* Direct Communication Channels */}
                             <div className="mt-8 divide-y divide-border border-y border-border font-mono text-xs">
-                                {emailAddress && (
+                                {emailAddress ? (
                                     <div className="py-4 flex items-center justify-between">
                                         <div className="flex items-center gap-3">
                                             <Envelope1 className="h-4 w-4 text-[var(--primary)]" />
@@ -117,6 +142,16 @@ export default function ContactSection({
                                         >
                                             {emailAddress}
                                         </a>
+                                    </div>
+                                ) : (
+                                    <div className="py-4 flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <Envelope1 className="h-4 w-4 text-[var(--primary)]" />
+                                            <span className="text-muted-foreground uppercase">TRANSMISSION:</span>
+                                        </div>
+                                        <span className="font-bold text-[var(--primary)]">
+                                            DISPATCH FORM [MONITORED]
+                                        </span>
                                     </div>
                                 )}
 

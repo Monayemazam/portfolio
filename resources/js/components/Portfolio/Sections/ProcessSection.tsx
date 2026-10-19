@@ -42,42 +42,58 @@ function ProcessStepCard({ step, idx, totalSteps, isOff }: ProcessCardProps) {
     return (
         <div
             ref={cardRef}
-            className={`relative flex flex-col justify-between border-2 border-foreground bg-surface p-6 sm:p-7 transition-all duration-500 hover:border-[var(--primary)] pl-14 sm:pl-6 ${
+            className={`group relative flex flex-col justify-between border-2 border-foreground bg-surface p-7 sm:p-8 transition-all duration-300 hover:border-[var(--primary)] pl-14 sm:pl-8 ${
                 inView || isOff ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
             }`}
             data-field-tag={countdownCode}
         >
+            {/* Corner Registration Mark */}
+            <span
+                className="absolute top-2 right-2 font-mono text-[9px] text-muted-foreground/40 select-none pointer-events-none group-hover:text-[var(--primary)] transition-colors"
+                aria-hidden="true"
+            >
+                +
+            </span>
+
             {/* Mobile Node Marker on Vertical Line */}
-            <div className="flex lg:hidden absolute left-6 -translate-x-1/2 top-7 z-20 h-5 w-5 items-center justify-center bg-background border-2 border-foreground">
+            <div className="flex sm:hidden absolute left-5 -translate-x-1/2 top-8 z-20 h-5 w-5 items-center justify-center bg-background border-2 border-foreground">
                 <div className="h-1.5 w-1.5 bg-[var(--primary)]" />
             </div>
 
             <div>
                 {/* Countdown Header Badge & Sequence Index */}
-                <div className="flex items-center justify-between border-b border-border pb-3">
-                    <span className="font-mono text-xl sm:text-2xl font-black text-[var(--primary)] tracking-tight">
-                        {countdownCode}
-                    </span>
-                    <span className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
-                        PHASE {stageIndex}
+                <div className="flex items-center justify-between border-b border-border pb-4">
+                    <div className="flex items-baseline gap-2">
+                        <span className="font-mono text-2xl sm:text-3xl font-black text-[var(--primary)] tracking-tight">
+                            {countdownCode}
+                        </span>
+                        <span className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
+                            STAGE
+                        </span>
+                    </div>
+                    <span className="font-mono text-xs font-bold tracking-widest text-foreground uppercase border border-border px-2 py-0.5 bg-background">
+                        PHASE {stageIndex} // {totalSteps.toString().padStart(2, '0')}
                     </span>
                 </div>
 
                 {/* Stage Title */}
-                <h3 className="mt-5 font-display text-lg sm:text-xl font-bold tracking-tight text-foreground uppercase">
+                <h3 className="mt-6 font-display text-xl sm:text-2xl font-black tracking-tight text-foreground uppercase group-hover:text-[var(--primary)] transition-colors">
                     {step.title}
                 </h3>
 
-                {/* Step Description */}
-                <p className="mt-3 font-body text-xs sm:text-sm leading-relaxed text-foreground/80">
+                {/* Step Description with Ample Breathing Room */}
+                <p className="mt-4 font-body text-sm sm:text-base leading-relaxed text-foreground/80">
                     {step.description}
                 </p>
             </div>
 
             {/* Verification Milestone Footer */}
-            <div className="mt-8 pt-3 border-t border-border flex items-center justify-between font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
-                <span>CHECKPOINT</span>
-                <span className="text-[var(--primary)] font-bold">VERIFIED</span>
+            <div className="mt-8 pt-4 border-t border-border flex items-center justify-between font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
+                <span className="flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)]" />
+                    <span>CHECKPOINT PROTOCOL</span>
+                </span>
+                <span className="font-bold text-[var(--primary)]">VERIFIED MILESTONE</span>
             </div>
         </div>
     );
@@ -103,9 +119,9 @@ export default function ProcessSection({
                 <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase">
                     <div className="flex items-center gap-3">
                         <span className="bg-[var(--primary)] text-white px-2 py-0.5 font-bold">
-                            SEC. 06
+                            SEC. 05
                         </span>
-                        <span>METHODOLOGY SEQUENCE // LAUNCH COUNTDOWN PIPELINE</span>
+                        <span>METHODOLOGY SEQUENCE // EXECUTION PIPELINE</span>
                     </div>
                     <span>TOTAL STAGES: [{totalSteps.toString().padStart(2, '0')}]</span>
                 </div>
@@ -114,7 +130,7 @@ export default function ProcessSection({
                 <div className="mt-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div>
                         <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
-                            // STRUCTURED EXECUTION SEQUENCE
+                            // STRUCTURED DELIVERY PIPELINE
                         </span>
                         <h2 className="mt-2 font-display text-4xl sm:text-6xl font-black tracking-tight text-foreground uppercase">
                             {section?.title || 'DEVELOPMENT PROCESS'}
@@ -126,16 +142,25 @@ export default function ProcessSection({
                     </p>
                 </div>
 
-                {/* Desktop: Six Step Panels in a Row with Horizontal Connecting Line */}
-                {/* Mobile: Vertical Stack with Connecting Line */}
-                <div className="relative mt-16 sm:mt-24">
-                    {/* Desktop Horizontal Connecting Line */}
-                    <div className="hidden lg:block absolute top-[44px] left-8 right-8 h-0.5 bg-border z-0" />
+                {/* Step Sequence Flow Bar */}
+                <div className="mt-12 hidden lg:flex items-center justify-between border-y border-border py-3 font-mono text-xs uppercase tracking-widest text-muted-foreground">
+                    {processSteps.map((step, idx) => (
+                        <div key={step.id} className="flex items-center gap-2">
+                            <span className="font-bold text-foreground">0{idx + 1}</span>
+                            <span className="text-foreground/80">{step.title}</span>
+                            {idx < totalSteps - 1 && (
+                                <span className="text-muted-foreground/40 ml-2">→</span>
+                            )}
+                        </div>
+                    ))}
+                </div>
 
+                {/* Editorial Grid: 3 columns x 2 rows on Desktop with Ample Breathing Room */}
+                <div className="relative mt-8 sm:mt-12">
                     {/* Mobile Vertical Connecting Line */}
-                    <div className="block lg:hidden absolute top-6 bottom-6 left-6 w-0.5 bg-border z-0" />
+                    <div className="block sm:hidden absolute top-6 bottom-6 left-5 w-0.5 bg-border z-0" />
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 relative z-10">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 relative z-10">
                         {processSteps.map((step, idx) => (
                             <ProcessStepCard
                                 key={step.id}

@@ -200,6 +200,8 @@ export default function PortfolioIndex({
                 sections={sections}
                 activeSection={activeSection}
                 settings={settings}
+                experiencesCount={experiences.length}
+                testimonialsCount={testimonials.length}
             />
 
             {/* Corner Reduce Effects Toggle */}
@@ -224,7 +226,11 @@ export default function PortfolioIndex({
                                         isDark={isDark}
                                     />
                                     {/* Section 6: Publication Visual Index Strip */}
-                                    <PortfolioIndexStrip sections={sections} />
+                                    <PortfolioIndexStrip
+                                        sections={sections}
+                                        experiencesCount={experiences.length}
+                                        testimonialsCount={testimonials.length}
+                                    />
                                 </React.Fragment>
                             );
                         case 'about':
@@ -308,6 +314,8 @@ export default function PortfolioIndex({
                                     section={section}
                                     sections={sections}
                                     settings={settings}
+                                    experiencesCount={experiences.length}
+                                    testimonialsCount={testimonials.length}
                                 />
                             );
                         default:

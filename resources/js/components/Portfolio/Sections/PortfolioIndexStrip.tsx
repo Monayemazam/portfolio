@@ -3,9 +3,15 @@ import { PortfolioSection } from '@/types/portfolio';
 
 interface PortfolioIndexStripProps {
     sections?: PortfolioSection[];
+    experiencesCount?: number;
+    testimonialsCount?: number;
 }
 
-export default function PortfolioIndexStrip({ sections = [] }: PortfolioIndexStripProps) {
+export default function PortfolioIndexStrip({
+    sections = [],
+    experiencesCount = 0,
+    testimonialsCount = 0,
+}: PortfolioIndexStripProps) {
     const candidateItems = [
         { id: 'about', title: 'ARCHIVAL PROFILE', desc: 'Background & Principles' },
         { id: 'skills', title: 'TECHNICAL FIELD GUIDE', desc: 'Languages & Systems' },
@@ -18,7 +24,14 @@ export default function PortfolioIndexStrip({ sections = [] }: PortfolioIndexStr
     ];
 
     const items = candidateItems
-        .filter((item) => sections.length === 0 || sections.some((s) => s.key === item.id && s.is_visible !== false))
+        .filter((item) => {
+            if (item.id === 'experience' && experiencesCount === 0) return false;
+            if (item.id === 'testimonials' && testimonialsCount === 0) return false;
+            return (
+                sections.length === 0 ||
+                sections.some((s) => s.key === item.id && s.is_visible !== false)
+            );
+        })
         .map((item, idx) => ({
             ...item,
             num: (idx + 1).toString().padStart(2, '0'),

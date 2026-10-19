@@ -32,16 +32,16 @@
             })();
         </script>
 
-        {{-- Background and font color baseline to match Design Guideline Section 2 --}}
+        {{-- Background and font color baseline to match Design Guideline Section 2 (Paper & Charcoal) --}}
         <style>
             html {
-                background-color: #F6F7FB;
-                color: #0F172A;
+                background-color: #F2EFE6;
+                color: #171914;
             }
 
             html.dark, html[data-theme="dark"] {
-                background-color: #05060F;
-                color: #E2E8F0;
+                background-color: #141712;
+                color: #F2EFE6;
             }
         </style>
 
