@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link, useForm } from '@inertiajs/react';
 import AdminLayout from '@/layouts/admin-layout';
+import ProjectDetailPanel from '@/components/Portfolio/Projects/ProjectDetailPanel';
 import {
     FormField,
     FormInput,
@@ -30,13 +31,11 @@ import type {
     MediaItem,
 } from '@/types/admin';
 import {
-    Sparkles,
     ArrowLeft,
     Plus,
     Trash2,
     MoveUp,
     MoveDown,
-    ExternalLink,
     FileText,
     Image as ImageIcon,
     Sliders,
@@ -131,6 +130,46 @@ export default function ProjectForm({ project, availableTags }: Props) {
     const [coverMediaObject, setCoverMediaObject] = useState<MediaItem | null>(
         project?.cover_media ?? null,
     );
+
+    const previewProjectItem = useMemo(() => {
+        const mappedMedia: MediaItem[] = data.media
+            .map((m) => m.media)
+            .filter((m): m is MediaItem => Boolean(m));
+
+        return {
+            id: project?.id ?? 99999,
+            title: data.title || 'Untitled Project',
+            slug: data.slug || 'preview-project',
+            summary: data.summary || 'Project summary preview...',
+            description: data.description || '',
+            business_type: data.business_type || null,
+            role: data.role || null,
+            year: Number(data.year) || new Date().getFullYear(),
+            live_url: data.live_url || 'https://',
+            planet_style: data.planet_style || 'generic',
+            accent_color: data.accent_color || '#22D3EE',
+            cover_media_id: data.cover_media_id,
+            cover_media: coverMediaObject,
+            show_live_preview: Boolean(data.show_live_preview),
+            is_featured: Boolean(data.is_featured),
+            is_published: Boolean(data.is_published),
+            sort_order: Number(data.sort_order) || 0,
+            tags: data.tags,
+            features: data.features.map((f, i) => ({
+                id: f.id ?? i + 1,
+                project_id: project?.id ?? 99999,
+                group_label: f.group_label || 'General',
+                text: f.text,
+                sort_order: f.sort_order ?? i,
+            })),
+            media:
+                mappedMedia.length > 0
+                    ? mappedMedia
+                    : coverMediaObject
+                      ? [coverMediaObject]
+                      : [],
+        };
+    }, [data, project?.id, coverMediaObject]);
 
     const generateSlug = (text: string) => {
         return text
@@ -1489,196 +1528,12 @@ export default function ProjectForm({ project, availableTags }: Props) {
                 </DialogContent>
             </Dialog>
 
-            {/* Interactive Preview Panel Placeholder Modal */}
-            <Dialog open={previewModalOpen} onOpenChange={setPreviewModalOpen}>
-                <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto border border-[var(--surface-border)] bg-[var(--bg-elevated)] text-[var(--text)]">
-                    <DialogHeader>
-                        <div className="flex items-center justify-between">
-                            <div className="inline-flex items-center gap-2 rounded-md bg-[var(--secondary)]/15 px-2 py-0.5 font-['JetBrains_Mono',monospace] text-[10px] font-bold text-[var(--secondary)] uppercase">
-                                <Sparkles className="h-3 w-3" />
-                                <span>Preview Panel Placeholder</span>
-                            </div>
-                        </div>
-                    </DialogHeader>
-
-                    {/* Simulation of the Public Project Panel */}
-                    <div className="space-y-6 py-2">
-                        {/* Header banner */}
-                        <div className="flex items-center gap-4 border-b border-[var(--surface-border)] pb-4">
-                            <div className="rounded-2xl border border-[var(--surface-border)] bg-[var(--surface)] p-2">
-                                <PlanetPreview
-                                    styleKey={data.planet_style}
-                                    accentColor={data.accent_color}
-                                    size={56}
-                                />
-                            </div>
-
-                            <div className="min-w-0 flex-1">
-                                <div className="flex items-center gap-2">
-                                    <h2 className="font-['Orbitron',sans-serif] text-lg font-bold text-[var(--text)]">
-                                        {data.title ||
-                                            'Project Title Placeholder'}
-                                    </h2>
-                                    {data.is_featured && (
-                                        <span className="py-0.2 rounded bg-[var(--secondary)] px-1.5 text-[10px] font-bold text-black uppercase">
-                                            Featured
-                                        </span>
-                                    )}
-                                </div>
-                                <p className="font-['JetBrains_Mono',monospace] text-xs text-[var(--secondary)]">
-                                    {data.role || 'Full-Stack Lead'} •{' '}
-                                    {data.year || '2024'} •{' '}
-                                    {data.business_type || 'Business Type'}
-                                </p>
-                            </div>
-
-                            {data.live_url && (
-                                <a
-                                    href={data.live_url}
-                                    target="_blank"
-                                    rel="noreferrer noopener"
-                                    className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--secondary)] text-black hover:opacity-90"
-                                    title="Open live URL"
-                                >
-                                    <ExternalLink className="h-4 w-4" />
-                                </a>
-                            )}
-                        </div>
-
-                        {/* Summary & Description */}
-                        <div className="space-y-2">
-                            <p className="text-sm leading-relaxed font-medium text-[var(--text)]">
-                                {data.summary ||
-                                    'Summary of the project will appear here...'}
-                            </p>
-                            {data.description && (
-                                <p className="text-xs leading-relaxed whitespace-pre-wrap text-[var(--text-muted)]">
-                                    {data.description}
-                                </p>
-                            )}
-                        </div>
-
-                        {/* Tags */}
-                        {data.tags.length > 0 && (
-                            <div className="space-y-1.5">
-                                <p className="font-['JetBrains_Mono',monospace] text-[10px] font-bold text-[var(--text-muted)] uppercase">
-                                    Technologies
-                                </p>
-                                <div className="flex flex-wrap gap-1.5">
-                                    {data.tags.map((t, idx) => (
-                                        <span
-                                            key={idx}
-                                            className="rounded-lg border border-[var(--surface-border)] bg-[var(--surface)] px-2.5 py-1 text-xs font-semibold text-[var(--text)]"
-                                        >
-                                            {t.name}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Features Grouped */}
-                        {data.features.length > 0 && (
-                            <div className="space-y-3">
-                                <p className="font-['JetBrains_Mono',monospace] text-[10px] font-bold text-[var(--text-muted)] uppercase">
-                                    Key Capabilities & Features
-                                </p>
-
-                                <div className="space-y-3">
-                                    {Array.from(
-                                        new Set(
-                                            data.features.map(
-                                                (f) => f.group_label,
-                                            ),
-                                        ),
-                                    ).map((group) => (
-                                        <div
-                                            key={group}
-                                            className="space-y-2 rounded-xl border border-[var(--surface-border)] bg-[var(--surface)] p-3"
-                                        >
-                                            <h4 className="font-['Orbitron',sans-serif] text-xs font-bold text-[var(--secondary)]">
-                                                {group}
-                                            </h4>
-                                            <ul className="space-y-1">
-                                                {data.features
-                                                    .filter(
-                                                        (f) =>
-                                                            f.group_label ===
-                                                            group,
-                                                    )
-                                                    .map((f, fIdx) => (
-                                                        <li
-                                                            key={fIdx}
-                                                            className="flex items-start gap-2 text-xs text-[var(--text)]"
-                                                        >
-                                                            <span className="font-bold text-[var(--secondary)]">
-                                                                •
-                                                            </span>
-                                                            <span>
-                                                                {f.text}
-                                                            </span>
-                                                        </li>
-                                                    ))}
-                                            </ul>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Media gallery */}
-                        {data.media.length > 0 && (
-                            <div className="space-y-2">
-                                <p className="font-['JetBrains_Mono',monospace] text-[10px] font-bold text-[var(--text-muted)] uppercase">
-                                    Media Gallery ({data.media.length} items)
-                                </p>
-                                <div className="grid grid-cols-2 gap-2">
-                                    {data.media.map((item, idx) => (
-                                        <div
-                                            key={idx}
-                                            className="overflow-hidden rounded-xl border border-[var(--surface-border)] bg-[var(--surface)] p-1.5"
-                                        >
-                                            {item.media?.url ? (
-                                                <img
-                                                    src={
-                                                        item.media.thumb_url ||
-                                                        item.media.url
-                                                    }
-                                                    alt={
-                                                        item.caption ||
-                                                        'Preview'
-                                                    }
-                                                    className="h-28 w-full rounded-lg object-cover"
-                                                />
-                                            ) : (
-                                                <div className="flex h-28 items-center justify-center text-xs text-[var(--text-muted)]">
-                                                    Media #{item.media_id} (
-                                                    {item.kind})
-                                                </div>
-                                            )}
-                                            {item.caption && (
-                                                <p className="mt-1 truncate text-[10px] text-[var(--text-muted)]">
-                                                    {item.caption}
-                                                </p>
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    <DialogFooter>
-                        <Button
-                            type="button"
-                            onClick={() => setPreviewModalOpen(false)}
-                            className="bg-[var(--secondary)] text-xs font-semibold text-black hover:bg-[var(--secondary)]/90"
-                        >
-                            Close Preview
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+            {/* Interactive Preview Panel */}
+            <ProjectDetailPanel
+                isOpen={previewModalOpen}
+                onClose={() => setPreviewModalOpen(false)}
+                project={previewProjectItem as any}
+            />
         </AdminLayout>
     );
 }

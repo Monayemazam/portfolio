@@ -4,6 +4,7 @@ use App\Models\AboutFact;
 use App\Models\HeroContent;
 use App\Models\HeroRole;
 use App\Models\Media;
+use App\Models\Project;
 use App\Models\Section;
 use App\Models\Setting;
 use App\Models\Skill;
@@ -235,4 +236,92 @@ test('resume media resolves when resume_media_id is configured', function () {
         ->where('settings.resume_media.id', $media->id)
         ->where('settings.resume_media.type', 'document')
     );
+});
+
+test('all six seeded projects are returned in sort_order on public portfolio page', function () {
+    $response = $this->get('/');
+    $response->assertOk();
+
+    $props = $response->original->getData()['page']['props'];
+    $projects = collect($props['projects']);
+
+    expect($projects)->toHaveCount(6);
+
+    $sortOrders = $projects->pluck('sort_order')->all();
+    $expectedSorted = $sortOrders;
+    sort($expectedSorted);
+    expect($sortOrders)->toEqual($expectedSorted);
+
+    $slugs = $projects->pluck('slug')->all();
+    expect($slugs)->toContain('asn-group')
+        ->and($slugs)->toContain('mercury-bangladesh')
+        ->and($slugs)->toContain('tasa')
+        ->and($slugs)->toContain('tazwar-bd')
+        ->and($slugs)->toContain('sinbad-shipping-lines')
+        ->and($slugs)->toContain('ayra-espana');
+});
+
+test('unpublishing a project removes it from public projects list after cache clear', function () {
+    $asn = Project::where('slug', 'asn-group')->first();
+    expect($asn)->not->toBeNull();
+
+    $asn->update(['is_published' => false]);
+    Cache::forget('portfolio.page.v1');
+
+    $response = $this->get('/');
+    $response->assertOk();
+    $props = $response->original->getData()['page']['props'];
+    $slugs = collect($props['projects'])->pluck('slug')->all();
+
+    expect($slugs)->not->toContain('asn-group')
+        ->and($slugs)->toHaveCount(5);
+});
+
+test('publishing a new project with generic style adds it to public projects', function () {
+    $newProject = Project::create([
+        'title' => 'Nebula Analytics Platform',
+        'slug' => 'nebula-analytics',
+        'summary' => 'Cosmic big-data telemetry and reporting platform.',
+        'description' => 'Real-time solar telemetry streaming architecture.',
+        'business_type' => 'Enterprise SaaS',
+        'role' => 'Lead Engineer',
+        'year' => 2025,
+        'live_url' => 'https://nebula.example.com',
+        'planet_style' => 'generic',
+        'accent_color' => '#A855F7',
+        'show_live_preview' => false,
+        'is_featured' => false,
+        'is_published' => true,
+        'sort_order' => 10,
+    ]);
+
+    Cache::forget('portfolio.page.v1');
+
+    $response = $this->get('/');
+    $response->assertOk();
+    $props = $response->original->getData()['page']['props'];
+    $projects = collect($props['projects']);
+
+    expect($projects->pluck('slug')->all())->toContain('nebula-analytics');
+    $nebula = $projects->firstWhere('slug', 'nebula-analytics');
+    expect($nebula['planet_style'])->toBe('generic')
+        ->and($nebula['accent_color'])->toBe('#A855F7');
+});
+
+test('project detail data includes grouped features, tags, and valid destination live_url', function () {
+    $response = $this->get('/');
+    $response->assertOk();
+    $props = $response->original->getData()['page']['props'];
+    $projects = collect($props['projects']);
+
+    $asn = $projects->firstWhere('slug', 'asn-group');
+    expect($asn)->not->toBeNull()
+        ->and($asn['live_url'])->toBeString()->and(filter_var($asn['live_url'], FILTER_VALIDATE_URL))->not->toBeFalse()
+        ->and($asn['features'])->toBeArray()->and(count($asn['features']))->toBeGreaterThan(0);
+
+    // Verify all features have group_label, text, and sort_order
+    foreach ($asn['features'] as $feature) {
+        expect($feature)->toHaveKeys(['group_label', 'text', 'sort_order'])
+            ->and($feature['text'])->toBeString()->not->toBeEmpty();
+    }
 });

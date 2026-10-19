@@ -267,6 +267,8 @@ export default function PortfolioIndex({
                                     key={section.key}
                                     section={section}
                                     projects={projects}
+                                    isOff={isOff}
+                                    isDark={isDark}
                                 />
                             );
                         case 'services':

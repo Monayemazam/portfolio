@@ -71,9 +71,9 @@ class PortfolioController extends Controller
                 ->ordered()
                 ->with([
                     'coverMedia',
-                    'tags',
-                    'features',
-                    'media',
+                    'tags' => fn ($query) => $query->orderBy('project_tag.sort_order'),
+                    'features' => fn ($query) => $query->orderBy('sort_order'),
+                    'media' => fn ($query) => $query->orderBy('project_media.sort_order'),
                 ])
                 ->get();
 

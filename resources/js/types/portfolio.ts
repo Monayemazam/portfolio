@@ -74,8 +74,10 @@ export interface TagItem {
 
 export interface ProjectFeatureItem {
     id: number;
+    project_id?: number;
     group_label: string;
-    title: string;
+    text: string;
+    title?: string;
     description?: string | null;
     sort_order: number;
 }
