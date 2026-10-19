@@ -1,5 +1,4 @@
 import React from 'react';
-import { ArrowRight, Sparkle } from '../Shared/Icons';
 import { PortfolioSection, ProcessStepItem } from '@/types/portfolio';
 
 interface ProcessSectionProps {
@@ -13,77 +12,71 @@ export default function ProcessSection({
 }: ProcessSectionProps) {
     if (!processSteps || processSteps.length === 0) return null;
 
-    const eyebrow = section.eyebrow || 'WORKFLOW & METHODOLOGY';
-    const title = section.title || 'Development Process';
-    const subtitle =
-        section.subtitle ||
-        'A structured, reliable engineering journey ensuring clear delivery, high security, and exceptional performance at every stage.';
-
     return (
         <section
             id="process"
-            aria-label="Development Process Section"
-            className="relative w-full overflow-hidden px-4 py-24 sm:px-6 sm:py-32 md:px-10 lg:px-16 lg:py-36 xl:px-20"
+            aria-label="Methodology Sequence"
+            className="w-full border-b border-border bg-[var(--bg)] px-6 sm:px-8 xl:px-12 py-20 lg:py-28"
         >
-            {/* Ambient Background Aura */}
-            <div
-                className="pointer-events-none absolute bottom-10 left-1/4 h-[500px] w-[500px] rounded-full bg-[var(--primary)]/10 blur-[140px]"
-                aria-hidden="true"
-            />
-
-            <div className="mx-auto w-full max-w-[1440px]">
-                {/* Header Section */}
-                <div className="flex flex-col items-start max-w-3xl">
-                    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--surface-border)] bg-[var(--surface)] px-3.5 py-1.5 shadow-sm backdrop-blur-md">
-                        <Sparkle className="h-3.5 w-3.5 text-[var(--secondary)]" />
-                        <span className="font-mono text-xs font-semibold tracking-[0.14em] text-[var(--secondary)] uppercase">
-                            {eyebrow}
+            <div className="mx-auto max-w-[1440px]">
+                {/* Section Header Strip */}
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase">
+                    <div className="flex items-center gap-3">
+                        <span className="bg-[var(--primary)] text-white px-2 py-0.5 font-bold">
+                            SEC. 06
                         </span>
+                        <span>METHODOLOGY SEQUENCE // 6-STAGE DELIVERY PIPELINE</span>
                     </div>
+                    <span>TOTAL STAGES: [{processSteps.length.toString().padStart(2, '0')}]</span>
+                </div>
 
-                    <h2 className="font-display text-[clamp(2.2rem,4.5vw,3.75rem)] font-extrabold leading-[1.08] tracking-tight text-[var(--text)]">
-                        {title}
-                    </h2>
-
-                    <p className="mt-4 font-sans text-base leading-relaxed text-[var(--text-muted)] sm:text-lg">
-                        {subtitle}
+                <div className="mt-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                    <div>
+                        <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
+                            // STRUCTURED EXECUTION
+                        </span>
+                        <h2 className="mt-2 font-display text-4xl sm:text-6xl font-black tracking-tight text-foreground uppercase">
+                            HOW THE WORK GETS DONE.
+                        </h2>
+                    </div>
+                    <p className="max-w-md font-mono text-xs text-muted-foreground leading-relaxed uppercase">
+                        From raw domain discovery and architectural blueprints to production telemetry,
+                        every engagement follows a disciplined, predictable execution sequence.
                     </p>
                 </div>
 
-                {/* Structured Process Sequence Grid (3 columns desktop, 2 tablet, 1 mobile) */}
-                <div className="mt-12 sm:mt-16 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {processSteps.map((step, index) => {
-                        const stepNum = String(index + 1).padStart(2, '0');
+                {/* Numbered Sequence: Horizontal Grid with 1px Rules */}
+                <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 border-t-2 border-l-2 border-foreground">
+                    {processSteps.map((step, idx) => {
+                        const stepNum = (idx + 1).toString().padStart(2, '0');
 
                         return (
                             <div
                                 key={step.id}
-                                className="group relative flex flex-col justify-between rounded-3xl border border-[var(--surface-border)] bg-[var(--surface)] p-8 shadow-xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-[var(--secondary)] hover:shadow-[0_20px_40px_rgba(83,224,247,0.12)]"
+                                className="group border-r-2 border-b-2 border-foreground p-6 sm:p-8 flex flex-col justify-between transition-colors hover:bg-surface"
                             >
                                 <div>
-                                    {/* Large Step Number */}
-                                    <div className="mb-6 flex items-center justify-between">
-                                        <span className="font-display text-4xl font-black tracking-tight text-[var(--secondary)]/80 transition-colors group-hover:text-[var(--secondary)]">
-                                            {stepNum}
+                                    <div className="flex items-center justify-between border-b border-border pb-4">
+                                        <span className="font-mono text-3xl sm:text-4xl font-black text-[var(--primary)] group-hover:text-[var(--accent)] transition-colors">
+                                            {stepNum} //
                                         </span>
-                                        <div className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--surface-border)] bg-[var(--bg-elevated)] font-mono text-xs font-bold text-[var(--text-muted)] group-hover:border-[var(--secondary)] group-hover:text-[var(--secondary)]">
-                                            <ArrowRight className="h-3.5 w-3.5" />
-                                        </div>
+                                        <span className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
+                                            STAGE {idx + 1}/{processSteps.length}
+                                        </span>
                                     </div>
 
-                                    {/* Step Title */}
-                                    <h3 className="font-display text-xl font-bold text-[var(--text)] transition-colors group-hover:text-[var(--secondary)]">
+                                    <h3 className="mt-6 font-display text-xl sm:text-2xl font-bold tracking-tight text-foreground uppercase">
                                         {step.title}
                                     </h3>
 
-                                    {/* Step Description */}
-                                    <p className="mt-3 font-sans text-sm leading-relaxed text-[var(--text-muted)] sm:text-base">
+                                    <p className="mt-3 font-body text-sm sm:text-base leading-relaxed text-foreground/80">
                                         {step.description}
                                     </p>
                                 </div>
 
-                                <div className="mt-6 border-t border-[var(--surface-border)]/40 pt-4 font-mono text-[11px] text-[var(--text-muted)]">
-                                    Stage {index + 1} of {processSteps.length}
+                                <div className="mt-8 pt-4 border-t border-border flex items-center justify-between font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
+                                    <span>PHASE DELIVERABLE VERIFIED</span>
+                                    <span className="text-[var(--primary)] font-bold">→</span>
                                 </div>
                             </div>
                         );

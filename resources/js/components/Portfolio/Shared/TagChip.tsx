@@ -19,14 +19,12 @@ export default function TagChip({
         <Component
             type={onClick ? 'button' : undefined}
             onClick={onClick}
-            className={`inline-flex h-7 items-center gap-1.5 rounded-full border border-[var(--primary)]/25 bg-[var(--primary)]/15 px-3 font-mono text-xs text-[var(--text)] transition-colors duration-200 ${
-                onClick
-                    ? 'cursor-pointer hover:border-[var(--primary)]/40 hover:bg-[var(--primary)]/30'
-                    : ''
+            className={`inline-flex items-center gap-1.5 border border-border bg-background px-2.5 py-1 font-mono text-[11px] text-foreground uppercase tracking-wider transition-colors ${
+                onClick ? 'cursor-pointer hover:border-foreground hover:bg-muted' : ''
             } ${className}`}
         >
             {icon && (
-                <span className="flex-shrink-0 text-[var(--secondary)]">
+                <span className="flex-shrink-0 text-[var(--primary)]">
                     {icon}
                 </span>
             )}

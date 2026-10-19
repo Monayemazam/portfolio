@@ -13,16 +13,14 @@ import {
 import { useTheme } from '@/hooks/use-theme';
 import { useMotionLevel } from '@/hooks/use-motion-level';
 import { useSmoothScroll } from '@/hooks/use-smooth-scroll';
-import { useScrollStory } from '@/hooks/use-scroll-story';
 import StarfieldContainer from '@/components/Portfolio/Motion/StarfieldContainer';
 import SpaceLoader from '@/components/Portfolio/Motion/SpaceLoader';
-import TopProgressBar from '@/components/Portfolio/Motion/TopProgressBar';
-import CometCursor from '@/components/Portfolio/Motion/CometCursor';
+import EditorialTracker from '@/components/Portfolio/Motion/EditorialTracker';
 import ReduceEffectsToggle from '@/components/Portfolio/Motion/ReduceEffectsToggle';
 import FloatingNav from '@/components/Portfolio/Shared/FloatingNav';
 import HeroSection from '@/components/Portfolio/Sections/HeroSection';
+import PortfolioIndexStrip from '@/components/Portfolio/Sections/PortfolioIndexStrip';
 import AboutSection from '@/components/Portfolio/Sections/AboutSection';
-
 import SkillsSection from '@/components/Portfolio/Sections/SkillsSection';
 import ProjectsSection from '@/components/Portfolio/Sections/ProjectsSection';
 import ServicesSection from '@/components/Portfolio/Sections/ServicesSection';
@@ -79,17 +77,10 @@ export default function PortfolioIndex({
         isOff,
     } = useMotionLevel({ adminLevel: settings.animation_level });
 
-    // Smooth Scrolling with Lenis (lerp: 0.1, disabled for reduced motion)
+    // Smooth Scrolling with Lenis
     useSmoothScroll({
         enabled: !isOff,
         lerp: 0.1,
-    });
-
-    // Scroll Story & Distance Telemetry with GSAP ScrollTrigger
-    const sectionKeys = sections.map((s) => s.key);
-    const { progress, distanceKm } = useScrollStory({
-        enabled: !isOff,
-        sectionKeys,
     });
 
     const [activeSection, setActiveSection] = useState<string>(
@@ -131,23 +122,22 @@ export default function PortfolioIndex({
     const pageTitle =
         seo?.meta_title ||
         settings.site_title ||
-        'Monayem Azam - Full-Stack Developer';
+        'Monayem Azam | Independent Digital Builder';
     const pageDescription =
         seo?.meta_description ||
         settings.site_tagline ||
-        'Monayem Azam Portfolio - Space-themed mission control showcases full-stack web applications, Laravel, React, and architectures.';
+        'Monayem Azam — Digital Field Notes. Independent full-stack software engineer and creative technologist.';
     const canonicalUrl =
         seo?.canonical_url ||
         (typeof window !== 'undefined' ? window.location.href : '');
     const ogImageUrl = seo?.og_image?.url || settings.photo_media?.url;
     const robots = seo?.robots || 'index, follow';
 
-    // Structured Data JSON-LD
     const jsonLd = {
         '@context': 'https://schema.org',
         '@type': 'Person',
         name: hero?.name || settings.site_title || 'Monayem Azam',
-        jobTitle: seo?.person_job_title || 'Full-Stack Developer',
+        jobTitle: seo?.person_job_title || 'Independent Full-Stack Developer',
         url: canonicalUrl,
         sameAs:
             seo?.person_same_as ||
@@ -161,7 +151,7 @@ export default function PortfolioIndex({
 
     return (
         <div
-            className={`relative min-h-screen w-full bg-[var(--bg)] text-[var(--text)] transition-colors duration-300 selection:bg-[var(--primary)] selection:text-white ${
+            className={`relative min-h-screen w-full bg-[var(--bg)] text-[var(--text)] transition-colors duration-200 selection:bg-[var(--primary)] selection:text-white ${
                 isOff ? 'reduced-motion' : ''
             }`}
         >
@@ -197,46 +187,49 @@ export default function PortfolioIndex({
                 />
             </Head>
 
-            {/* Z-0: Starfield Background Layer (Static, 2D Canvas, or 3D WebGL) */}
+            {/* Tactile Architectural Background Grid */}
             <StarfieldContainer
                 effectiveLevel={effectiveLevel}
                 isDark={isDark}
             />
 
-            {/* Z-100: Pre-Flight Mission Loader (1.2s - 2.0s duration max) */}
+            {/* Quick Initial Loader */}
             <SpaceLoader reducedMotion={isOff} />
 
-            {/* Z-50: Floating Navigation System */}
+            {/* Publication Masthead Navigation */}
             <FloatingNav
                 sections={sections}
                 activeSection={activeSection}
                 settings={settings}
             />
 
-            {/* Z-50: Corner Reduce Effects Toggle */}
+            {/* Corner Reduce Effects Toggle */}
             <ReduceEffectsToggle
                 reduceEffects={reduceEffects}
                 onToggle={toggleReduceEffects}
             />
 
-            {/* Z-110: Fine-pointer Desktop Comet Cursor */}
-            <CometCursor enabled={isFull} />
+            {/* Signature Interaction: Editorial Coordinate Crosshair Tracker */}
+            <EditorialTracker enabled={!isOff} />
 
-            {/* Z-10: Main Content Stream in Database sort_order */}
+            {/* Main Content Stream in Database sort_order */}
             <main className="relative z-10 flex w-full flex-col">
                 {sections.map((section) => {
                     switch (section.key) {
                         case 'hero':
                             return (
-                                <HeroSection
-                                    key={section.key}
-                                    section={section}
-                                    hero={hero}
-                                    settings={settings}
-                                    isFull={isFull}
-                                    isOff={isOff}
-                                    isDark={isDark}
-                                />
+                                <React.Fragment key={section.key}>
+                                    <HeroSection
+                                        section={section}
+                                        hero={hero}
+                                        settings={settings}
+                                        isFull={isFull}
+                                        isOff={isOff}
+                                        isDark={isDark}
+                                    />
+                                    {/* Section 6: Publication Visual Index Strip */}
+                                    <PortfolioIndexStrip />
+                                </React.Fragment>
                             );
                         case 'about':
                             return (

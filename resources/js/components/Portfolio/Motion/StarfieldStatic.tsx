@@ -5,7 +5,7 @@ interface StarfieldStaticProps {
 }
 
 export default function StarfieldStatic({
-    isDark = true,
+    isDark = false,
 }: StarfieldStaticProps) {
     return (
         <div
@@ -14,22 +14,26 @@ export default function StarfieldStatic({
             style={{
                 backgroundColor: 'var(--bg)',
                 backgroundImage: isDark
-                    ? `radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0,0,0,0)),
-                       radial-gradient(1.5px 1.5px at 100px 150px, #ffffff, rgba(0,0,0,0)),
-                       radial-gradient(1px 1px at 240px 80px, #ffffff, rgba(0,0,0,0)),
-                       radial-gradient(2px 2px at 320px 220px, var(--secondary), rgba(0,0,0,0)),
-                       radial-gradient(1px 1px at 450px 120px, #ffffff, rgba(0,0,0,0)),
-                       radial-gradient(1.5px 1.5px at 580px 290px, var(--primary), rgba(0,0,0,0)),
-                       radial-gradient(circle at 80% 20%, rgba(124, 58, 237, 0.08) 0%, transparent 40%),
-                       radial-gradient(circle at 20% 80%, rgba(34, 211, 238, 0.05) 0%, transparent 50%)`
-                    : `radial-gradient(1.5px 1.5px at 40px 60px, var(--star), rgba(0,0,0,0)),
-                       radial-gradient(1.5px 1.5px at 160px 180px, var(--star), rgba(0,0,0,0)),
-                       radial-gradient(2px 2px at 280px 100px, var(--secondary), rgba(0,0,0,0)),
-                       radial-gradient(1.5px 1.5px at 420px 240px, var(--star), rgba(0,0,0,0)),
-                       radial-gradient(circle at 85% 15%, rgba(109, 40, 217, 0.06) 0%, transparent 45%)`,
-                backgroundSize:
-                    '650px 650px, 650px 650px, 650px 650px, 650px 650px, 650px 650px, 650px 650px, 100% 100%, 100% 100%',
+                    ? `radial-gradient(1px 1px at 30px 40px, rgba(242, 239, 230, 0.25), transparent 100%),
+                       radial-gradient(1px 1px at 180px 220px, rgba(241, 90, 36, 0.3), transparent 100%),
+                       radial-gradient(1px 1px at 340px 110px, rgba(213, 243, 74, 0.25), transparent 100%),
+                       radial-gradient(1px 1px at 520px 380px, rgba(242, 239, 230, 0.2), transparent 100%)`
+                    : `radial-gradient(1px 1px at 40px 40px, rgba(23, 25, 20, 0.08), transparent 100%),
+                       radial-gradient(1px 1px at 200px 200px, rgba(241, 90, 36, 0.12), transparent 100%),
+                       radial-gradient(1px 1px at 360px 120px, rgba(23, 25, 20, 0.06), transparent 100%),
+                       radial-gradient(1px 1px at 540px 420px, rgba(23, 60, 50, 0.08), transparent 100%)`,
+                backgroundSize: '400px 400px, 400px 400px, 400px 400px, 400px 400px',
             }}
-        />
+        >
+            {/* Subtle architectural grid lines */}
+            <div
+                className="absolute inset-0 opacity-40 dark:opacity-20"
+                style={{
+                    backgroundImage: `linear-gradient(to right, var(--border) 1px, transparent 1px),
+                                      linear-gradient(to bottom, var(--border) 1px, transparent 1px)`,
+                    backgroundSize: '120px 120px',
+                }}
+            />
+        </div>
     );
 }

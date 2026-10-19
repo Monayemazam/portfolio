@@ -1,202 +1,210 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowAngularTopRight, Cross, Menu } from './Icons';
 import { PortfolioSection, PortfolioSettings } from '@/types/portfolio';
-import ThemeToggle from './ThemeToggle';
+import { useTheme } from '@/hooks/use-theme';
+import { Icons } from './Icons';
 
 interface FloatingNavProps {
     sections: PortfolioSection[];
     activeSection: string;
     settings: PortfolioSettings;
-    onContactClick?: () => void;
 }
 
 export default function FloatingNav({
     sections,
     activeSection,
     settings,
-    onContactClick,
 }: FloatingNavProps) {
+    const { isDark, toggleTheme } = useTheme(settings.default_theme);
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
-            setScrolled(window.scrollY > 30);
+            setScrolled(window.scrollY > 40);
         };
-        handleScroll();
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // Filter valid navigation links (exclude hero and footer, include only visible sections)
-    const navItems = sections.filter(
-        (s) => s.is_visible && s.key !== 'hero' && s.key !== 'footer',
-    );
+    // Filter to navigable public sections
+    const navItems = [
+        { key: 'about', index: '01', label: 'ABOUT' },
+        { key: 'skills', index: '02', label: 'SKILLS' },
+        { key: 'projects', index: '03', label: 'EXHIBITS' },
+        { key: 'services', index: '04', label: 'SERVICES' },
+        { key: 'process', index: '05', label: 'PROCESS' },
+        { key: 'contact', index: '06', label: 'CONTACT' },
+    ].filter((item) => sections.some((s) => s.key === item.key && s.is_visible !== false));
 
-    const handleNavClick = (
-        e: React.MouseEvent<HTMLAnchorElement>,
-        key: string,
-    ) => {
-        e.preventDefault();
+    const scrollTo = (id: string) => {
         setMobileOpen(false);
-        const element = document.getElementById(key);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            if (typeof window !== 'undefined' && window.history?.pushState) {
-                window.history.pushState(null, '', `#${key}`);
-            }
+        const el = document.getElementById(id);
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
         }
     };
 
     return (
-        <>
-            <header
-                className={`fixed top-0 right-0 left-0 z-50 transition-all duration-300 ${
-                    scrolled
-                        ? 'py-3 sm:py-4'
-                        : 'py-5 sm:py-7'
-                }`}
-            >
-                <div className="mx-auto max-w-[1440px] px-4 sm:px-6 md:px-10 lg:px-16">
-                    <nav
-                        aria-label="Main Navigation"
-                        className={`flex items-center justify-between rounded-2xl px-4 py-2.5 transition-all duration-300 sm:px-6 ${
-                            scrolled
-                                ? 'glass-nav border border-[var(--surface-border)] shadow-2xl backdrop-blur-xl'
-                                : 'bg-transparent border border-transparent'
-                        }`}
-                    >
-                        {/* Left: Brand Monogram & Name */}
-                        <a
-                            href="#hero"
-                            onClick={(e) => handleNavClick(e, 'hero')}
-                            className="group flex items-center gap-3 focus-visible:ring-2 focus-visible:ring-[var(--secondary)] focus-visible:outline-none rounded-xl"
-                        >
-                            <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--surface-border)] bg-[var(--surface)] font-mono text-sm font-extrabold tracking-wider text-[var(--secondary)] shadow-sm transition-transform duration-300 group-hover:scale-105 group-hover:border-[var(--secondary)] group-hover:shadow-[0_0_15px_rgba(83,224,247,0.3)]">
-                                MA.
-                            </span>
-                            <div className="flex flex-col">
-                                <span className="font-display text-sm font-bold tracking-wider text-[var(--text)] transition-colors group-hover:text-[var(--secondary)] sm:text-base">
-                                    Monayem Azam
-                                </span>
-                                <span className="hidden font-mono text-[10px] tracking-widest text-[var(--text-muted)] uppercase md:block">
-                                    Full-Stack Engineer
-                                </span>
-                            </div>
-                        </a>
+        <header
+            role="banner"
+            className={`sticky top-0 z-50 w-full transition-colors duration-200 border-b ${
+                scrolled
+                    ? 'bg-[var(--bg)] border-border shadow-xs'
+                    : 'bg-[var(--bg)] border-border'
+            }`}
+        >
+            {/* Top publication ticker / masthead sub-bar */}
+            <div className="hidden lg:flex items-center justify-between border-b border-border px-6 xl:px-12 py-1.5 font-mono text-[11px] tracking-wider text-muted-foreground uppercase">
+                <div className="flex items-center gap-4">
+                    <span>INDEX NO. 2026 // MONAYEM AZAM ARCHIVE</span>
+                    <span className="text-border">|</span>
+                    <span className="flex items-center gap-1.5 text-foreground font-semibold">
+                        <span className="inline-block h-1.5 w-1.5 bg-[var(--primary)]" />
+                        AVAILABLE FOR SELECT COMMISSIONS
+                    </span>
+                </div>
+                <div className="flex items-center gap-6">
+                    <span>TIMEZONE: UTC+6 · DHAKA</span>
+                    <span className="text-border">|</span>
+                    <span>EDITION: DIGITAL FIELD NOTES 01</span>
+                </div>
+            </div>
 
-                        {/* Center: Desktop Navigation Links */}
-                        <div className="hidden items-center gap-1 lg:flex">
-                            {navItems.map((item) => {
-                                const isActive = activeSection === item.key;
-                                return (
-                                    <a
-                                        key={item.key}
-                                        href={`#${item.key}`}
-                                        onClick={(e) =>
-                                            handleNavClick(e, item.key)
-                                        }
-                                        className={`relative rounded-lg px-3.5 py-1.5 font-sans text-xs font-medium tracking-wide transition-all duration-200 xl:text-sm ${
-                                            isActive
-                                                ? 'font-semibold text-[var(--text)]'
-                                                : 'text-[var(--text-muted)] hover:text-[var(--text)]'
-                                        }`}
-                                    >
-                                        {item.nav_label || item.title}
-                                        {isActive && (
-                                            <span className="absolute right-3.5 bottom-0 left-3.5 h-[2px] rounded-full bg-gradient-to-r from-[var(--secondary)] to-[var(--primary)] shadow-[0_0_8px_var(--secondary)]" />
-                                        )}
-                                    </a>
-                                );
-                            })}
-                        </div>
+            {/* Main Publication Masthead */}
+            <div className="mx-auto flex h-16 sm:h-20 max-w-[1440px] items-center justify-between px-6 sm:px-8 xl:px-12">
+                {/* Wordmark */}
+                <a
+                    href="#hero"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        scrollTo('hero');
+                    }}
+                    className="group flex flex-col focus:outline-hidden"
+                >
+                    <div className="flex items-center gap-2">
+                        <span className="font-display text-lg sm:text-2xl font-black tracking-tight text-foreground transition-colors group-hover:text-[var(--primary)]">
+                            MONAYEM AZAM
+                        </span>
+                        <span className="h-2 w-2 bg-[var(--primary)] transition-transform group-hover:scale-125" />
+                    </div>
+                    <span className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase -mt-0.5">
+                        INDEPENDENT DIGITAL BUILDER
+                    </span>
+                </a>
 
-                        {/* Right: Actions (Theme Toggle & Contact CTA) */}
-                        <div className="flex items-center gap-3">
-                            <ThemeToggle showLabel={false} />
-
-                            <a
-                                href="#contact"
-                                onClick={(e) => {
-                                    handleNavClick(e, 'contact');
-                                    onContactClick?.();
-                                }}
-                                className="hidden items-center gap-2 rounded-xl bg-gradient-to-r from-[var(--accent)] to-[#f59e0b] px-4 py-2 font-sans text-xs font-bold text-[#080d1c] shadow-[0_0_20px_rgba(255,181,71,0.25)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(255,181,71,0.45)] active:scale-95 sm:inline-flex md:text-sm"
-                            >
-                                <span>Let's Talk</span>
-                                <ArrowAngularTopRight className="h-3.5 w-3.5" />
-                            </a>
-
-                            {/* Mobile Hamburger Toggle */}
+                {/* Desktop Editorial Navigation Grid */}
+                <nav
+                    role="navigation"
+                    aria-label="Publication Sections"
+                    className="hidden lg:flex items-center gap-8 font-mono text-xs tracking-wider"
+                >
+                    {navItems.map((item) => {
+                        const isActive = activeSection === item.key;
+                        return (
                             <button
+                                key={item.key}
                                 type="button"
-                                onClick={() => setMobileOpen(!mobileOpen)}
-                                aria-label="Toggle navigation menu"
-                                aria-expanded={mobileOpen}
-                                className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--surface-border)] bg-[var(--surface)] text-[var(--text)] transition-colors hover:border-[var(--secondary)] hover:text-[var(--secondary)] lg:hidden"
+                                onClick={() => scrollTo(item.key)}
+                                className={`group flex items-center gap-1.5 transition-colors focus:outline-hidden py-1 ${
+                                    isActive
+                                        ? 'text-[var(--primary)] font-bold'
+                                        : 'text-foreground/80 hover:text-foreground'
+                                }`}
                             >
-                                {mobileOpen ? (
-                                    <Cross className="h-5 w-5" />
-                                ) : (
-                                    <Menu className="h-5 w-5" />
+                                <span className="text-[10px] text-muted-foreground transition-colors group-hover:text-[var(--primary)]">
+                                    {item.index}/
+                                </span>
+                                <span>{item.label}</span>
+                                {isActive && (
+                                    <span className="inline-block h-1 w-1 bg-[var(--primary)]" />
                                 )}
                             </button>
-                        </div>
-                    </nav>
-                </div>
-            </header>
+                        );
+                    })}
+                </nav>
 
-            {/* Mobile Menu Slide-down Overlay */}
+                {/* Right controls: Theme toggle + Contact trigger */}
+                <div className="flex items-center gap-3 sm:gap-4">
+                    {/* Editorial theme toggle */}
+                    <button
+                        type="button"
+                        onClick={toggleTheme}
+                        aria-label={`Switch to ${isDark ? 'Solar (Warm Paper)' : 'Deep Space (Charcoal)'} theme`}
+                        className="flex items-center gap-2 border border-border px-2.5 sm:px-3 py-1.5 font-mono text-[11px] tracking-wider uppercase transition-colors hover:border-foreground hover:bg-muted"
+                    >
+                        <span className="inline-block h-2 w-2 rounded-none bg-[var(--primary)]" />
+                        <span className="hidden sm:inline">
+                            {isDark ? 'CHARCOAL' : 'PAPER'}
+                        </span>
+                    </button>
+
+                    {/* Primary Contact Action */}
+                    <button
+                        type="button"
+                        onClick={() => scrollTo('contact')}
+                        className="hidden sm:flex items-center gap-2 bg-[var(--primary)] px-4 py-2 font-mono text-xs font-bold uppercase tracking-wider text-white transition-opacity hover:opacity-90 active:scale-98"
+                    >
+                        <span>TALK</span>
+                        <span>[→]</span>
+                    </button>
+
+                    {/* Mobile Menu Toggle Button */}
+                    <button
+                        type="button"
+                        onClick={() => setMobileOpen(!mobileOpen)}
+                        aria-expanded={mobileOpen}
+                        aria-label="Toggle publication menu"
+                        className="flex lg:hidden items-center justify-center border border-border p-2 text-foreground transition-colors hover:border-foreground"
+                    >
+                        {mobileOpen ? (
+                            <Icons.Close className="h-5 w-5" />
+                        ) : (
+                            <Icons.Menu className="h-5 w-5" />
+                        )}
+                    </button>
+                </div>
+            </div>
+
+            {/* Mobile Publication Menu Overlay */}
             {mobileOpen && (
                 <div
-                    className="fixed inset-0 z-40 flex flex-col bg-[var(--bg)]/95 px-6 pt-24 pb-8 backdrop-blur-2xl transition-all duration-300 lg:hidden"
                     role="dialog"
                     aria-modal="true"
-                    aria-label="Mobile Navigation"
+                    aria-label="Navigation Menu"
+                    className="fixed inset-x-0 top-[65px] bottom-0 z-50 flex flex-col bg-[var(--bg)] border-t border-border px-6 py-8 overflow-y-auto"
                 >
-                    <div className="flex flex-col gap-3 py-6">
-                        {navItems.map((item, idx) => {
-                            const isActive = activeSection === item.key;
-                            return (
-                                <a
-                                    key={item.key}
-                                    href={`#${item.key}`}
-                                    onClick={(e) =>
-                                        handleNavClick(e, item.key)
-                                    }
-                                    className={`flex items-center justify-between border-b border-[var(--surface-border)]/40 py-3.5 font-display text-lg tracking-wide transition-colors ${
-                                        isActive
-                                            ? 'font-bold text-[var(--secondary)]'
-                                            : 'text-[var(--text)] hover:text-[var(--secondary)]'
-                                    }`}
-                                >
-                                    <span>{item.nav_label || item.title}</span>
-                                    <span className="font-mono text-xs text-[var(--text-muted)]">
-                                        0{idx + 1}
-                                    </span>
-                                </a>
-                            );
-                        })}
-                    </div>
+                    <div className="flex flex-col gap-6">
+                        <div className="font-mono text-[11px] tracking-widest text-muted-foreground uppercase border-b border-border pb-3">
+                            CATALOGUE DIRECTORY // SELECT DISPATCH
+                        </div>
+                        {navItems.map((item) => (
+                            <button
+                                key={item.key}
+                                type="button"
+                                onClick={() => scrollTo(item.key)}
+                                className="flex items-baseline justify-between border-b border-border/50 py-3 text-left focus:outline-hidden"
+                            >
+                                <span className="font-display text-2xl font-black tracking-tight text-foreground">
+                                    {item.label}
+                                </span>
+                                <span className="font-mono text-sm text-[var(--primary)]">
+                                    {item.index} //
+                                </span>
+                            </button>
+                        ))}
 
-                    <div className="mt-auto flex flex-col gap-4 pt-6">
-                        <a
-                            href="#contact"
-                            onClick={(e) => {
-                                handleNavClick(e, 'contact');
-                                onContactClick?.();
-                            }}
-                            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[var(--accent)] to-[#f59e0b] py-3.5 font-sans text-sm font-bold text-[#080d1c] shadow-lg transition-transform active:scale-95"
-                        >
-                            <span>Let's Talk</span>
-                            <ArrowAngularTopRight className="h-4 w-4" />
-                        </a>
-                        <p className="text-center font-mono text-[11px] text-[var(--text-muted)]">
-                            Monayem Azam · Digital Universe
-                        </p>
+                        <div className="pt-6">
+                            <button
+                                type="button"
+                                onClick={() => scrollTo('contact')}
+                                className="w-full bg-[var(--primary)] py-3 font-mono text-sm font-bold uppercase tracking-wider text-white"
+                            >
+                                INITIATE DIALOGUE [→]
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
-        </>
+        </header>
     );
 }

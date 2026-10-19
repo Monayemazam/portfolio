@@ -1,6 +1,5 @@
 import React from 'react';
 import * as LineIcons from 'lineicons-react';
-import { ArrowAngularTopRight, Sparkle } from '../Shared/Icons';
 import { PortfolioSection, ServiceItem } from '@/types/portfolio';
 
 interface ServicesSectionProps {
@@ -30,93 +29,97 @@ export default function ServicesSection({
         return iconMap[pascal] || null;
     };
 
-    const eyebrow = section.eyebrow || 'CAPABILITIES & SPECIALIZATIONS';
-    const title = section.title || 'What I Can Build';
-    const subtitle =
-        section.subtitle ||
-        'Engineered for speed, scale, and longevity. Tailored solutions from architecture to production deployment.';
+    const scrollTo = (id: string) => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
 
     return (
         <section
             id="services"
-            aria-label="Services Section"
-            className="relative w-full overflow-hidden px-4 py-24 sm:px-6 sm:py-32 md:px-10 lg:px-16 lg:py-36 xl:px-20"
+            aria-label="Capabilities Directory"
+            className="w-full border-b border-border bg-[var(--bg)] px-6 sm:px-8 xl:px-12 py-20 lg:py-28"
         >
-            {/* Ambient Lighting */}
-            <div
-                className="pointer-events-none absolute top-1/2 left-1/3 -translate-y-1/2 h-[500px] w-[500px] rounded-full bg-[var(--primary)]/10 blur-[140px]"
-                aria-hidden="true"
-            />
-
-            <div className="mx-auto w-full max-w-[1440px]">
-                {/* Header Section */}
-                <div className="flex flex-col items-start max-w-3xl">
-                    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--surface-border)] bg-[var(--surface)] px-3.5 py-1.5 shadow-sm backdrop-blur-md">
-                        <Sparkle className="h-3.5 w-3.5 text-[var(--secondary)]" />
-                        <span className="font-mono text-xs font-semibold tracking-[0.14em] text-[var(--secondary)] uppercase">
-                            {eyebrow}
+            <div className="mx-auto max-w-[1440px]">
+                {/* Section Header Strip */}
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase">
+                    <div className="flex items-center gap-3">
+                        <span className="bg-[var(--primary)] text-white px-2 py-0.5 font-bold">
+                            SEC. 04
                         </span>
+                        <span>CAPABILITIES DIRECTORY // TECHNICAL OFFERINGS</span>
                     </div>
+                    <span>TOTAL SERVICES: [{services.length.toString().padStart(2, '0')}]</span>
+                </div>
 
-                    <h2 className="font-display text-[clamp(2.2rem,4.5vw,3.75rem)] font-extrabold leading-[1.08] tracking-tight text-[var(--text)]">
-                        {title}
-                    </h2>
-
-                    <p className="mt-4 font-sans text-base leading-relaxed text-[var(--text-muted)] sm:text-lg">
-                        {subtitle}
+                {/* Section Title */}
+                <div className="mt-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                    <div>
+                        <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
+                            // WHAT I CAN BUILD
+                        </span>
+                        <h2 className="mt-2 font-display text-4xl sm:text-6xl font-black tracking-tight text-foreground uppercase">
+                            SYSTEM CAPABILITIES.
+                        </h2>
+                    </div>
+                    <p className="max-w-md font-mono text-xs text-muted-foreground leading-relaxed uppercase">
+                        Disciplined full-stack offerings from foundational database schema design
+                        to production deployment, creative frontends, and mission-critical API architectures.
                     </p>
                 </div>
 
-                {/* Services Grid: 3 columns desktop, 2 tablet, 1 mobile */}
-                <div className="mt-12 sm:mt-16 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                    {services.map((service, index) => {
+                {/* Structured Editorial Capabilities Grid with 1px Rules */}
+                <div className="mt-12 divide-y-2 divide-foreground border-y-2 border-foreground">
+                    {services.map((service, idx) => {
                         const IconComponent = resolveLineicon(service.icon);
-                        const serviceNumber = String(index + 1).padStart(
-                            2,
-                            '0',
-                        );
+                        const num = (idx + 1).toString().padStart(2, '0');
 
                         return (
                             <div
                                 key={service.id}
-                                className="group relative flex flex-col justify-between rounded-3xl border border-[var(--surface-border)] bg-[var(--surface)] p-8 shadow-xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-[var(--secondary)] hover:shadow-[0_20px_45px_rgba(83,224,247,0.12)]"
+                                className="group grid grid-cols-1 md:grid-cols-12 gap-6 py-8 sm:py-10 transition-colors hover:bg-surface px-4 sm:px-6"
                             >
-                                <div>
-                                    {/* Icon & Index Number */}
-                                    <div className="mb-8 flex items-center justify-between">
-                                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[var(--surface-border)] bg-[var(--bg-elevated)] text-[var(--secondary)] shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:border-[var(--secondary)] group-hover:shadow-[0_0_20px_rgba(83,224,247,0.3)]">
-                                            {IconComponent ? (
-                                                <IconComponent className="h-7 w-7" />
-                                            ) : (
-                                                <span className="font-mono text-base font-bold">
-                                                    {serviceNumber}
-                                                </span>
-                                            )}
+                                {/* Numeral & Icon */}
+                                <div className="md:col-span-2 flex items-center justify-between md:flex-col md:items-start md:justify-start gap-4">
+                                    <span className="font-mono text-3xl sm:text-4xl font-black text-[var(--primary)] group-hover:text-[var(--accent)] transition-colors">
+                                        {num} //
+                                    </span>
+                                    {IconComponent && (
+                                        <div className="border border-border p-2 bg-background text-foreground">
+                                            <IconComponent className="h-6 w-6" />
                                         </div>
-                                        <span className="font-mono text-xs font-bold text-[var(--text-muted)] group-hover:text-[var(--secondary)] transition-colors">
-                                            0{index + 1}
-                                        </span>
-                                    </div>
+                                    )}
+                                </div>
 
-                                    {/* Title & Description */}
-                                    <h3 className="font-display text-2xl font-bold text-[var(--text)] transition-colors group-hover:text-[var(--secondary)]">
+                                {/* Title & Scope */}
+                                <div className="md:col-span-4">
+                                    <h3 className="font-display text-2xl sm:text-3xl font-black tracking-tight text-foreground uppercase">
                                         {service.title}
                                     </h3>
+                                    <span className="mt-2 inline-block font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
+                                        SCOPE: ARCHITECTURE & DEPLOYMENT
+                                    </span>
+                                </div>
 
-                                    <p className="mt-4 font-sans text-sm leading-relaxed text-[var(--text-muted)] sm:text-base">
+                                {/* Description */}
+                                <div className="md:col-span-4 flex items-center">
+                                    <p className="font-body text-sm sm:text-base leading-relaxed text-foreground/80">
                                         {service.description}
                                     </p>
                                 </div>
 
-                                {/* Bottom Contact CTA */}
-                                <div className="mt-8 border-t border-[var(--surface-border)]/50 pt-5">
-                                    <a
-                                        href="#contact"
-                                        className="inline-flex items-center gap-1.5 font-sans text-xs font-bold text-[var(--secondary)] transition-transform duration-200 group-hover:translate-x-1"
+                                {/* Action */}
+                                <div className="md:col-span-2 flex items-center md:justify-end">
+                                    <button
+                                        type="button"
+                                        onClick={() => scrollTo('contact')}
+                                        className="font-mono text-xs font-bold text-[var(--primary)] uppercase tracking-wider hover:underline flex items-center gap-1.5"
+                                        data-field-tag="SERVICE"
                                     >
-                                        <span>Start a project like this</span>
-                                        <ArrowAngularTopRight className="h-3.5 w-3.5" />
-                                    </a>
+                                        <span>COMMISSION [→]</span>
+                                    </button>
                                 </div>
                             </div>
                         );

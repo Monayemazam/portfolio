@@ -607,3 +607,35 @@ export function Youtube({ className = 'w-5 h-5', ...props }: IconProps) {
     );
 }
 
+export function Download({ className = 'w-5 h-5', ...props }: IconProps) {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.75"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={className}
+            {...props}
+        >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" x2="12" y1="15" y2="3" />
+        </svg>
+    );
+}
+
+export const Icons = {
+    Menu: MenuHamburger1,
+    Close: Cross,
+    Download: Download,
+    Check: Check,
+    ArrowUp: ArrowUp,
+    ArrowRight: ArrowRight,
+    ArrowLeft: ArrowLeft,
+    Globe: Globe1,
+    Layers: Layers1,
+};
+

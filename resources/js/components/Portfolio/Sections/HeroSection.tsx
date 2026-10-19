@@ -1,12 +1,6 @@
 import React from 'react';
-import { ArrowAngularTopRight, ArrowDownward, Sparkle } from '../Shared/Icons';
-import {
-    HeroData,
-    PortfolioSection,
-    PortfolioSettings,
-} from '@/types/portfolio';
-import HeroCenterpiece from '../Motion/HeroCenterpiece';
-import TypewriterRoles from '../Motion/TypewriterRoles';
+import { HeroData, PortfolioSection, PortfolioSettings } from '@/types/portfolio';
+import HeroApparatus from '@/components/Portfolio/Motion/HeroApparatus';
 
 interface HeroSectionProps {
     section: PortfolioSection;
@@ -21,165 +15,108 @@ export default function HeroSection({
     section,
     hero,
     settings,
-    isFull = true,
     isOff = false,
-    isDark = true,
 }: HeroSectionProps) {
-    const roles = hero?.roles || [];
-    const eyebrow =
-        hero?.eyebrow ||
-        section.eyebrow ||
-        'FULL-STACK DEVELOPER · DIGITAL CREATOR';
-    const primaryLabel = hero?.primary_button_label || 'Explore My Work';
-    const primaryUrl = hero?.primary_button_url || '#projects';
-    const secondaryLabel = hero?.secondary_button_label || "Let's Talk";
-    const secondaryUrl = hero?.secondary_button_url || '#contact';
-
-    const handleScrollTo = (
-        e: React.MouseEvent<HTMLAnchorElement>,
-        targetId: string,
-    ) => {
-        e.preventDefault();
-        const el = document.getElementById(targetId.replace(/^#/, ''));
+    const scrollTo = (id: string) => {
+        const el = document.getElementById(id);
         if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            if (typeof window !== 'undefined' && window.history?.pushState) {
-                window.history.pushState(null, '', targetId);
-            }
+            el.scrollIntoView({ behavior: 'smooth' });
         }
     };
 
     return (
         <section
-            id="hero"
-            aria-label="Hero Section"
-            className="relative flex min-h-[92svh] w-full items-center justify-center overflow-hidden px-4 pt-28 pb-12 sm:px-6 sm:pt-32 sm:pb-16 md:px-10 lg:min-h-screen lg:px-16 lg:pt-20 lg:pb-12 xl:px-20"
+            id={section.key}
+            aria-label="Editorial Introduction"
+            className="relative min-h-[90svh] lg:min-h-[95svh] w-full flex flex-col justify-between overflow-hidden border-b border-border bg-[var(--bg)] px-6 sm:px-8 xl:px-12 pt-12 pb-16"
         >
-            {/* Atmospheric Background Glow Fields */}
-            <div
-                className="pointer-events-none absolute -top-40 -left-40 h-[600px] w-[600px] rounded-full bg-[var(--primary)]/15 blur-[140px]"
-                aria-hidden="true"
-            />
-            <div
-                className="pointer-events-none absolute top-1/3 -right-40 h-[550px] w-[550px] rounded-full bg-[var(--secondary)]/12 blur-[130px]"
-                aria-hidden="true"
-            />
+            {/* Interactive Editorial Drafting Apparatus */}
+            <HeroApparatus isOff={isOff} />
 
-            <div className="mx-auto w-full max-w-[1440px]">
-                <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-8 xl:gap-14">
-                    {/* Left Column: Editorial Typography & Intentional Storytelling */}
-                    <div className="flex flex-col items-start lg:col-span-7">
-                        {/* Eyebrow & Live Availability Badge */}
-                        <div className="mb-6 flex flex-wrap items-center gap-3">
-                            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--surface-border)] bg-[var(--surface)] px-3.5 py-1.5 shadow-sm backdrop-blur-md">
-                                <Sparkle className="h-3.5 w-3.5 text-[var(--secondary)]" />
-                                <span className="font-mono text-xs font-semibold tracking-[0.14em] text-[var(--secondary)] uppercase">
-                                    {eyebrow}
-                                </span>
-                            </div>
+            {/* Top Eyebrow & Archival Telemetry Strip */}
+            <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 font-mono text-xs tracking-wider text-muted-foreground uppercase border-b border-border pb-4">
+                <div className="flex items-center gap-3">
+                    <span className="bg-[var(--primary)] px-2 py-0.5 text-white font-bold text-[10px]">
+                        VOL. 26
+                    </span>
+                    <span>DISPATCH 001 // CREATIVE ENGINEERING & SYSTEMS</span>
+                </div>
+                <div className="flex items-center gap-3 text-foreground font-semibold">
+                    <span className="h-2 w-2 bg-[var(--accent)] border border-foreground inline-block" />
+                    <span>STATUS: AVAILABLE FOR CONTRACTS</span>
+                </div>
+            </div>
 
-                            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--success)]/25 bg-[var(--success)]/10 px-3 py-1 font-mono text-[11px] font-medium text-[var(--success)] backdrop-blur-md">
-                                <span className="relative flex h-2 w-2">
-                                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--success)] opacity-75" />
-                                    <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--success)]" />
-                                </span>
-                                <span>AVAILABLE FOR NEW PROJECTS</span>
-                            </div>
-                        </div>
+            {/* Asymmetric Hero Typographic Canvas */}
+            <div className="relative z-10 my-auto py-12 lg:py-16 max-w-[1440px] w-full">
+                <div className="max-w-4xl">
+                    {/* Oversized Headline */}
+                    <h1 className="font-display text-[clamp(3.5rem,8.5vw,7.5rem)] font-black leading-[0.88] tracking-tighter text-foreground uppercase">
+                        <span>I MAKE</span>
+                        <br />
+                        <span className="text-[var(--primary)]">THE DIGITAL</span>
+                        <br />
+                        <span>FEEL REAL.</span>
+                    </h1>
 
-                        {/* Monumental Headline */}
-                        <h1 className="font-display text-[clamp(2.5rem,5.5vw,5rem)] font-extrabold leading-[1.04] tracking-tight text-[var(--text)]">
-                            <span className="block">I BUILD DIGITAL</span>
-                            <span className="mt-1 block">
-                                <span className="bg-gradient-to-r from-[var(--secondary)] via-[#a78bfa] to-[var(--primary)] bg-clip-text text-transparent drop-shadow-sm">
-                                    EXPERIENCES
-                                </span>
-                            </span>
-                            <span className="mt-1 block text-[var(--text)]">
-                                THAT MOVE YOU.
-                            </span>
-                        </h1>
-
-                        {/* Subtitle / Role Typewriter */}
-                        <div className="mt-5 flex items-center gap-2 font-mono text-sm font-medium text-[var(--text-muted)] sm:text-base md:text-lg">
-                            <span>Focus:</span>
-                            <TypewriterRoles
-                                roles={roles}
-                                isReducedMotion={isOff}
-                                className="font-semibold text-[var(--secondary)]"
-                            />
-                        </div>
-
-                        {/* Editorial Narrative Bio */}
-                        <p className="mt-5 max-w-2xl font-sans text-base leading-relaxed text-[var(--text-muted)] sm:text-lg">
-                            {settings.site_tagline ||
-                                'Architecting high-performance web applications, scalable backends, and award-winning digital interfaces with precision engineering.'}
+                    {/* Narrative Description & Positioning */}
+                    <div className="mt-8 sm:mt-10 max-w-2xl">
+                        <p className="font-body text-lg sm:text-2xl font-normal leading-relaxed text-foreground/90">
+                            {settings?.site_tagline ||
+                                'Independent full-stack software engineer and digital creator crafting high-integrity web platforms, expressive interfaces, and interactive systems.'}
                         </p>
-
-                        {/* CTAs */}
-                        <div className="mt-8 flex w-full flex-col gap-4 sm:w-auto sm:flex-row sm:items-center">
-                            <a
-                                href={primaryUrl}
-                                onClick={(e) => handleScrollTo(e, primaryUrl)}
-                                className="group inline-flex items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)] px-7 py-3.5 font-sans text-sm font-bold text-white shadow-[0_0_25px_rgba(139,108,255,0.35)] transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_35px_rgba(83,224,247,0.45)] active:scale-95"
-                            >
-                                <span>{primaryLabel}</span>
-                                <ArrowAngularTopRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                            </a>
-
-                            <a
-                                href={secondaryUrl}
-                                onClick={(e) => handleScrollTo(e, secondaryUrl)}
-                                className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--surface-border)] bg-[var(--surface)] px-7 py-3.5 font-sans text-sm font-semibold text-[var(--text)] shadow-sm backdrop-blur-md transition-all duration-300 hover:border-[var(--secondary)] hover:bg-[var(--secondary)]/10 hover:text-[var(--secondary)] active:scale-95"
-                            >
-                                <span>{secondaryLabel}</span>
-                            </a>
-                        </div>
-
-                        {/* Tech Tag Badges */}
-                        <div className="mt-10 flex flex-wrap items-center gap-2 border-t border-[var(--surface-border)]/40 pt-6">
-                            <span className="font-mono text-[11px] font-semibold tracking-wider text-[var(--text-muted)] uppercase">
-                                Stack:
-                            </span>
-                            {['Laravel', 'React', 'TypeScript', 'Three.js', 'MySQL', 'Tailwind'].map(
-                                (tech) => (
-                                    <span
-                                        key={tech}
-                                        className="rounded-md border border-[var(--surface-border)] bg-[var(--surface)]/70 px-2.5 py-1 font-mono text-[11px] font-medium text-[var(--text-muted)]"
-                                    >
-                                        {tech}
-                                    </span>
-                                ),
-                            )}
-                        </div>
                     </div>
 
-                    {/* Right Column: 3D Celestial Centerpiece Sculpture */}
-                    <div className="relative flex items-center justify-center lg:col-span-5">
-                        <div className="relative h-[360px] w-full max-w-[500px] sm:h-[440px] lg:h-[560px]">
-                            {/* Inner Atmosphere Soft Radial Aura */}
-                            <div className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-tr from-[var(--primary)]/20 via-[var(--secondary)]/15 to-transparent blur-3xl" />
-                            <HeroCenterpiece
-                                isDark={isDark}
-                                isReducedMotion={isOff}
-                            />
-                        </div>
+                    {/* Editorial Actions */}
+                    <div className="mt-10 sm:mt-12 flex flex-wrap items-center gap-4 sm:gap-6">
+                        <button
+                            type="button"
+                            onClick={() => scrollTo('projects')}
+                            className="group flex items-center gap-3 bg-[var(--primary)] px-6 sm:px-8 py-3.5 sm:py-4 font-mono text-xs sm:text-sm font-bold uppercase tracking-wider text-white transition-transform hover:-translate-y-0.5 active:translate-y-0"
+                            data-field-tag="EXHIBIT"
+                        >
+                            <span>EXPLORE EXHIBITION</span>
+                            <span className="transition-transform group-hover:translate-y-0.5">↓</span>
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={() => scrollTo('contact')}
+                            className="group flex items-center gap-3 border-2 border-foreground bg-transparent px-6 sm:px-8 py-3.5 sm:py-4 font-mono text-xs sm:text-sm font-bold uppercase tracking-wider text-foreground transition-all hover:bg-foreground hover:text-background"
+                            data-field-tag="DIALOGUE"
+                        >
+                            <span>INITIATE DIALOGUE</span>
+                            <span className="transition-transform group-hover:translate-x-1">→</span>
+                        </button>
                     </div>
                 </div>
+            </div>
 
-                {/* Bottom Scroll Indicator */}
-                <div className="mt-12 flex justify-center lg:mt-6">
-                    <a
-                        href="#about"
-                        onClick={(e) => handleScrollTo(e, '#about')}
-                        aria-label="Scroll down to About section"
-                        className="group inline-flex items-center gap-2 rounded-full border border-[var(--surface-border)] bg-[var(--surface)]/60 px-4 py-1.5 font-mono text-[11px] text-[var(--text-muted)] backdrop-blur-md transition-all duration-300 hover:border-[var(--secondary)] hover:text-[var(--secondary)]"
+            {/* Bottom Archival Metadata & Technical Stacks */}
+            <div className="relative z-10 flex flex-wrap items-end justify-between gap-6 border-t border-border pt-4 font-mono text-[11px] tracking-wider text-muted-foreground uppercase">
+                <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+                    <span className="text-foreground font-bold">CORE STACK:</span>
+                    <span>LARAVEL 12</span>
+                    <span className="text-border">/</span>
+                    <span>REACT 19</span>
+                    <span className="text-border">/</span>
+                    <span>TYPESCRIPT</span>
+                    <span className="text-border">/</span>
+                    <span>THREE.JS</span>
+                    <span className="text-border">/</span>
+                    <span>MYSQL</span>
+                </div>
+
+                <div className="flex items-center gap-4 text-foreground">
+                    <span>COORDINATES: 23°48'N 90°24'E</span>
+                    <span className="text-border">|</span>
+                    <button
+                        type="button"
+                        onClick={() => scrollTo('about')}
+                        className="text-[var(--primary)] font-bold hover:underline"
                     >
-                        <span className="tracking-widest uppercase">
-                            EXPLORE UNIVERSE
-                        </span>
-                        <ArrowDownward className="h-3.5 w-3.5 text-[var(--secondary)] transition-transform group-hover:translate-y-0.5" />
-                    </a>
+                        [SCROLL TO PROFILE ↓]
+                    </button>
                 </div>
             </div>
         </section>

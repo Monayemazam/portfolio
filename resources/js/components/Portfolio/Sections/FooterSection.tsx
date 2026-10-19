@@ -16,36 +16,35 @@ interface FooterSectionProps {
 }
 
 export default function FooterSection({
-    section: _section,
     sections = [],
     settings,
 }: FooterSectionProps) {
-    const siteTitle = settings.site_title || 'Monayem Azam';
+    const siteTitle = settings.site_title || 'MONAYEM AZAM';
     const currentYear = new Date().getFullYear();
 
     const socialLinks = [
         {
             key: 'github_url',
-            label: 'GitHub',
+            label: 'GITHUB',
             icon: Github,
             url: settings.github_url,
         },
         {
             key: 'linkedin_url',
-            label: 'LinkedIn',
+            label: 'LINKEDIN',
             icon: Linkedin,
             url: settings.linkedin_url,
         },
         {
             key: 'facebook_url',
-            label: 'Facebook',
+            label: 'FACEBOOK',
             icon: Facebook,
             url: settings.facebook_url,
         },
-        { key: 'x_url', label: 'X (Twitter)', icon: X, url: settings.x_url },
+        { key: 'x_url', label: 'X (TWITTER)', icon: X, url: settings.x_url },
         {
             key: 'youtube_url',
-            label: 'YouTube',
+            label: 'YOUTUBE',
             icon: Youtube,
             url: settings.youtube_url,
         },
@@ -63,84 +62,89 @@ export default function FooterSection({
     return (
         <footer
             id="footer"
-            aria-label="Portfolio Footer"
-            className="relative w-full border-t border-[var(--surface-border)] bg-[var(--bg-elevated)]/70 px-4 py-16 backdrop-blur-xl sm:px-6 sm:py-20 md:px-10 lg:px-16 xl:px-20"
+            aria-label="Publication Colophon"
+            className="w-full border-t-2 border-foreground bg-[var(--bg)] px-6 sm:px-8 xl:px-12 py-16 sm:py-20"
         >
-            <div className="mx-auto w-full max-w-[1440px]">
-                <div className="flex flex-col justify-between gap-10 md:flex-row md:items-center">
-                    {/* Brand Info */}
-                    <div className="flex flex-col items-start gap-2">
-                        <div className="flex items-center gap-3">
-                            <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--surface-border)] bg-[var(--surface)] font-mono text-sm font-extrabold text-[var(--secondary)]">
-                                MA.
-                            </span>
-                            <span className="font-display text-lg font-bold tracking-wider text-[var(--text)]">
-                                {siteTitle}
-                            </span>
+            <div className="mx-auto max-w-[1440px]">
+                {/* Colophon Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-10 sm:gap-12 pb-12 border-b border-border">
+                    {/* Brand Wordmark & Descriptor */}
+                    <div className="md:col-span-5 flex flex-col justify-between">
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <span className="font-display text-2xl sm:text-3xl font-black tracking-tight text-foreground uppercase">
+                                    {siteTitle}
+                                </span>
+                                <span className="h-2 w-2 bg-[var(--primary)]" />
+                            </div>
+                            <p className="mt-3 font-mono text-xs text-muted-foreground uppercase leading-relaxed max-w-sm">
+                                Independent Full-Stack Software Engineer & Digital Creator.
+                                Engineered for architectural integrity, performance, and expressive interactive craft.
+                            </p>
                         </div>
-                        <p className="max-w-md font-sans text-xs text-[var(--text-muted)] sm:text-sm">
-                            Full-Stack Software Engineer & Digital Product
-                            Builder specializing in high-performance web
-                            ecosystems.
-                        </p>
+
+                        <div className="mt-6 font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
+                            COLOPHON // ISSUE 2026 · EDITION 01
+                        </div>
                     </div>
 
-                    {/* Navigation Links */}
-                    {navLinks.length > 0 && (
-                        <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-                            {navLinks.map((item) => (
+                    {/* Section Links */}
+                    <div className="md:col-span-4">
+                        <span className="font-mono text-xs font-bold text-foreground uppercase tracking-widest block mb-4">
+                            INDEX DIRECTORY //
+                        </span>
+                        <div className="grid grid-cols-2 gap-2 font-mono text-xs">
+                            {navLinks.map((item, idx) => (
                                 <a
                                     key={item.key}
                                     href={`#${item.key}`}
-                                    className="font-sans text-xs font-medium text-[var(--text-muted)] transition-colors hover:text-[var(--secondary)]"
+                                    className="text-muted-foreground hover:text-foreground transition-colors uppercase py-1"
                                 >
-                                    {item.nav_label || item.title}
+                                    {(idx + 1).toString().padStart(2, '0')} / {item.nav_label || item.title}
                                 </a>
                             ))}
                         </div>
-                    )}
+                    </div>
 
-                    {/* Socials & Back to Top */}
-                    <div className="flex items-center gap-4">
-                        {socialLinks.length > 0 && (
-                            <div className="flex items-center gap-2.5">
-                                {socialLinks.map((item) => {
-                                    const IconComponent = item.icon;
-                                    return (
-                                        <a
-                                            key={item.key}
-                                            href={item.url as string}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            aria-label={item.label}
-                                            className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--surface-border)] bg-[var(--surface)] text-[var(--text-muted)] transition-all hover:scale-105 hover:border-[var(--secondary)] hover:text-[var(--text)]"
-                                        >
-                                            <IconComponent className="h-4 w-4" />
-                                        </a>
-                                    );
-                                })}
+                    {/* Socials & Colophon Tech Specs */}
+                    <div className="md:col-span-3 flex flex-col justify-between">
+                        <div>
+                            <span className="font-mono text-xs font-bold text-foreground uppercase tracking-widest block mb-4">
+                                DISPATCH CHANNELS //
+                            </span>
+                            <div className="flex flex-col gap-2 font-mono text-xs">
+                                {socialLinks.map((item) => (
+                                    <a
+                                        key={item.key}
+                                        href={item.url as string}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-muted-foreground hover:text-[var(--primary)] transition-colors uppercase flex items-center justify-between"
+                                    >
+                                        <span>{item.label}</span>
+                                        <span>[↗]</span>
+                                    </a>
+                                ))}
                             </div>
-                        )}
+                        </div>
 
-                        <button
-                            type="button"
-                            onClick={handleScrollTop}
-                            aria-label="Back to top of page"
-                            className="group flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--surface-border)] bg-[var(--surface)] text-[var(--text-muted)] shadow-sm transition-all hover:border-[var(--secondary)] hover:text-[var(--secondary)] hover:scale-105 active:scale-95"
-                        >
-                            <ArrowUp className="h-4 w-4 transition-transform group-hover:-translate-y-0.5" />
-                        </button>
+                        <div className="mt-6">
+                            <button
+                                type="button"
+                                onClick={handleScrollTop}
+                                className="w-full border border-foreground py-2 font-mono text-xs font-bold uppercase tracking-wider text-foreground hover:bg-foreground hover:text-background transition-colors flex items-center justify-center gap-2"
+                            >
+                                <span>RETURN TO TOP</span>
+                                <ArrowUp className="h-3.5 w-3.5" />
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                {/* Bottom Copyright */}
-                <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-[var(--surface-border)]/40 pt-8 sm:flex-row">
-                    <span className="font-mono text-xs text-[var(--text-muted)]">
-                        © {currentYear} Monayem Azam · All rights reserved.
-                    </span>
-                    <span className="font-mono text-xs text-[var(--text-muted)]">
-                        Crafted with Laravel, React & Three.js
-                    </span>
+                {/* Bottom Legal & Colophon Dispatches */}
+                <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[11px] text-muted-foreground uppercase tracking-wider">
+                    <span>© {currentYear} MONAYEM AZAM · ALL RIGHTS RESERVED</span>
+                    <span>BUILT WITH LARAVEL 12, REACT 19, TYPESCRIPT & SWISS EDITORIAL CRAFT</span>
                 </div>
             </div>
         </footer>

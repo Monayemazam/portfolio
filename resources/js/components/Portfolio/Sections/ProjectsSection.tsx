@@ -1,14 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import {
-    ArrowAngularTopRight,
-    Globe1,
-    Layers1,
-    Sparkle,
-    StarFat,
-} from '../Shared/Icons';
+import React, { useState } from 'react';
 import { PortfolioSection, ProjectItem } from '@/types/portfolio';
-import SolarSystemScene from '../Projects/SolarSystemScene';
 import ProjectDetailPanel from '../Projects/ProjectDetailPanel';
+import SolarSystemScene from '../Projects/SolarSystemScene';
 
 interface ProjectsSectionProps {
     section: PortfolioSection;
@@ -17,355 +10,218 @@ interface ProjectsSectionProps {
     isDark?: boolean;
 }
 
-// Procedural visual avatar styles for fallback planet illustrations
-function getPlanetAvatarGradient(
-    style: string,
-    accentColor?: string | null,
-): string {
-    switch (style) {
-        case 'rocky':
-            return 'radial-gradient(circle at 35% 35%, #e2e8f0 0%, #94a3b8 45%, #475569 80%, #1e293b 100%)';
-        case 'station':
-            return 'radial-gradient(circle at 35% 35%, #38bdf8 0%, #0369a1 40%, #0f172a 80%, #0284c7 100%)';
-        case 'amber':
-            return 'radial-gradient(circle at 35% 35%, #fef08a 0%, #d97706 45%, #78350f 80%, #451a03 100%)';
-        case 'ringed':
-            return 'radial-gradient(circle at 35% 35%, #fde68a 0%, #c4b5fd 40%, #7c3aed 75%, #4c1d95 100%)';
-        case 'ocean':
-            return 'radial-gradient(circle at 35% 35%, #38bdf8 0%, #0284c7 45%, #65a30d 75%, #082f49 100%)';
-        case 'desert':
-            return 'radial-gradient(circle at 35% 35%, #f97316 0%, #dc2626 50%, #9a3412 80%, #431407 100%)';
-        case 'generic':
-        default:
-            return `radial-gradient(circle at 35% 35%, #ffffff 0%, ${
-                accentColor || '#53e0f7'
-            } 50%, #8b6cff 85%, #080d1c 100%)`;
-    }
-}
-
 export default function ProjectsSection({
     section,
     projects,
     isOff = false,
-    isDark = true,
 }: ProjectsSectionProps) {
-    const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(
-        null,
-    );
-    const [isPanelOpen, setIsPanelOpen] = useState(false);
-    const [originElement, setOriginElement] = useState<HTMLElement | null>(
-        null,
-    );
-    const [isMobile, setIsMobile] = useState(false);
-    const [hasWebGL, setHasWebGL] = useState(true);
-    const [viewMode, setViewMode] = useState<'showcase' | 'system'>('showcase');
+    const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
+    const [isDetailOpen, setIsDetailOpen] = useState(false);
+    const [viewMode, setViewMode] = useState<'exhibition' | 'orbital'>('exhibition');
+    const [originEl, setOriginEl] = useState<HTMLElement | null>(null);
 
-    useEffect(() => {
-        const checkMobile = () => {
-            setIsMobile(window.innerWidth < 768);
-        };
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
+    // Sort projects strictly by featured status and sort_order
+    const sorted = [...projects].sort((a, b) => {
+        if (a.is_featured && !b.is_featured) return -1;
+        if (!a.is_featured && b.is_featured) return 1;
+        return (a.sort_order ?? 0) - (b.sort_order ?? 0);
+    });
 
-        try {
-            const canvas = document.createElement('canvas');
-            const gl =
-                canvas.getContext('webgl') ||
-                canvas.getContext('experimental-webgl');
-            setHasWebGL(Boolean(gl));
-        } catch {
-            setHasWebGL(false);
-        }
+    const featuredProject = sorted[0];
+    const remainingProjects = sorted.slice(1);
 
-        return () => window.removeEventListener('resize', checkMobile);
-    }, []);
-
-    // Deep Linking: Support /#project-slug
-    useEffect(() => {
-        const handleHashChange = () => {
-            if (typeof window === 'undefined') return;
-            const hash = window.location.hash.replace(/^#/, '').trim();
-            if (!hash || hash === 'projects') return;
-
-            const matched = projects.find((p) => p.slug === hash);
-            if (matched) {
-                setSelectedProject(matched);
-                setIsPanelOpen(true);
-            }
-        };
-
-        handleHashChange();
-        window.addEventListener('hashchange', handleHashChange);
-        return () => window.removeEventListener('hashchange', handleHashChange);
-    }, [projects]);
-
-    const handleOpenProject = (project: ProjectItem, element?: HTMLElement) => {
+    const openProject = (project: ProjectItem, el: HTMLElement) => {
         setSelectedProject(project);
-        setIsPanelOpen(true);
-        if (element) {
-            setOriginElement(element);
-        }
-        if (typeof window !== 'undefined' && window.history?.replaceState) {
-            window.history.replaceState(null, '', `#${project.slug}`);
-        }
+        setOriginEl(el);
+        setIsDetailOpen(true);
     };
-
-    const handleClosePanel = () => {
-        setIsPanelOpen(false);
-        if (typeof window !== 'undefined' && window.history?.replaceState) {
-            window.history.replaceState(null, '', '#projects');
-        }
-    };
-
-    if (!projects || projects.length === 0) return null;
-
-    // First featured project is visually dominant
-    const primaryFeatured = useMemo(() => {
-        return projects.find((p) => p.is_featured) || projects[0];
-    }, [projects]);
-
-    const remainingProjects = useMemo(() => {
-        return projects.filter((p) => p.id !== primaryFeatured?.id);
-    }, [projects, primaryFeatured]);
-
-    const eyebrow = section.eyebrow || 'SELECTED WORK';
-    const title = section.title || 'Selected Work';
-    const subtitle =
-        section.subtitle ||
-        'Real-world business platforms, high-concurrency Laravel systems, and responsive e-commerce web applications.';
 
     return (
         <section
-            id="projects"
-            aria-label="Projects Showcase"
-            className="relative w-full overflow-hidden px-4 py-24 sm:px-6 sm:py-32 md:px-10 lg:px-16 lg:py-36 xl:px-20"
+            id={section.key}
+            aria-label="Curated Projects Exhibition"
+            className="w-full border-b border-border bg-[var(--bg)] px-6 sm:px-8 xl:px-12 py-20 lg:py-28"
         >
-            {/* Atmospheric Lighting */}
-            <div
-                className="pointer-events-none absolute top-1/4 left-10 h-[600px] w-[600px] rounded-full bg-[var(--primary)]/10 blur-[150px]"
-                aria-hidden="true"
-            />
-            <div
-                className="pointer-events-none absolute bottom-1/4 right-10 h-[500px] w-[500px] rounded-full bg-[var(--secondary)]/10 blur-[130px]"
-                aria-hidden="true"
-            />
-
-            <div className="mx-auto w-full max-w-[1440px]">
-                {/* Section Header & View Mode Switcher */}
-                <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
-                    <div className="flex flex-col items-start max-w-3xl">
-                        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--surface-border)] bg-[var(--surface)] px-3.5 py-1.5 shadow-sm backdrop-blur-md">
-                            <Sparkle className="h-3.5 w-3.5 text-[var(--secondary)]" />
-                            <span className="font-mono text-xs font-semibold tracking-[0.14em] text-[var(--secondary)] uppercase">
-                                {eyebrow}
-                            </span>
-                        </div>
-
-                        <div className="flex flex-wrap items-baseline gap-4">
-                            <h2 className="font-display text-[clamp(2.2rem,4.5vw,3.75rem)] font-extrabold leading-[1.08] tracking-tight text-[var(--text)]">
-                                {title}
-                            </h2>
-                            <span className="rounded-full border border-[var(--surface-border)] bg-[var(--surface)] px-3 py-1 font-mono text-xs font-bold text-[var(--secondary)]">
-                                {projects.length} Platforms
-                            </span>
-                        </div>
-
-                        <p className="mt-4 font-sans text-base leading-relaxed text-[var(--text-muted)] sm:text-lg">
-                            {subtitle}
-                        </p>
+            <div className="mx-auto max-w-[1440px]">
+                {/* Section Header Strip */}
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase">
+                    <div className="flex items-center gap-3">
+                        <span className="bg-[var(--primary)] text-white px-2 py-0.5 font-bold">
+                            SEC. 03
+                        </span>
+                        <span>CURATED EXHIBITION // SELECTED CASE STUDIES</span>
                     </div>
 
-                    {/* View Switcher (Editorial Showcase vs 3D Solar System) */}
-                    {!isMobile && hasWebGL && !isOff && (
-                        <div className="inline-flex items-center gap-1 rounded-2xl border border-[var(--surface-border)] bg-[var(--surface)] p-1.5 shadow-lg backdrop-blur-xl">
+                    {/* View mode toggle */}
+                    <div className="flex items-center gap-3">
+                        <span className="hidden sm:inline">VIEW MODE:</span>
+                        <div className="flex border border-border">
                             <button
                                 type="button"
-                                onClick={() => setViewMode('showcase')}
-                                aria-label="Editorial Showcase View"
-                                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 font-mono text-xs font-bold transition-all ${
-                                    viewMode === 'showcase'
-                                        ? 'bg-[var(--secondary)] text-[#080d1c] shadow-[0_0_15px_rgba(83,224,247,0.4)]'
-                                        : 'text-[var(--text-muted)] hover:text-[var(--text)]'
+                                onClick={() => setViewMode('exhibition')}
+                                className={`px-3 py-1 font-mono text-[11px] font-bold uppercase transition-colors ${
+                                    viewMode === 'exhibition'
+                                        ? 'bg-foreground text-background'
+                                        : 'bg-transparent text-foreground hover:bg-muted'
                                 }`}
                             >
-                                <Layers1 className="h-4 w-4" />
-                                <span>Editorial Showcase</span>
+                                EXHIBITION
                             </button>
-
                             <button
                                 type="button"
-                                onClick={() => setViewMode('system')}
-                                aria-label="3D Solar System View"
-                                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 font-mono text-xs font-bold transition-all ${
-                                    viewMode === 'system'
-                                        ? 'bg-[var(--primary)] text-white shadow-[0_0_15px_rgba(139,108,255,0.4)]'
-                                        : 'text-[var(--text-muted)] hover:text-[var(--text)]'
+                                onClick={() => setViewMode('orbital')}
+                                className={`px-3 py-1 font-mono text-[11px] font-bold uppercase transition-colors ${
+                                    viewMode === 'orbital'
+                                        ? 'bg-foreground text-background'
+                                        : 'bg-transparent text-foreground hover:bg-muted'
                                 }`}
                             >
-                                <Globe1 className="h-4 w-4" />
-                                <span>3D Orbit System</span>
+                                3D ORBIT
                             </button>
                         </div>
-                    )}
+                    </div>
                 </div>
 
-                {/* 3D Solar System View (when explicitly activated by visitor) */}
-                {viewMode === 'system' && !isMobile && hasWebGL && !isOff ? (
-                    <div className="mt-12">
-                        <SolarSystemScene
-                            projects={projects}
-                            activeProject={selectedProject}
-                            onSelectProject={handleOpenProject}
-                            isDark={isDark}
-                            isOff={isOff}
-                        />
+                {/* Section Title & Exhibition Manifesto */}
+                <div className="mt-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                    <div>
+                        <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
+                            // CATALOGUE ARCHIVE
+                        </span>
+                        <h2 className="mt-2 font-display text-4xl sm:text-6xl font-black tracking-tight text-foreground uppercase">
+                            SELECTED WORK,
+                            <br />
+                            BUILT TO WORK.
+                        </h2>
+                    </div>
+                    <div className="max-w-md font-mono text-xs text-muted-foreground leading-relaxed uppercase">
+                        <p>
+                            Each exhibit represents a bespoke architecture delivered for real organizations.
+                            From multi-tenant enterprise platforms to high-performance consumer e-commerce.
+                        </p>
+                        <p className="mt-2 font-bold text-foreground">
+                            TOTAL EXHIBITS CATALOGUED: [{sorted.length.toString().padStart(2, '0')}]
+                        </p>
+                    </div>
+                </div>
+
+                {/* VIEW MODE: 3D Orbital Fly-Through Mode */}
+                {viewMode === 'orbital' ? (
+                    <div className="mt-12 border-2 border-foreground bg-black/90 p-4 sm:p-6 text-white min-h-[600px] flex flex-col justify-between">
+                        <div className="flex items-center justify-between border-b border-white/20 pb-3 font-mono text-xs">
+                            <span className="text-[var(--accent)] font-bold">
+                                // 3D CELESTIAL PROJECTION
+                            </span>
+                            <span>SELECT PLANET TO ACCESS PROJECT DOSSIER</span>
+                        </div>
+                        <div className="h-[520px] w-full">
+                            <SolarSystemScene
+                                projects={sorted}
+                                activeProject={selectedProject}
+                                onSelectProject={(p: ProjectItem) => {
+                                    setSelectedProject(p);
+                                    setIsDetailOpen(true);
+                                }}
+                            />
+                        </div>
                     </div>
                 ) : (
-                    /* Default: Award-Winning Editorial Project Showcase */
-                    <div className="mt-12 sm:mt-16 flex flex-col gap-10">
-                        {/* 1. VISUALLY DOMINANT FEATURED PROJECT */}
-                        {primaryFeatured && (
-                            <div className="group relative overflow-hidden rounded-3xl border border-[var(--surface-border)] bg-gradient-to-br from-[var(--surface)] via-[var(--bg-elevated)] to-[var(--surface)] p-6 shadow-2xl backdrop-blur-xl transition-all duration-500 hover:border-[var(--secondary)]/50 sm:p-10 lg:p-12">
-                                {/* Subtle Ambient Aura tinted by project accent */}
-                                <div
-                                    className="pointer-events-none absolute -top-20 -right-20 h-96 w-96 rounded-full opacity-20 blur-3xl transition-opacity group-hover:opacity-35"
-                                    style={{
-                                        backgroundColor:
-                                            primaryFeatured.accent_color ||
-                                            'var(--secondary)',
-                                    }}
-                                />
+                    /* VIEW MODE: Curated Exhibition with Varied Compositions */
+                    <div className="mt-12 space-y-12 sm:space-y-16">
+                        {/* 1. FEATURED EXHIBIT: Dominant Split Spread (ASN Group) */}
+                        {featuredProject && (
+                            <div className="border-2 border-foreground bg-surface p-6 sm:p-10 shadow-sm">
+                                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4 font-mono text-xs text-muted-foreground uppercase">
+                                    <div className="flex items-center gap-2">
+                                        <span className="stamp-orange">
+                                            PRINCIPAL EXHIBIT // 01
+                                        </span>
+                                        <span className="font-bold text-foreground">
+                                            {featuredProject.business_type || 'CONGLOMERATE ERP'}
+                                        </span>
+                                    </div>
+                                    <span>STATUS: PRODUCTION // {featuredProject.year || '2025'}</span>
+                                </div>
 
-                                <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12">
-                                    {/* Left: Large Visual Centerpiece or Cover Preview */}
-                                    <div className="relative flex items-center justify-center lg:col-span-6">
-                                        <div className="relative flex aspect-[16/10] w-full items-center justify-center overflow-hidden rounded-2xl border border-[var(--surface-border)] bg-[var(--bg)]/80 shadow-2xl">
-                                            {primaryFeatured.cover_media?.url ? (
+                                <div className="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+                                    {/* Left: Oversized Image or Generative Visual */}
+                                    <div className="lg:col-span-7">
+                                        <div
+                                            className="relative aspect-16/10 w-full overflow-hidden border-2 border-foreground bg-muted group cursor-pointer"
+                                            onClick={(e) => openProject(featuredProject, e.currentTarget)}
+                                            data-field-tag="ASN.GROUP"
+                                        >
+                                            {featuredProject.cover_media?.url ? (
                                                 <img
-                                                    src={
-                                                        primaryFeatured
-                                                            .cover_media.url
-                                                    }
-                                                    alt={primaryFeatured.title}
-                                                    className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                                                    src={featuredProject.cover_media.url}
+                                                    alt={featuredProject.title}
+                                                    className="h-full w-full object-cover grayscale contrast-110 transition-transform duration-500 group-hover:scale-105 group-hover:grayscale-0"
                                                 />
                                             ) : (
-                                                /* Distinctive Planet Celestial Showcase */
-                                                <div className="relative flex h-full w-full flex-col items-center justify-center p-8 text-center">
-                                                    <div
-                                                        className="relative flex h-40 w-40 items-center justify-center rounded-full border border-white/20 shadow-2xl transition-transform duration-500 group-hover:scale-110 sm:h-52 sm:w-52"
-                                                        style={{
-                                                            background:
-                                                                getPlanetAvatarGradient(
-                                                                    primaryFeatured.planet_style,
-                                                                    primaryFeatured.accent_color,
-                                                                ),
-                                                            boxShadow: `0 0 50px ${
-                                                                primaryFeatured.accent_color ||
-                                                                'var(--secondary)'
-                                                            }40`,
-                                                        }}
-                                                    >
-                                                        {primaryFeatured.planet_style ===
-                                                            'station' && (
-                                                            <div className="absolute inset-0 -m-3 animate-spin rounded-full border-2 border-dashed border-cyan-300/50 [animation-duration:35s]" />
-                                                        )}
-                                                        {primaryFeatured.planet_style ===
-                                                            'ringed' && (
-                                                            <div className="absolute inset-0 -m-5 scale-y-50 -rotate-25 rounded-full border border-violet-300/50" />
-                                                        )}
-                                                        <span className="font-mono text-xs font-bold text-white uppercase drop-shadow-md">
-                                                            {
-                                                                primaryFeatured.planet_style
-                                                            }
-                                                        </span>
-                                                    </div>
+                                                <div className="flex h-full w-full flex-col items-center justify-center bg-[var(--surface-sand)]/60 p-8 text-center">
+                                                    <span className="font-display text-4xl sm:text-6xl font-black tracking-tight text-foreground/40">
+                                                        {featuredProject.title}
+                                                    </span>
+                                                    <span className="mt-2 font-mono text-xs tracking-widest text-[var(--primary)] uppercase">
+                                                        [ARCHITECTURAL ENTERPRISE CASE STUDY]
+                                                    </span>
                                                 </div>
                                             )}
 
-                                            {/* Featured Pill */}
-                                            <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-[var(--accent)] px-3 py-1 font-mono text-[10px] font-bold text-[#080d1c] uppercase shadow-lg">
-                                                <StarFat className="h-3 w-3" />
-                                                <span>Featured Flagship</span>
+                                            <div className="absolute bottom-4 left-4 stamp-ink">
+                                                CLICK TO INSPECT DOSSIER
                                             </div>
                                         </div>
                                     </div>
 
-                                    {/* Right: Project Narrative, Metadata, and Dual Actions */}
-                                    <div className="flex flex-col items-start lg:col-span-6">
-                                        <div className="flex flex-wrap items-center gap-3 font-mono text-xs text-[var(--text-muted)]">
-                                            {primaryFeatured.year && (
-                                                <span className="font-bold text-[var(--secondary)]">
-                                                    {primaryFeatured.year}
-                                                </span>
-                                            )}
-                                            {primaryFeatured.business_type && (
-                                                <span>
-                                                    •{' '}
-                                                    {
-                                                        primaryFeatured.business_type
-                                                    }
-                                                </span>
-                                            )}
-                                            {primaryFeatured.role && (
-                                                <span>
-                                                    • {primaryFeatured.role}
-                                                </span>
+                                    {/* Right: Project Title, Summary, Stack, and Direct Actions */}
+                                    <div className="lg:col-span-5 flex flex-col justify-between">
+                                        <div>
+                                            <span className="font-mono text-xs font-bold text-[var(--primary)] tracking-widest uppercase">
+                                                {featuredProject.role || 'LEAD ARCHITECT & DEVELOPER'}
+                                            </span>
+                                            <h3 className="mt-2 font-display text-3xl sm:text-5xl font-black tracking-tight text-foreground uppercase">
+                                                {featuredProject.title}
+                                            </h3>
+                                            <p className="mt-4 font-body text-base sm:text-lg leading-relaxed text-foreground/80">
+                                                {featuredProject.summary ||
+                                                    featuredProject.description}
+                                            </p>
+
+                                            {/* Stack labels as clean monospaced text */}
+                                            {featuredProject.tags && featuredProject.tags.length > 0 && (
+                                                <div className="mt-6 flex flex-wrap gap-2">
+                                                    {featuredProject.tags.map((tag) => (
+                                                        <span
+                                                            key={tag.id}
+                                                            className="editorial-tag bg-background text-foreground"
+                                                        >
+                                                            {tag.name}
+                                                        </span>
+                                                    ))}
+                                                </div>
                                             )}
                                         </div>
 
-                                        <h3 className="mt-3 font-display text-2xl font-bold tracking-tight text-[var(--text)] transition-colors group-hover:text-[var(--secondary)] sm:text-3xl lg:text-4xl">
-                                            {primaryFeatured.title}
-                                        </h3>
-
-                                        <p className="mt-4 font-sans text-base leading-relaxed text-[var(--text-muted)] sm:text-lg">
-                                            {primaryFeatured.summary}
-                                        </p>
-
-                                        {/* Technology Tags */}
-                                        {primaryFeatured.tags &&
-                                            primaryFeatured.tags.length > 0 && (
-                                                <div className="mt-6 flex flex-wrap gap-2">
-                                                    {primaryFeatured.tags.map(
-                                                        (t) => (
-                                                            <span
-                                                                key={t.id}
-                                                                className="rounded-lg border border-[var(--surface-border)] bg-[var(--surface)] px-3 py-1 font-mono text-xs font-medium text-[var(--text)]"
-                                                            >
-                                                                {t.name}
-                                                            </span>
-                                                        ),
-                                                    )}
-                                                </div>
-                                            )}
-
-                                        {/* Actions */}
-                                        <div className="mt-8 flex flex-wrap items-center gap-4">
+                                        <div className="mt-8 sm:mt-10 pt-6 border-t border-border flex flex-wrap items-center gap-4">
                                             <button
                                                 type="button"
-                                                onClick={(e) =>
-                                                    handleOpenProject(
-                                                        primaryFeatured,
-                                                        e.currentTarget,
-                                                    )
-                                                }
-                                                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)] px-6 py-3 font-sans text-sm font-bold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(83,224,247,0.35)] active:scale-95"
+                                                onClick={(e) => openProject(featuredProject, e.currentTarget)}
+                                                className="bg-[var(--primary)] px-6 py-3 font-mono text-xs font-bold uppercase tracking-wider text-white transition-opacity hover:opacity-90"
+                                                data-field-tag="DOSSIER"
                                             >
-                                                <span>Explore Project</span>
-                                                <ArrowAngularTopRight className="h-4 w-4" />
+                                                VIEW PROJECT DOSSIER [→]
                                             </button>
 
-                                            {primaryFeatured.live_url && (
+                                            {featuredProject.live_url && (
                                                 <a
-                                                    href={
-                                                        primaryFeatured.live_url
-                                                    }
+                                                    href={featuredProject.live_url}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="inline-flex items-center gap-2 rounded-xl border border-[var(--surface-border)] bg-[var(--surface)] px-6 py-3 font-sans text-sm font-semibold text-[var(--text)] transition-all duration-300 hover:border-[var(--secondary)] hover:text-[var(--secondary)]"
+                                                    className="border border-foreground px-5 py-3 font-mono text-xs font-bold uppercase tracking-wider text-foreground hover:bg-foreground hover:text-background transition-colors"
+                                                    data-field-tag="LIVE"
                                                 >
-                                                    <span>Visit Live Site</span>
-                                                    <ArrowAngularTopRight className="h-3.5 w-3.5 opacity-70" />
+                                                    LIVE SITE [↗]
                                                 </a>
                                             )}
                                         </div>
@@ -374,146 +230,122 @@ export default function ProjectsSection({
                             </div>
                         )}
 
-                        {/* 2. REMAINING PROJECTS EDITORIAL GRID */}
-                        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                        {/* 2. REMAINING PROJECTS WITH DELIBERATELY VARIED COMPOSITIONS */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-10">
                             {remainingProjects.map((project, idx) => {
-                                const accent =
-                                    project.accent_color || 'var(--secondary)';
-                                const planetGrad = getPlanetAvatarGradient(
-                                    project.planet_style,
-                                    project.accent_color,
-                                );
+                                const indexStr = (idx + 2).toString().padStart(2, '0');
+                                // Give each card a distinct editorial character:
+                                // Index 02: Wide Sand plate (col-span-7)
+                                // Index 03: Deep Forest solid interruption (col-span-5)
+                                // Index 04: Minimalist Stark Ink plate (col-span-6)
+                                // Index 05: Maritime Coordinate spread (col-span-6)
+                                // Index 06: Full-width plate (col-span-12)
+                                const isForest = project.slug === 'tasa' || idx === 1;
+                                const isSand = idx === 0;
+                                const colSpan =
+                                    idx === 0 ? 'lg:col-span-7' :
+                                    idx === 1 ? 'lg:col-span-5' :
+                                    idx === 2 ? 'lg:col-span-6' :
+                                    idx === 3 ? 'lg:col-span-6' : 'lg:col-span-12';
 
                                 return (
                                     <div
                                         key={project.id}
-                                        tabIndex={0}
-                                        role="button"
-                                        aria-label={`Open project details for ${project.title}`}
-                                        onClick={(e) =>
-                                            handleOpenProject(
-                                                project,
-                                                e.currentTarget,
-                                            )
-                                        }
-                                        onKeyDown={(e) => {
-                                            if (
-                                                e.key === 'Enter' ||
-                                                e.key === ' '
-                                            ) {
-                                                e.preventDefault();
-                                                handleOpenProject(
-                                                    project,
-                                                    e.currentTarget,
-                                                );
-                                            }
-                                        }}
-                                        className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-[var(--surface-border)] bg-[var(--surface)] p-6 shadow-xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-[var(--secondary)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.35)] focus-visible:ring-2 focus-visible:ring-[var(--secondary)] focus-visible:outline-none"
+                                        className={`${colSpan} border-2 border-foreground p-6 sm:p-8 flex flex-col justify-between transition-transform hover:-translate-y-1 ${
+                                            isForest
+                                                ? 'bg-[var(--bg-forest)] text-white'
+                                                : isSand
+                                                ? 'bg-[var(--surface-sand)]/60 text-foreground'
+                                                : 'bg-surface text-foreground'
+                                        }`}
                                     >
                                         <div>
-                                            {/* Card Top: Distinctive Visual Avatar / Thumbnail */}
-                                            <div className="relative mb-6 flex aspect-[16/9] w-full items-center justify-center overflow-hidden rounded-2xl border border-[var(--surface-border)] bg-[var(--bg-elevated)]">
-                                                {project.cover_media?.url ? (
-                                                    <img
-                                                        src={
-                                                            project.cover_media
-                                                                .url
-                                                        }
-                                                        alt={project.title}
-                                                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                                    />
-                                                ) : (
-                                                    <div className="relative flex h-full w-full items-center justify-center">
-                                                        <div
-                                                            className="flex h-24 w-24 items-center justify-center rounded-full border border-white/20 shadow-xl transition-transform duration-500 group-hover:scale-110"
-                                                            style={{
-                                                                background:
-                                                                    planetGrad,
-                                                                boxShadow: `0 0 25px ${accent}40`,
-                                                            }}
-                                                        >
-                                                            {project.planet_style ===
-                                                                'ringed' && (
-                                                                <div className="absolute inset-0 -m-3 scale-y-50 -rotate-25 rounded-full border border-violet-300/40" />
-                                                            )}
-                                                            <span className="font-mono text-[9px] font-bold text-white uppercase drop-shadow">
-                                                                {
-                                                                    project.planet_style
-                                                                }
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                )}
-
-                                                <span className="absolute top-3 left-3 rounded-full border border-[var(--surface-border)] bg-[var(--surface)]/90 px-2.5 py-0.5 font-mono text-[10px] font-bold text-[var(--secondary)] backdrop-blur-md">
-                                                    0{idx + 2}
+                                            {/* Top Index and Business Sector */}
+                                            <div className="flex items-center justify-between border-b border-current/20 pb-3 font-mono text-xs">
+                                                <span className={`font-black ${isForest ? 'text-[var(--accent)]' : 'text-[var(--primary)]'}`}>
+                                                    EXHIBIT // {indexStr}
+                                                </span>
+                                                <span className="uppercase tracking-wider opacity-80">
+                                                    {project.business_type || 'DIGITAL SYSTEM'}
                                                 </span>
                                             </div>
 
-                                            {/* Metadata */}
-                                            <div className="flex flex-wrap items-center gap-2 font-mono text-xs text-[var(--text-muted)]">
-                                                {project.year && (
-                                                    <span className="font-bold text-[var(--secondary)]">
-                                                        {project.year}
-                                                    </span>
-                                                )}
-                                                {project.business_type && (
-                                                    <span>
-                                                        •{' '}
-                                                        {project.business_type}
-                                                    </span>
+                                            {/* Media Box or Typographic Cover */}
+                                            <div
+                                                className="mt-6 aspect-16/10 w-full overflow-hidden border border-current/30 cursor-pointer group"
+                                                onClick={(e) => openProject(project, e.currentTarget)}
+                                                data-field-tag={project.slug}
+                                            >
+                                                {project.cover_media?.url ? (
+                                                    <img
+                                                        src={project.cover_media.url}
+                                                        alt={project.title}
+                                                        className="h-full w-full object-cover grayscale contrast-110 transition-all duration-300 group-hover:scale-105 group-hover:grayscale-0"
+                                                    />
+                                                ) : (
+                                                    <div className="flex h-full w-full flex-col items-center justify-center p-6 text-center bg-black/10">
+                                                        <span className="font-display text-2xl sm:text-3xl font-black uppercase opacity-60">
+                                                            {project.title}
+                                                        </span>
+                                                        <span className="mt-2 font-mono text-[10px] tracking-widest uppercase opacity-75">
+                                                            [{project.role || 'FULL-STACK'}]
+                                                        </span>
+                                                    </div>
                                                 )}
                                             </div>
 
-                                            {/* Title */}
-                                            <h3 className="mt-2 font-display text-xl font-bold text-[var(--text)] transition-colors group-hover:text-[var(--secondary)]">
+                                            {/* Project Title & Summary */}
+                                            <h3 className="mt-6 font-display text-2xl sm:text-3xl font-black tracking-tight uppercase">
                                                 {project.title}
                                             </h3>
 
-                                            {/* Summary */}
-                                            <p className="mt-3 line-clamp-2 font-sans text-sm leading-relaxed text-[var(--text-muted)]">
-                                                {project.summary}
+                                            <p className="mt-3 font-body text-sm sm:text-base leading-relaxed opacity-85">
+                                                {project.summary || project.description}
                                             </p>
+
+                                            {/* Tags */}
+                                            {project.tags && project.tags.length > 0 && (
+                                                <div className="mt-5 flex flex-wrap gap-1.5">
+                                                    {project.tags.slice(0, 4).map((t) => (
+                                                        <span
+                                                            key={t.id}
+                                                            className={`font-mono text-[10px] px-2 py-0.5 border ${
+                                                                isForest
+                                                                    ? 'border-white/30 text-white'
+                                                                    : 'border-foreground/30 text-foreground'
+                                                            }`}
+                                                        >
+                                                            {t.name}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </div>
 
-                                        {/* Card Bottom: Tags & Action Links */}
-                                        <div className="mt-6 border-t border-[var(--surface-border)]/50 pt-4">
-                                            {project.tags &&
-                                                project.tags.length > 0 && (
-                                                    <div className="mb-4 flex flex-wrap gap-1.5">
-                                                        {project.tags
-                                                            .slice(0, 3)
-                                                            .map((t) => (
-                                                                <span
-                                                                    key={t.id}
-                                                                    className="rounded-md border border-[var(--surface-border)] bg-[var(--bg-elevated)] px-2 py-0.5 font-mono text-[10px] text-[var(--text-muted)]"
-                                                                >
-                                                                    {t.name}
-                                                                </span>
-                                                            ))}
-                                                    </div>
-                                                )}
+                                        {/* Bottom Actions */}
+                                        <div className="mt-8 pt-4 border-t border-current/20 flex items-center justify-between font-mono text-xs">
+                                            <button
+                                                type="button"
+                                                onClick={(e) => openProject(project, e.currentTarget)}
+                                                className={`font-bold uppercase tracking-wider transition-colors hover:underline ${
+                                                    isForest ? 'text-[var(--accent)]' : 'text-[var(--primary)]'
+                                                }`}
+                                                data-field-tag="DOSSIER"
+                                            >
+                                                INSPECT DOSSIER [→]
+                                            </button>
 
-                                            <div className="flex items-center justify-between">
-                                                <span className="inline-flex items-center gap-1 font-sans text-xs font-bold text-[var(--secondary)] transition-transform group-hover:translate-x-1">
-                                                    <span>View Case Study</span>
-                                                    <ArrowAngularTopRight className="h-3 w-3" />
-                                                </span>
-
-                                                {project.live_url && (
-                                                    <a
-                                                        href={project.live_url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        onClick={(e) =>
-                                                            e.stopPropagation()
-                                                        }
-                                                        className="font-mono text-[11px] text-[var(--text-muted)] hover:text-[var(--text)] underline-offset-4 hover:underline"
-                                                    >
-                                                        Live Site ↗
-                                                    </a>
-                                                )}
-                                            </div>
+                                            {project.live_url && (
+                                                <a
+                                                    href={project.live_url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="opacity-80 hover:opacity-100 hover:underline uppercase"
+                                                    data-field-tag="EXTERNAL"
+                                                >
+                                                    LIVE SITE [↗]
+                                                </a>
+                                            )}
                                         </div>
                                     </div>
                                 );
@@ -523,14 +355,14 @@ export default function ProjectsSection({
                 )}
             </div>
 
-            {/* Redesigned Project Detail Slide-over Panel */}
+            {/* Redesigned Editorial Project Dossier Modal */}
             <ProjectDetailPanel
                 project={selectedProject}
-                projects={projects}
-                isOpen={isPanelOpen}
-                onClose={handleClosePanel}
-                onSelectProject={(proj) => setSelectedProject(proj)}
-                originElement={originElement}
+                projects={sorted}
+                isOpen={isDetailOpen}
+                onClose={() => setIsDetailOpen(false)}
+                onSelectProject={(p) => setSelectedProject(p)}
+                originElement={originEl}
             />
         </section>
     );
