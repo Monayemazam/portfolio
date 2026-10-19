@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Rocket5 } from '../Shared/Icons';
 
 interface SpaceLoaderProps {
     onComplete?: () => void;
@@ -20,12 +19,12 @@ export default function SpaceLoader({
             const timeout = setTimeout(() => {
                 setIsVisible(false);
                 onComplete?.();
-            }, 100);
+            }, 50);
             return () => clearTimeout(timeout);
         }
 
         const startTime = Date.now();
-        const duration = 1400; // 1.4 seconds, strictly within the 1.2s to 2.0s spec
+        const duration = 900; // Snappy 900ms editorial entrance
 
         const interval = setInterval(() => {
             const elapsed = Date.now() - startTime;
@@ -41,11 +40,10 @@ export default function SpaceLoader({
                 setTimeout(() => {
                     setIsVisible(false);
                     onComplete?.();
-                }, 400); // 400ms fade transition
+                }, 300);
             }
-        }, 30);
+        }, 20);
 
-        // Safety hard limit: never hold the visitor longer than 2000ms
         const maxSafetyTimer = setTimeout(() => {
             clearInterval(interval);
             setProgress(100);
@@ -53,8 +51,8 @@ export default function SpaceLoader({
             setTimeout(() => {
                 setIsVisible(false);
                 onComplete?.();
-            }, 200);
-        }, 2000);
+            }, 150);
+        }, 1500);
 
         return () => {
             clearInterval(interval);
@@ -64,49 +62,70 @@ export default function SpaceLoader({
 
     if (!isVisible) return null;
 
-    // Rocket vertical offset based on percentage
-    const rocketBottom = `${Math.min(85, Math.max(15, progress * 0.7 + 15))}%`;
-
     return (
         <div
-            aria-label="Mission loading sequence"
+            aria-label="Editorial publication initialization"
             role="progressbar"
             aria-valuenow={progress}
             aria-valuemin={0}
             aria-valuemax={100}
-            className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[var(--bg)] transition-opacity duration-400 ${
+            className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[var(--bg)] transition-opacity duration-300 ${
                 isFading ? 'pointer-events-none opacity-0' : 'opacity-100'
             }`}
         >
-            <div className="relative flex h-64 w-48 flex-col items-center justify-end">
-                {/* Vertical Launch Trajectory Line */}
-                <div className="absolute top-4 bottom-12 w-0.5 bg-gradient-to-t from-[var(--secondary)] via-[var(--primary)] to-transparent opacity-40" />
+            {/* Architectural Registration Caliper Box */}
+            <div className="relative flex w-[320px] sm:w-[380px] flex-col border-2 border-foreground bg-surface p-6 sm:p-8 shadow-sm">
+                {/* Corner Hairline Registration Marks */}
+                <span className="absolute -top-3 -left-3 font-mono text-base font-bold text-[var(--primary)] select-none">
+                    +
+                </span>
+                <span className="absolute -top-3 -right-3 font-mono text-base font-bold text-[var(--primary)] select-none">
+                    +
+                </span>
+                <span className="absolute -bottom-3 -left-3 font-mono text-base font-bold text-[var(--primary)] select-none">
+                    +
+                </span>
+                <span className="absolute -bottom-3 -right-3 font-mono text-base font-bold text-[var(--primary)] select-none">
+                    +
+                </span>
 
-                {/* Ascending Rocket */}
-                <div
-                    className="absolute left-1/2 flex -translate-x-1/2 flex-col items-center transition-all duration-75"
-                    style={{ bottom: rocketBottom }}
-                >
-                    <div className="relative">
-                        <Rocket5 className="h-8 w-8 animate-pulse text-[var(--accent)] drop-shadow-[0_0_12px_var(--accent)]" />
-                        {/* Rocket flame/thrust */}
-                        <div className="absolute -bottom-2 left-1/2 h-4 w-1.5 -translate-x-1/2 rounded-full bg-gradient-to-b from-[var(--accent)] to-transparent blur-[1px]" />
+                {/* Top Masthead Strip */}
+                <div className="flex items-center justify-between border-b border-border pb-3 font-mono text-[10px] tracking-widest uppercase text-muted-foreground">
+                    <span className="flex items-center gap-1.5 font-bold text-foreground">
+                        <span className="h-1.5 w-1.5 bg-[var(--primary)] inline-block" />
+                        MONAYEM AZAM
+                    </span>
+                    <span>VOL. 26</span>
+                </div>
+
+                {/* Main Typographic Monogram & Counter */}
+                <div className="my-6 flex items-baseline justify-between">
+                    <div>
+                        <span className="font-mono text-xs font-bold text-[var(--primary)] uppercase tracking-wider">
+                            INITIALIZING //
+                        </span>
+                        <div className="font-display text-2xl font-black uppercase text-foreground tracking-tight">
+                            DIGITAL FIELD NOTES
+                        </div>
+                    </div>
+                    <div className="font-mono text-3xl font-black text-foreground">
+                        {progress.toString().padStart(2, '0')}
+                        <span className="text-sm font-bold text-[var(--primary)]">%</span>
                     </div>
                 </div>
 
-                {/* Counter & Telemetry Line */}
-                <div className="relative z-10 flex flex-col items-center text-center">
-                    <span className="font-display text-4xl font-extrabold tracking-wider text-[var(--text)]">
-                        {progress}
-                        <span className="text-xl text-[var(--secondary)]">
-                            %
-                        </span>
-                    </span>
-                    <span className="mt-2 font-mono text-xs font-semibold tracking-[0.2em] text-[var(--secondary)] uppercase">
-                        {progress < 100
-                            ? 'PRE-FLIGHT SYSTEMS CHECK'
-                            : 'ALL SYSTEMS GO'}
-                    </span>
+                {/* Editorial Progress Bar */}
+                <div className="relative h-2 w-full overflow-hidden border border-foreground bg-background">
+                    <div
+                        className="h-full bg-[var(--primary)] transition-all duration-75 ease-out"
+                        style={{ width: `${progress}%` }}
+                    />
+                </div>
+
+                {/* Bottom Status Text */}
+                <div className="mt-3 flex items-center justify-between font-mono text-[9px] uppercase tracking-widest text-muted-foreground">
+                    <span>STATUS: {progress < 100 ? 'COMPILING CATALOGUE' : 'ARCHIVE READY'}</span>
+                    <span>23°48'N · 90°24'E</span>
                 </div>
             </div>
         </div>
