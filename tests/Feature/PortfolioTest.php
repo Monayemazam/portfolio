@@ -130,3 +130,23 @@ test('theme settings are passed to app view and page props', function () {
         ->where('settings.dark_primary', '#8B5CF6')
     );
 });
+
+test('changing animation_level setting updates props on public page', function () {
+    Setting::where('key', 'animation_level')->update(['value' => 'light']);
+    Cache::forget('portfolio.page.v1');
+
+    $response = $this->get('/');
+    $response->assertOk();
+    $response->assertInertia(fn ($page) => $page
+        ->where('settings.animation_level', 'light')
+    );
+
+    Setting::where('key', 'animation_level')->update(['value' => 'off']);
+    Cache::forget('portfolio.page.v1');
+
+    $response2 = $this->get('/');
+    $response2->assertOk();
+    $response2->assertInertia(fn ($page) => $page
+        ->where('settings.animation_level', 'off')
+    );
+});

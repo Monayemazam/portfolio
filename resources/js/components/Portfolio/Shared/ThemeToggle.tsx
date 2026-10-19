@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sun1, MoonHalfRight5 } from 'lineicons-react';
+import { Sun1, MoonHalfRight5 } from './Icons';
 import { useTheme } from '@/hooks/use-theme';
 
 interface ThemeToggleProps {

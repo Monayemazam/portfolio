@@ -66,7 +66,7 @@ export default function ContactSection({
 
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-12">
                     {/* Left: Contact Form */}
-                    <div className="lg:col-span-7">
+                    <div className="section-reveal lg:col-span-7">
                         <GlassPanel
                             variant="card"
                             className="border-[var(--surface-border)]"
@@ -160,7 +160,7 @@ export default function ContactSection({
                     </div>
 
                     {/* Right: Direct Telemetry Links */}
-                    <div className="flex flex-col gap-4 lg:col-span-5">
+                    <div className="section-reveal flex flex-col gap-4 lg:col-span-5">
                         {emailAddress && (
                             <GlassPanel
                                 variant="subtle"

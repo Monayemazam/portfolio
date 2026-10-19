@@ -79,7 +79,7 @@ export default function ExperienceSection({
                                     </div>
 
                                     {/* Content Card (Left or Right) */}
-                                    <div className="ml-10 w-full md:ml-0 md:w-1/2 md:px-8">
+                                    <div className="section-reveal ml-10 w-full md:ml-0 md:w-1/2 md:px-8">
                                         <GlassPanel
                                             variant="card"
                                             interactive

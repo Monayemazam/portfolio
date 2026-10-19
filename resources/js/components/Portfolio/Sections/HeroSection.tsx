@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowDownward, Rocket5 } from 'lineicons-react';
+import { ArrowDownward, Rocket5 } from '../Shared/Icons';
 import {
     HeroData,
     PortfolioSection,
@@ -82,7 +82,7 @@ export default function HeroSection({
             </header>
 
             {/* Central Hero Content */}
-            <div className="mx-auto my-auto flex w-full max-w-5xl flex-col items-center py-12 text-center md:py-20">
+            <div className="section-reveal mx-auto my-auto flex w-full max-w-5xl flex-col items-center py-12 text-center md:py-20">
                 {/* Eyebrow */}
                 <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--surface-border)] bg-[var(--surface)] px-4 py-1.5 backdrop-blur-md">
                     <Rocket5 className="h-3.5 w-3.5 animate-bounce text-[var(--secondary)]" />

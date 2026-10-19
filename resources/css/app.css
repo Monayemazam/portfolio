@@ -199,3 +199,24 @@
     background: linear-gradient(180deg, var(--bg) 0%, #e8ecfa 100%);
     min-height: 100vh;
 }
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .section-reveal {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
+
+.reduced-motion .section-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+}

@@ -55,7 +55,7 @@ export default function ProcessSection({
                                     key={step.id}
                                     variant="card"
                                     interactive
-                                    className="flex flex-col justify-between border-[var(--surface-border)] !p-5"
+                                    className="section-reveal flex flex-col justify-between border-[var(--surface-border)] !p-5"
                                 >
                                     <div>
                                         {/* Countdown / Sequence Indicator */}

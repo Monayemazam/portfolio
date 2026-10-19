@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, ArrowRight, DoubleQuotesEnd1 } from 'lineicons-react';
+import { ArrowLeft, ArrowRight, DoubleQuotesEnd1 } from '../Shared/Icons';
 import { PortfolioSection, TestimonialItem } from '@/types/portfolio';
 import GlassPanel from '../Shared/GlassPanel';
 import SectionHeading from '../Shared/SectionHeading';
@@ -53,7 +53,7 @@ export default function TestimonialsSection({
                 <div className="relative mx-auto mt-12 max-w-3xl">
                     <GlassPanel
                         variant="panel"
-                        className="relative overflow-hidden border-[var(--surface-border)] !p-8 text-center shadow-[0_0_35px_rgba(124,58,237,0.15)] md:!p-12"
+                        className="section-reveal relative overflow-hidden border-[var(--surface-border)] !p-8 text-center shadow-[0_0_35px_rgba(124,58,237,0.15)] md:!p-12"
                     >
                         {/* Background Signal Waves Watermark */}
                         <div className="pointer-events-none absolute -top-12 -right-12 text-[var(--secondary)] opacity-10">

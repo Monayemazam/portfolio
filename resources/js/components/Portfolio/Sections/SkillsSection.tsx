@@ -57,7 +57,7 @@ export default function SkillsSection({ section, skills }: SkillsSectionProps) {
                             <GlassPanel
                                 key={category}
                                 variant="card"
-                                className="flex flex-col justify-between border-[var(--surface-border)]"
+                                className="section-reveal flex flex-col justify-between border-[var(--surface-border)]"
                             >
                                 <div>
                                     {/* Category Header */}

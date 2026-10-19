@@ -1,5 +1,5 @@
 import React from 'react';
-import { Rocket5 } from 'lineicons-react';
+import { Rocket5 } from './Icons';
 
 interface BackToTopProps {
     className?: string;

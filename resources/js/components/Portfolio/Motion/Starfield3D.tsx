@@ -1,0 +1,250 @@
+import React, { useEffect, useRef } from 'react';
+import * as THREE from 'three';
+
+interface Starfield3DProps {
+    isDark?: boolean;
+}
+
+export default function Starfield3D({ isDark = true }: Starfield3DProps) {
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const container = containerRef.current;
+        if (!container) return;
+
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+
+        // Scene, Camera, Renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(
+            60,
+            width / height,
+            0.1,
+            1000,
+        );
+        camera.position.z = 200;
+
+        const renderer = new THREE.WebGLRenderer({
+            alpha: true,
+            antialias: false,
+            powerPreference: 'high-performance',
+        });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        // Colors based on theme
+        const starColor1 = isDark ? 0xffffff : 0x6d28d9;
+        const starColor2 = isDark ? 0x22d3ee : 0x0e7490;
+        const starColor3 = isDark ? 0x7c3aed : 0x8b5cf6;
+
+        // Helper to create star layers
+        const createStarLayer = (
+            count: number,
+            size: number,
+            depthRange: number,
+            color: number,
+        ) => {
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(count * 3);
+
+            for (let i = 0; i < count * 3; i += 3) {
+                positions[i] = (Math.random() - 0.5) * 600;
+                positions[i + 1] = (Math.random() - 0.5) * 600;
+                positions[i + 2] = (Math.random() - 0.5) * depthRange;
+            }
+
+            geometry.setAttribute(
+                'position',
+                new THREE.BufferAttribute(positions, 3),
+            );
+
+            const material = new THREE.PointsMaterial({
+                color,
+                size,
+                transparent: true,
+                opacity: isDark ? 0.85 : 0.7,
+                blending: isDark
+                    ? THREE.AdditiveBlending
+                    : THREE.NormalBlending,
+            });
+
+            return new THREE.Points(geometry, material);
+        };
+
+        // 3 Layers of stars for parallax depth
+        const layerDistant = createStarLayer(1000, 1.2, 500, starColor1);
+        const layerMid = createStarLayer(500, 2.0, 400, starColor2);
+        const layerClose = createStarLayer(150, 2.8, 300, starColor3);
+
+        scene.add(layerDistant);
+        scene.add(layerMid);
+        scene.add(layerClose);
+
+        // Soft Nebula particles
+        const nebulaCount = 80;
+        const nebulaGeo = new THREE.BufferGeometry();
+        const nebulaPos = new Float32Array(nebulaCount * 3);
+        for (let i = 0; i < nebulaCount * 3; i += 3) {
+            nebulaPos[i] = (Math.random() - 0.5) * 450;
+            nebulaPos[i + 1] = (Math.random() - 0.5) * 450;
+            nebulaPos[i + 2] = (Math.random() - 0.5) * 200 - 50;
+        }
+        nebulaGeo.setAttribute(
+            'position',
+            new THREE.BufferAttribute(nebulaPos, 3),
+        );
+        const nebulaMat = new THREE.PointsMaterial({
+            color: isDark ? 0x7c3aed : 0x8b5cf6,
+            size: 35,
+            transparent: true,
+            opacity: isDark ? 0.08 : 0.04,
+            blending: isDark ? THREE.AdditiveBlending : THREE.NormalBlending,
+        });
+        const nebula = new THREE.Points(nebulaGeo, nebulaMat);
+        scene.add(nebula);
+
+        // Shooting Star setup
+        const shootingStarGeo = new THREE.BufferGeometry();
+        const shootingStarPositions = new Float32Array([0, 0, 0, -25, 25, 0]);
+        shootingStarGeo.setAttribute(
+            'position',
+            new THREE.BufferAttribute(shootingStarPositions, 3),
+        );
+        const shootingStarMat = new THREE.LineBasicMaterial({
+            color: isDark ? 0x22d3ee : 0x6d28d9,
+            transparent: true,
+            opacity: 0,
+        });
+        const shootingStar = new THREE.Line(shootingStarGeo, shootingStarMat);
+        scene.add(shootingStar);
+
+        let shootingStarActive = false;
+        let shootingStarProgress = 0;
+        let nextShootingStarTime = Date.now() + 3000;
+
+        // Mouse Parallax tracking
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+
+        const handleMouseMove = (e: MouseEvent) => {
+            mouseX = (e.clientX / width - 0.5) * 2;
+            mouseY = (e.clientY / height - 0.5) * 2;
+        };
+
+        window.addEventListener('mousemove', handleMouseMove, {
+            passive: true,
+        });
+
+        // Resize handler
+        const handleResize = () => {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        // Visibility pause
+        let isRunning = true;
+        const handleVisibilityChange = () => {
+            isRunning = !document.hidden;
+        };
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        // Animation loop
+        let animationFrameId: number;
+
+        const animate = () => {
+            if (isRunning) {
+                // Parallax smoothing
+                targetX += (mouseX * 15 - targetX) * 0.05;
+                targetY += (-mouseY * 15 - targetY) * 0.05;
+                camera.position.x = targetX;
+                camera.position.y = targetY;
+
+                // Slow ambient drift
+                layerDistant.rotation.y += 0.00015;
+                layerMid.rotation.y += 0.0003;
+                layerClose.rotation.y += 0.0006;
+                nebula.rotation.z += 0.0001;
+
+                // Shooting star logic
+                const now = Date.now();
+                if (!shootingStarActive && now > nextShootingStarTime) {
+                    shootingStarActive = true;
+                    shootingStarProgress = 0;
+                    shootingStar.position.set(
+                        (Math.random() - 0.5) * 400 + 100,
+                        (Math.random() - 0.5) * 300 + 100,
+                        (Math.random() - 0.5) * 100,
+                    );
+                    shootingStarMat.opacity = 1;
+                }
+
+                if (shootingStarActive) {
+                    shootingStarProgress += 0.04;
+                    shootingStar.position.x -= 8;
+                    shootingStar.position.y -= 8;
+                    shootingStarMat.opacity = Math.max(
+                        0,
+                        1 - shootingStarProgress,
+                    );
+
+                    if (shootingStarProgress >= 1) {
+                        shootingStarActive = false;
+                        shootingStarMat.opacity = 0;
+                        nextShootingStarTime =
+                            now + 4000 + Math.random() * 5000;
+                    }
+                }
+
+                renderer.render(scene, camera);
+            }
+
+            animationFrameId = requestAnimationFrame(animate);
+        };
+
+        animate();
+
+        // Cleanup
+        return () => {
+            cancelAnimationFrame(animationFrameId);
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('resize', handleResize);
+            document.removeEventListener(
+                'visibilitychange',
+                handleVisibilityChange,
+            );
+
+            scene.traverse((obj) => {
+                if (obj instanceof THREE.Points || obj instanceof THREE.Line) {
+                    obj.geometry.dispose();
+                    if (Array.isArray(obj.material)) {
+                        obj.material.forEach((m) => m.dispose());
+                    } else {
+                        obj.material.dispose();
+                    }
+                }
+            });
+
+            renderer.dispose();
+            if (container.contains(renderer.domElement)) {
+                container.removeChild(renderer.domElement);
+            }
+        };
+    }, [isDark]);
+
+    return (
+        <div
+            ref={containerRef}
+            aria-hidden="true"
+            className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+        />
+    );
+}

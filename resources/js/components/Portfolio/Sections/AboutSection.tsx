@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download1, User4 } from 'lineicons-react';
+import { Download1, User4 } from '../Shared/Icons';
 import {
     AboutData,
     PortfolioSection,
@@ -45,7 +45,7 @@ export default function AboutSection({
 
                 <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12">
                     {/* Left: Glowing Porthole Photo */}
-                    <div className="flex justify-center lg:col-span-5">
+                    <div className="section-reveal flex justify-center lg:col-span-5">
                         <div className="group relative">
                             {/* Outer Glow Ring */}
                             <div className="absolute -inset-2 rounded-full bg-gradient-to-tr from-[var(--primary)] to-[var(--secondary)] opacity-30 blur-xl transition-opacity duration-500 group-hover:opacity-50" />
@@ -82,7 +82,7 @@ export default function AboutSection({
                     </div>
 
                     {/* Right: Bio & Telemetry Counters */}
-                    <div className="flex flex-col gap-6 lg:col-span-7">
+                    <div className="section-reveal flex flex-col gap-6 lg:col-span-7">
                         <GlassPanel
                             variant="card"
                             className="border-[var(--surface-border)]"

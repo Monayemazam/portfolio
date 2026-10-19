@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight } from 'lineicons-react';
+import { ArrowRight } from './Icons';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: 'primary' | 'secondary' | 'cta' | 'ghost';

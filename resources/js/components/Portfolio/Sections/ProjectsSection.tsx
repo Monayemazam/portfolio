@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowAngularTopRight, StarFat } from 'lineicons-react';
+import { ArrowAngularTopRight, StarFat } from '../Shared/Icons';
 import { PortfolioSection, ProjectItem } from '@/types/portfolio';
 import GlassPanel from '../Shared/GlassPanel';
 import SectionHeading from '../Shared/SectionHeading';
@@ -48,7 +48,7 @@ export default function ProjectsSection({
                                 key={project.id}
                                 variant="card"
                                 interactive
-                                className="group relative flex flex-col justify-between overflow-hidden border-[var(--surface-border)] !p-0"
+                                className="section-reveal group relative flex flex-col justify-between overflow-hidden border-[var(--surface-border)] !p-0"
                             >
                                 {/* Top Accent Beam */}
                                 <div

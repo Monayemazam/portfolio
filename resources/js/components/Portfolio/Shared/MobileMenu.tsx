@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MenuHamburger1, Xmark } from 'lineicons-react';
+import { MenuHamburger1, Xmark } from './Icons';
 import { PortfolioSection } from '@/types/portfolio';
 import ThemeToggle from './ThemeToggle';
 

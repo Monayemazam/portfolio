@@ -55,7 +55,7 @@ export default function ServicesSection({
                                 key={service.id}
                                 variant="card"
                                 interactive
-                                className="group flex flex-col justify-between border-[var(--surface-border)]"
+                                className="section-reveal group flex flex-col justify-between border-[var(--surface-border)]"
                             >
                                 <div>
                                     {/* Icon & Station Index Header */}
