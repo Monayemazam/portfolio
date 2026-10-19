@@ -15,7 +15,6 @@ import { useMotionLevel } from '@/hooks/use-motion-level';
 import { useSmoothScroll } from '@/hooks/use-smooth-scroll';
 import StarfieldContainer from '@/components/Portfolio/Motion/StarfieldContainer';
 import SpaceLoader from '@/components/Portfolio/Motion/SpaceLoader';
-import EditorialTracker from '@/components/Portfolio/Motion/EditorialTracker';
 import ReduceEffectsToggle from '@/components/Portfolio/Motion/ReduceEffectsToggle';
 import FloatingNav from '@/components/Portfolio/Shared/FloatingNav';
 import HeroSection from '@/components/Portfolio/Sections/HeroSection';
@@ -208,9 +207,6 @@ export default function PortfolioIndex({
                 reduceEffects={reduceEffects}
                 onToggle={toggleReduceEffects}
             />
-
-            {/* Signature Interaction: Editorial Coordinate Crosshair Tracker */}
-            <EditorialTracker enabled={!isOff} />
 
             {/* Main Content Stream in Database sort_order */}
             <main className="relative z-10 flex w-full flex-col">
