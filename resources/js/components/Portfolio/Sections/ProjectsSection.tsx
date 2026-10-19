@@ -130,21 +130,32 @@ export default function ProjectsSection({
                     <div className="mt-12 space-y-12 sm:space-y-16">
                         {/* 1. FEATURED EXHIBIT: Dominant Split Spread (ASN Group) */}
                         {featuredProject && (
-                            <div className="border-2 border-foreground bg-surface p-6 sm:p-10 shadow-sm">
+                            <div className="border-2 border-foreground bg-surface p-6 sm:p-10 lg:p-12 shadow-sm relative">
+                                {/* Technical Corner Accents */}
+                                <span className="absolute -top-3 -left-3 font-mono text-base font-bold text-[var(--primary)] select-none">
+                                    +
+                                </span>
+                                <span className="absolute -top-3 -right-3 font-mono text-base font-bold text-[var(--primary)] select-none">
+                                    +
+                                </span>
+
                                 <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4 font-mono text-xs text-muted-foreground uppercase">
-                                    <div className="flex items-center gap-2">
-                                        <span className="stamp-orange">
+                                    <div className="flex items-center gap-3">
+                                        <span className="stamp-orange text-[11px] font-bold">
                                             PRINCIPAL EXHIBIT // 01
                                         </span>
-                                        <span className="font-bold text-foreground">
-                                            {featuredProject.business_type || 'CONGLOMERATE ERP'}
+                                        <span className="font-bold text-foreground tracking-wider">
+                                            {featuredProject.business_type || 'CONGLOMERATE ERP & LOGISTICS'}
                                         </span>
                                     </div>
-                                    <span>STATUS: PRODUCTION // {featuredProject.year || '2025'}</span>
+                                    <div className="flex items-center gap-4">
+                                        <span className="hidden sm:inline">CYCLE: {featuredProject.year || '2025'}</span>
+                                        <span className="text-[var(--primary)] font-bold">STATUS: PRODUCTION // ACTIVE</span>
+                                    </div>
                                 </div>
 
-                                <div className="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-                                    {/* Left: Oversized Image or Generative Visual */}
+                                <div className="mt-8 lg:mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
+                                    {/* Left: Oversized Image or Generative Visual (larger preview area) */}
                                     <div className="lg:col-span-7">
                                         <div
                                             className="relative aspect-16/10 w-full overflow-hidden border-2 border-foreground bg-muted group cursor-pointer"
@@ -168,46 +179,54 @@ export default function ProjectsSection({
                                                 </div>
                                             )}
 
-                                            <div className="absolute bottom-4 left-4 stamp-ink">
-                                                CLICK TO INSPECT DOSSIER
+                                            <div className="absolute bottom-4 left-4 stamp-ink shadow-xs">
+                                                CLICK TO INSPECT DOSSIER [→]
                                             </div>
                                         </div>
                                     </div>
 
                                     {/* Right: Project Title, Summary, Stack, and Direct Actions */}
-                                    <div className="lg:col-span-5 flex flex-col justify-between">
+                                    <div className="lg:col-span-5 flex flex-col justify-between h-full">
                                         <div>
-                                            <span className="font-mono text-xs font-bold text-[var(--primary)] tracking-widest uppercase">
-                                                {featuredProject.role || 'LEAD ARCHITECT & DEVELOPER'}
-                                            </span>
-                                            <h3 className="mt-2 font-display text-3xl sm:text-5xl font-black tracking-tight text-foreground uppercase">
+                                            <div className="flex items-center gap-2 font-mono text-xs font-bold text-[var(--primary)] tracking-widest uppercase">
+                                                <span>[{featuredProject.role || 'LEAD ARCHITECT & DEVELOPER'}]</span>
+                                                <span className="text-border">/</span>
+                                                <span className="text-muted-foreground">{featuredProject.year || '2025'}</span>
+                                            </div>
+
+                                            <h3 className="mt-3 font-display text-3xl sm:text-5xl lg:text-5xl font-black tracking-tight text-foreground uppercase leading-[0.95]">
                                                 {featuredProject.title}
                                             </h3>
-                                            <p className="mt-4 font-body text-base sm:text-lg leading-relaxed text-foreground/80">
-                                                {featuredProject.summary ||
-                                                    featuredProject.description}
+
+                                            <p className="mt-5 font-body text-base sm:text-lg leading-relaxed text-foreground/85">
+                                                {featuredProject.summary || featuredProject.description}
                                             </p>
 
                                             {/* Stack labels as clean monospaced text */}
                                             {featuredProject.tags && featuredProject.tags.length > 0 && (
-                                                <div className="mt-6 flex flex-wrap gap-2">
-                                                    {featuredProject.tags.map((tag) => (
-                                                        <span
-                                                            key={tag.id}
-                                                            className="editorial-tag bg-background text-foreground"
-                                                        >
-                                                            {tag.name}
-                                                        </span>
-                                                    ))}
+                                                <div className="mt-6">
+                                                    <span className="block font-mono text-[10px] text-muted-foreground uppercase tracking-widest mb-2">
+                                                        ENGINEERING STACK:
+                                                    </span>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {featuredProject.tags.map((tag) => (
+                                                            <span
+                                                                key={tag.id}
+                                                                className="editorial-tag bg-background text-foreground border border-border"
+                                                            >
+                                                                {tag.name}
+                                                            </span>
+                                                        ))}
+                                                    </div>
                                                 </div>
                                             )}
                                         </div>
 
-                                        <div className="mt-8 sm:mt-10 pt-6 border-t border-border flex flex-wrap items-center gap-4">
+                                        <div className="mt-8 pt-6 border-t border-border flex flex-wrap items-center gap-4">
                                             <button
                                                 type="button"
                                                 onClick={(e) => openProject(featuredProject, e.currentTarget)}
-                                                className="bg-[var(--primary)] px-6 py-3 font-mono text-xs font-bold uppercase tracking-wider text-white transition-opacity hover:opacity-90"
+                                                className="bg-[var(--primary)] px-6 py-3.5 font-mono text-xs font-bold uppercase tracking-wider text-white transition-opacity hover:opacity-90 shadow-sm"
                                                 data-field-tag="DOSSIER"
                                             >
                                                 VIEW PROJECT DOSSIER [→]
@@ -218,7 +237,7 @@ export default function ProjectsSection({
                                                     href={featuredProject.live_url}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="border border-foreground px-5 py-3 font-mono text-xs font-bold uppercase tracking-wider text-foreground hover:bg-foreground hover:text-background transition-colors"
+                                                    className="border border-foreground px-5 py-3.5 font-mono text-xs font-bold uppercase tracking-wider text-foreground hover:bg-foreground hover:text-background transition-colors"
                                                     data-field-tag="LIVE"
                                                 >
                                                     LIVE SITE [↗]
