@@ -26,15 +26,24 @@ export default function FloatingNav({
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // Filter to navigable public sections
-    const navItems = [
-        { key: 'about', index: '01', label: 'ABOUT' },
-        { key: 'skills', index: '02', label: 'SKILLS' },
-        { key: 'projects', index: '03', label: 'EXHIBITS' },
-        { key: 'services', index: '04', label: 'SERVICES' },
-        { key: 'process', index: '05', label: 'PROCESS' },
-        { key: 'contact', index: '06', label: 'CONTACT' },
-    ].filter((item) => sections.some((s) => s.key === item.key && s.is_visible !== false));
+    // Dynamically filter to published and visible sections with sequential indices
+    const candidateNavItems = [
+        { key: 'about', label: 'ABOUT' },
+        { key: 'skills', label: 'SKILLS' },
+        { key: 'projects', label: 'EXHIBITS' },
+        { key: 'services', label: 'SERVICES' },
+        { key: 'experience', label: 'EXPERIENCE' },
+        { key: 'process', label: 'PROCESS' },
+        { key: 'testimonials', label: 'TESTIMONIALS' },
+        { key: 'contact', label: 'CONTACT' },
+    ];
+
+    const navItems = candidateNavItems
+        .filter((item) => sections.some((s) => s.key === item.key && s.is_visible !== false))
+        .map((item, idx) => ({
+            ...item,
+            index: (idx + 1).toString().padStart(2, '0'),
+        }));
 
     const scrollTo = (id: string) => {
         setMobileOpen(false);

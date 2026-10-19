@@ -1,14 +1,28 @@
 import React from 'react';
+import { PortfolioSection } from '@/types/portfolio';
 
-export default function PortfolioIndexStrip() {
-    const items = [
-        { id: 'about', num: '01', title: 'ARCHIVAL PROFILE', desc: 'Background & Principles' },
-        { id: 'skills', num: '02', title: 'TECHNICAL FIELD GUIDE', desc: 'Languages & Systems' },
-        { id: 'projects', num: '03', title: 'CURATED EXHIBITION', desc: 'Case Studies & Production' },
-        { id: 'services', num: '04', title: 'CAPABILITIES DIRECTORY', desc: 'Architectural Offerings' },
-        { id: 'process', num: '05', title: 'METHODOLOGY SEQUENCE', desc: '6-Stage Delivery' },
-        { id: 'contact', num: '06', title: 'DISPATCH & INQUIRY', desc: 'Initiate Communication' },
+interface PortfolioIndexStripProps {
+    sections?: PortfolioSection[];
+}
+
+export default function PortfolioIndexStrip({ sections = [] }: PortfolioIndexStripProps) {
+    const candidateItems = [
+        { id: 'about', title: 'ARCHIVAL PROFILE', desc: 'Background & Principles' },
+        { id: 'skills', title: 'TECHNICAL FIELD GUIDE', desc: 'Languages & Systems' },
+        { id: 'projects', title: 'CURATED EXHIBITION', desc: 'Case Studies & Production' },
+        { id: 'services', title: 'CAPABILITIES DIRECTORY', desc: 'Architectural Offerings' },
+        { id: 'experience', title: 'CHRONOLOGY OF PRACTICE', desc: 'Flight Log & Stations' },
+        { id: 'process', title: 'METHODOLOGY SEQUENCE', desc: '6-Stage Delivery' },
+        { id: 'testimonials', title: 'TRANSMISSIONS ARCHIVE', desc: 'Verified Observations' },
+        { id: 'contact', title: 'DISPATCH & INQUIRY', desc: 'Initiate Communication' },
     ];
+
+    const items = candidateItems
+        .filter((item) => sections.length === 0 || sections.some((s) => s.key === item.id && s.is_visible !== false))
+        .map((item, idx) => ({
+            ...item,
+            num: (idx + 1).toString().padStart(2, '0'),
+        }));
 
     const scrollTo = (id: string) => {
         const el = document.getElementById(id);

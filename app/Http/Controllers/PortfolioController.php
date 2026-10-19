@@ -27,21 +27,31 @@ class PortfolioController extends Controller
     public function index(Request $request): Response
     {
         $portfolioData = Cache::rememberForever('portfolio.page.v1', function () {
-            // Eager load testimonials first to know if any are published
+            // Eager load testimonials and experiences first to know if any are published
             $testimonials = Testimonial::query()
                 ->published()
                 ->ordered()
                 ->with(['photo', 'project'])
                 ->get();
 
+            $experiences = Experience::query()
+                ->published()
+                ->ordered()
+                ->get();
+
             // Sections in database sort_order, respecting is_visible
-            // Hide testimonials automatically when no testimonial is published
+            // Hide testimonials and experience automatically when no items are published
             $hasTestimonials = $testimonials->isNotEmpty();
+            $hasExperiences = $experiences->isNotEmpty();
             $sections = Section::query()
                 ->ordered()
                 ->get()
-                ->filter(function (Section $section) use ($hasTestimonials) {
+                ->filter(function (Section $section) use ($hasTestimonials, $hasExperiences) {
                     if ($section->key === 'testimonials' && ! $hasTestimonials) {
+                        return false;
+                    }
+
+                    if ($section->key === 'experience' && ! $hasExperiences) {
                         return false;
                     }
 
@@ -78,11 +88,6 @@ class PortfolioController extends Controller
                 ->get();
 
             $services = Service::query()
-                ->published()
-                ->ordered()
-                ->get();
-
-            $experiences = Experience::query()
                 ->published()
                 ->ordered()
                 ->get();

@@ -228,7 +228,7 @@ export default function PortfolioIndex({
                                         isDark={isDark}
                                     />
                                     {/* Section 6: Publication Visual Index Strip */}
-                                    <PortfolioIndexStrip />
+                                    <PortfolioIndexStrip sections={sections} />
                                 </React.Fragment>
                             );
                         case 'about':
@@ -267,6 +267,7 @@ export default function PortfolioIndex({
                                     key={section.key}
                                     section={section}
                                     services={services}
+                                    isOff={isOff}
                                 />
                             );
                         case 'experience':
@@ -275,6 +276,7 @@ export default function PortfolioIndex({
                                     key={section.key}
                                     section={section}
                                     experiences={experiences}
+                                    isOff={isOff}
                                 />
                             );
                         case 'process':
@@ -283,6 +285,7 @@ export default function PortfolioIndex({
                                     key={section.key}
                                     section={section}
                                     processSteps={processSteps}
+                                    isOff={isOff}
                                 />
                             );
                         case 'testimonials':
@@ -291,6 +294,7 @@ export default function PortfolioIndex({
                                     key={section.key}
                                     section={section}
                                     testimonials={testimonials}
+                                    isOff={isOff}
                                 />
                             );
                         case 'contact':
