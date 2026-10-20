@@ -280,3 +280,61 @@
     background-image: radial-gradient(rgba(242, 239, 230, 0.03) 1px, transparent 0);
     background-size: 24px 24px;
 }
+
+/* MONAYEM OS — KINETIC & INSTRUMENT UTILITIES */
+.os-instrument-panel {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    position: relative;
+}
+
+.os-instrument-panel-strong {
+    background-color: var(--surface);
+    border: 2px solid var(--border-ink);
+    position: relative;
+}
+
+.os-beacon {
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    background-color: var(--acid-lime);
+    box-shadow: 0 0 12px var(--acid-lime);
+    display: inline-block;
+    animation: beacon-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes beacon-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.55; transform: scale(0.85); }
+}
+
+@keyframes ticker-slide-x {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+.animate-ticker-h {
+    display: flex;
+    width: max-content;
+    animation: ticker-slide-x 25s linear infinite;
+}
+
+.animate-ticker-h-reverse {
+    display: flex;
+    width: max-content;
+    animation: ticker-slide-x 30s linear infinite reverse;
+}
+
+/* Kinetic clipping utility */
+.clip-diagonal {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%);
+}
+
+.reduced-motion *,
+.reduced-motion {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+}
+

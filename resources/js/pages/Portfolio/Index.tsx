@@ -14,7 +14,8 @@ import { useTheme } from '@/hooks/use-theme';
 import { useMotionLevel } from '@/hooks/use-motion-level';
 import { useSmoothScroll } from '@/hooks/use-smooth-scroll';
 import StarfieldContainer from '@/components/Portfolio/Motion/StarfieldContainer';
-import SpaceLoader from '@/components/Portfolio/Motion/SpaceLoader';
+import MonayemOSBoot from '@/components/Portfolio/Motion/MonayemOSBoot';
+import TopProgressBar from '@/components/Portfolio/Motion/TopProgressBar';
 import ReduceEffectsToggle from '@/components/Portfolio/Motion/ReduceEffectsToggle';
 import FloatingNav from '@/components/Portfolio/Shared/FloatingNav';
 import HeroSection from '@/components/Portfolio/Sections/HeroSection';
@@ -81,6 +82,21 @@ export default function PortfolioIndex({
         enabled: !isOff,
         lerp: 0.1,
     });
+
+    const [scrollProgress, setScrollProgress] = useState(0);
+
+    // Track scroll progress for TopProgressBar
+    useEffect(() => {
+        const handleScroll = () => {
+            const total = document.documentElement.scrollHeight - window.innerHeight;
+            if (total > 0) {
+                setScrollProgress(window.scrollY / total);
+            }
+        };
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const [activeSection, setActiveSection] = useState<string>(
         sections[0]?.key || 'hero',
@@ -192,8 +208,11 @@ export default function PortfolioIndex({
                 isDark={isDark}
             />
 
-            {/* Quick Initial Loader */}
-            <SpaceLoader reducedMotion={isOff} />
+            {/* Top Architectural Telemetry Progress Bar */}
+            <TopProgressBar progress={scrollProgress} />
+
+            {/* Monayem OS Boot Sequence */}
+            <MonayemOSBoot reducedMotion={isOff} />
 
             {/* Publication Masthead Navigation */}
             <FloatingNav

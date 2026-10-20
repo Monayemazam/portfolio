@@ -7,169 +7,196 @@ interface ProcessSectionProps {
     isOff?: boolean;
 }
 
-interface ProcessCardProps {
-    step: ProcessStepItem;
-    idx: number;
-    totalSteps: number;
-    isOff?: boolean;
-}
-
-function ProcessStepCard({ step, idx, totalSteps, isOff }: ProcessCardProps) {
-    const cardRef = useRef<HTMLDivElement>(null);
-    const [inView, setInView] = useState(false);
-
-    useEffect(() => {
-        const el = cardRef.current;
-        if (!el) return;
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    setInView(true);
-                    observer.disconnect();
-                }
-            },
-            { threshold: 0.05, rootMargin: '50px' }
-        );
-        observer.observe(el);
-        return () => observer.disconnect();
-    }, []);
-
-    // Countdown code e.g. T-06 down to T-01
-    const countdownNum = (totalSteps - idx).toString().padStart(2, '0');
-    const countdownCode = `T-${countdownNum}`;
-    const stageIndex = (idx + 1).toString().padStart(2, '0');
-
-    return (
-        <div
-            ref={cardRef}
-            className={`group relative flex flex-col justify-between border-2 border-foreground bg-surface p-7 sm:p-8 transition-all duration-300 hover:border-[var(--primary)] pl-14 sm:pl-8 ${
-                inView || isOff ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-            }`}
-            data-field-tag={countdownCode}
-        >
-            {/* Corner Registration Mark */}
-            <span
-                className="absolute top-2 right-2 font-mono text-[9px] text-muted-foreground/40 select-none pointer-events-none group-hover:text-[var(--primary)] transition-colors"
-                aria-hidden="true"
-            >
-                +
-            </span>
-
-            {/* Mobile Node Marker on Vertical Line */}
-            <div className="flex sm:hidden absolute left-5 -translate-x-1/2 top-8 z-20 h-5 w-5 items-center justify-center bg-background border-2 border-foreground">
-                <div className="h-1.5 w-1.5 bg-[var(--primary)]" />
-            </div>
-
-            <div>
-                {/* Countdown Header Badge & Sequence Index */}
-                <div className="flex items-center justify-between border-b border-border pb-4">
-                    <div className="flex items-baseline gap-2">
-                        <span className="font-mono text-2xl sm:text-3xl font-black text-[var(--primary)] tracking-tight">
-                            {countdownCode}
-                        </span>
-                        <span className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
-                            STAGE
-                        </span>
-                    </div>
-                    <span className="font-mono text-xs font-bold tracking-widest text-foreground uppercase border border-border px-2 py-0.5 bg-background">
-                        PHASE {stageIndex} // {totalSteps.toString().padStart(2, '0')}
-                    </span>
-                </div>
-
-                {/* Stage Title */}
-                <h3 className="mt-6 font-display text-xl sm:text-2xl font-black tracking-tight text-foreground uppercase group-hover:text-[var(--primary)] transition-colors">
-                    {step.title}
-                </h3>
-
-                {/* Step Description with Ample Breathing Room */}
-                <p className="mt-4 font-body text-sm sm:text-base leading-relaxed text-foreground/80">
-                    {step.description}
-                </p>
-            </div>
-
-            {/* Verification Milestone Footer */}
-            <div className="mt-8 pt-4 border-t border-border flex items-center justify-between font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
-                <span className="flex items-center gap-1.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)]" />
-                    <span>CHECKPOINT PROTOCOL</span>
-                </span>
-                <span className="font-bold text-[var(--primary)]">VERIFIED MILESTONE</span>
-            </div>
-        </div>
-    );
-}
-
 export default function ProcessSection({
     section,
     processSteps,
-    isOff,
+    isOff = false,
 }: ProcessSectionProps) {
-    if (!processSteps || processSteps.length === 0) return null;
+    const containerRef = useRef<HTMLElement>(null);
+    const [activeStepIndex, setActiveStepIndex] = useState(0);
 
-    const totalSteps = processSteps.length;
+    const sortedSteps = [...processSteps].sort(
+        (a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0)
+    );
+
+    // Dynamic scroll observer to highlight the active phase as user scrolls
+    useEffect(() => {
+        if (isOff) return;
+
+        const handleScroll = () => {
+            const stepElements = sortedSteps.map((_, i) =>
+                document.getElementById(`process-step-${i}`)
+            );
+
+            const viewportCenter = window.innerHeight * 0.45;
+
+            stepElements.forEach((el, index) => {
+                if (!el) return;
+                const rect = el.getBoundingClientRect();
+                if (rect.top <= viewportCenter && rect.bottom >= viewportCenter) {
+                    setActiveStepIndex(index);
+                }
+            });
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [sortedSteps, isOff]);
+
+    const totalSteps = sortedSteps.length;
+    const progressPercent = totalSteps > 0
+        ? Math.round(((activeStepIndex + 1) / totalSteps) * 100)
+        : 100;
 
     return (
         <section
-            id="process"
-            aria-label="Methodology Sequence"
-            className="w-full border-b border-border bg-[var(--bg)] px-6 sm:px-8 xl:px-12 py-20 lg:py-28"
+            ref={containerRef}
+            id={section.key}
+            aria-label="Development Process Methodology"
+            className="w-full border-b-2 border-foreground bg-[var(--bg)] px-6 sm:px-8 xl:px-12 py-20 lg:py-28 select-none"
         >
             <div className="mx-auto max-w-[1440px]">
-                {/* Section Header Strip */}
+                {/* Calibration Eyebrow Strip */}
                 <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase">
                     <div className="flex items-center gap-3">
-                        <span className="bg-[var(--primary)] text-white px-2 py-0.5 font-bold">
-                            SEC. 05
+                        <span className="stamp-orange text-[10px] tracking-widest">
+                            SEC. 06 // METHODOLOGY
                         </span>
-                        <span>METHODOLOGY SEQUENCE // EXECUTION PIPELINE</span>
+                        <span className="font-bold text-foreground">
+                            DEVELOPMENT SEQUENCE IN MOTION
+                        </span>
                     </div>
-                    <span>TOTAL STAGES: [{totalSteps.toString().padStart(2, '0')}]</span>
+
+                    <div className="flex items-center gap-3">
+                        <span className="h-1.5 w-1.5 bg-[var(--accent)] inline-block" />
+                        <span>SEQUENCE PROGRESS: [{progressPercent}% DISPATCHED]</span>
+                    </div>
                 </div>
 
-                {/* Section Title */}
-                <div className="mt-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                {/* Section Introduction */}
+                <div className="mt-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                     <div>
                         <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
-                            // STRUCTURED DELIVERY PIPELINE
+                            // 6-STAGE EXECUTION LIFECYCLE
                         </span>
-                        <h2 className="mt-2 font-display text-4xl sm:text-6xl font-black tracking-tight text-foreground uppercase">
-                            {section?.title || 'DEVELOPMENT PROCESS'}
+                        <h2 className="mt-2 font-display text-3xl sm:text-5xl font-black tracking-tight text-foreground uppercase">
+                            PREDICTABLE CADENCE,
+                            <br />
+                            FLAWLESS EXECUTION.
                         </h2>
                     </div>
                     <p className="max-w-md font-mono text-xs text-muted-foreground leading-relaxed uppercase">
-                        From raw domain discovery and architectural blueprints to production telemetry,
-                        every engagement follows an unbroken, countdown-driven execution pipeline.
+                        Every project advances through a verified sequential track from discovery
+                        and architecture modeling down to final zero-downtime release.
                     </p>
                 </div>
 
-                {/* Step Sequence Flow Bar */}
-                <div className="mt-12 hidden lg:flex items-center justify-between border-y border-border py-3 font-mono text-xs uppercase tracking-widest text-muted-foreground">
-                    {processSteps.map((step, idx) => (
-                        <div key={step.id} className="flex items-center gap-2">
-                            <span className="font-bold text-foreground">0{idx + 1}</span>
-                            <span className="text-foreground/80">{step.title}</span>
-                            {idx < totalSteps - 1 && (
-                                <span className="text-muted-foreground/40 ml-2">→</span>
-                            )}
+                {/* Horizontal / Sticky Sequence Progress Bar */}
+                <div className="mt-12 border-2 border-foreground bg-surface p-4 sm:p-6">
+                    <div className="flex items-center justify-between font-mono text-xs uppercase mb-3">
+                        <div className="flex items-center gap-2">
+                            <span className="os-beacon" />
+                            <span className="font-bold text-foreground">
+                                ACTIVE STAGE: PHASE 0{activeStepIndex + 1} // 0{totalSteps}
+                            </span>
                         </div>
-                    ))}
+                        <span className="text-[var(--primary)] font-bold">
+                            [{progressPercent}% COMPLETE]
+                        </span>
+                    </div>
+
+                    {/* Stepping Indicator Rail */}
+                    <div className="relative h-2 w-full bg-border overflow-hidden">
+                        <div
+                            className="h-full bg-[var(--primary)] transition-all duration-300 ease-out"
+                            style={{ width: `${progressPercent}%` }}
+                        />
+                    </div>
                 </div>
 
-                {/* Editorial Grid: 3 columns x 2 rows on Desktop with Ample Breathing Room */}
-                <div className="relative mt-8 sm:mt-12">
-                    {/* Mobile Vertical Connecting Line */}
-                    <div className="block sm:hidden absolute top-6 bottom-6 left-5 w-0.5 bg-border z-0" />
+                {/* The Process Steps Interactive Timeline */}
+                <div className="mt-10 relative">
+                    {/* Vertical Connecting Line (Desktop & Mobile) */}
+                    <div
+                        aria-hidden="true"
+                        className="absolute left-6 sm:left-8 top-0 bottom-0 w-0.5 bg-border pointer-events-none"
+                    />
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 relative z-10">
-                        {processSteps.map((step, idx) => (
-                            <ProcessStepCard
-                                key={step.id}
-                                step={step}
-                                idx={idx}
-                                totalSteps={totalSteps}
-                                isOff={isOff}
-                            />
-                        ))}
+                    <div className="space-y-6 sm:space-y-8">
+                        {sortedSteps.map((step, idx) => {
+                            const isActive = idx === activeStepIndex;
+                            const isCompleted = idx < activeStepIndex;
+                            const stepNum = (step.sort_order ?? idx + 1)
+                                .toString()
+                                .padStart(2, '0');
+                            const countdown = (totalSteps - idx).toString().padStart(2, '0');
+
+                            return (
+                                <div
+                                    key={step.id}
+                                    id={`process-step-${idx}`}
+                                    onClick={() => setActiveStepIndex(idx)}
+                                    className={`group relative flex flex-col sm:flex-row sm:items-start justify-between border-2 transition-all duration-300 pl-16 sm:pl-20 p-6 sm:p-8 cursor-pointer ${
+                                        isActive
+                                            ? 'border-foreground bg-surface shadow-md -translate-y-1'
+                                            : isCompleted
+                                            ? 'border-border bg-background opacity-85 hover:border-foreground'
+                                            : 'border-border bg-background opacity-60 hover:opacity-100 hover:border-foreground'
+                                    }`}
+                                >
+                                    {/* Timeline Node Ring */}
+                                    <div
+                                        className={`absolute left-6 sm:left-8 -translate-x-1/2 top-8 z-10 flex h-6 w-6 items-center justify-center border-2 transition-colors ${
+                                            isActive
+                                                ? 'border-foreground bg-[var(--primary)] text-white'
+                                                : isCompleted
+                                                ? 'border-foreground bg-[var(--accent)] text-[#171914]'
+                                                : 'border-border bg-background text-muted-foreground'
+                                        }`}
+                                    >
+                                        <span className="font-mono text-[10px] font-black">
+                                            {isCompleted ? '✓' : idx + 1}
+                                        </span>
+                                    </div>
+
+                                    {/* Content Block */}
+                                    <div className="flex-1 max-w-2xl">
+                                        <div className="flex items-center gap-3 font-mono text-xs">
+                                            <span
+                                                className={`font-black text-sm ${
+                                                    isActive ? 'text-[var(--primary)]' : 'text-muted-foreground'
+                                                }`}
+                                            >
+                                                T-{countdown} //
+                                            </span>
+                                            <span className="font-bold text-foreground uppercase tracking-wider">
+                                                PHASE {stepNum}
+                                            </span>
+                                            {isActive && (
+                                                <span className="stamp-lime text-[9px] px-1.5 py-0.5">
+                                                    IN FOCUS
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        <h3 className="mt-3 font-display text-xl sm:text-2xl font-black uppercase tracking-tight text-foreground group-hover:text-[var(--primary)] transition-colors">
+                                            {step.title}
+                                        </h3>
+
+                                        <p className="mt-2 font-body text-sm sm:text-base leading-relaxed text-foreground/80">
+                                            {step.description}
+                                        </p>
+                                    </div>
+
+                                    {/* Status Indicator Chip */}
+                                    <div className="mt-4 sm:mt-0 flex flex-col items-start sm:items-end gap-1 font-mono text-[10px] uppercase text-muted-foreground shrink-0">
+                                        <span className="border border-border px-2 py-0.5 bg-background">
+                                            {isCompleted ? 'STAGE COMPLETED' : isActive ? 'STAGE ACTIVE' : 'STAGE UPCOMING'}
+                                        </span>
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             </div>

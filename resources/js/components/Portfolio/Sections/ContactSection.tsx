@@ -81,15 +81,23 @@ export default function ContactSection({
                 </div>
 
                 {/* Closing Headline Spread */}
-                <div className="mt-8">
-                    <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
-                        // COMMENCE AN ENGAGEMENT
-                    </span>
-                    <h2 className="mt-2 font-display text-4xl sm:text-7xl font-black tracking-tight text-foreground uppercase">
-                        HAVE SOMETHING
-                        <br />
-                        WORTH BUILDING?
-                    </h2>
+                <div className="mt-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                    <div>
+                        <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
+                            // FINAL INTERACTION // RUNTIME DISPATCH
+                        </span>
+                        <h2 className="mt-2 font-display text-4xl sm:text-6xl lg:text-8xl font-black tracking-tighter text-foreground uppercase leading-[0.88]">
+                            HAVE AN IDEA?
+                            <br />
+                            <span className="text-[var(--primary)]">LET'S MAKE IT REAL.</span>
+                        </h2>
+                    </div>
+
+                    {/* Signal-Orange Directional Vector Beam Guiding the Eye to the Form */}
+                    <div className="hidden lg:flex items-center gap-4 border-2 border-foreground bg-[var(--primary)] px-6 py-4 text-white font-mono text-xs font-bold uppercase tracking-wider shadow-xs">
+                        <span>INITIATE TRANSMISSION</span>
+                        <span className="font-sans text-xl animate-bounce">↓</span>
+                    </div>
                 </div>
 
                 {/* Two-Column Editorial Spread */}
