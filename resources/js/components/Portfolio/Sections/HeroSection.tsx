@@ -1,6 +1,6 @@
 import React from 'react';
 import { HeroData, PortfolioSection, PortfolioSettings } from '@/types/portfolio';
-import HeroTypographicSculpture from '@/components/Portfolio/Motion/HeroTypographicSculpture';
+import HeroCenterpiece from '@/components/Portfolio/Motion/HeroCenterpiece';
 
 interface HeroSectionProps {
     section: PortfolioSection;
@@ -16,6 +16,7 @@ export default function HeroSection({
     hero,
     settings,
     isOff = false,
+    isDark = false,
 }: HeroSectionProps) {
     const scrollTo = (id: string) => {
         const el = document.getElementById(id);
@@ -113,9 +114,12 @@ export default function HeroSection({
                         </div>
                     </div>
 
-                    {/* Right Column: Architectural Typographic Sculpture Poster */}
-                    <div className="lg:col-span-5 xl:col-span-5 flex justify-center lg:justify-end">
-                        <HeroTypographicSculpture isOff={isOff} />
+                    {/* Right Column: 3D Interactive Celestial Centerpiece Sculpture */}
+                    <div className="lg:col-span-5 xl:col-span-5 flex justify-center lg:justify-end items-center relative w-full">
+                        <HeroCenterpiece
+                            isDark={isDark}
+                            isReducedMotion={isOff}
+                        />
                     </div>
                 </div>
             </div>
