@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { AboutData, PortfolioSection, PortfolioSettings } from '@/types/portfolio';
 import AnimatedCounter from '../Motion/AnimatedCounter';
 
@@ -15,28 +15,8 @@ export default function AboutSection({
     settings,
     isOff = false,
 }: AboutSectionProps) {
-    const sectionRef = useRef<HTMLElement>(null);
-    const [inView, setInView] = useState(false);
     const photoUrl = settings?.photo_media?.webp_url || settings?.photo_media?.url;
     const resumeUrl = settings?.resume_media?.url;
-
-    useEffect(() => {
-        const el = sectionRef.current;
-        if (!el) return;
-
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    setInView(true);
-                    observer.disconnect();
-                }
-            },
-            { threshold: 0.15, rootMargin: '0px 0px -10% 0px' }
-        );
-
-        observer.observe(el);
-        return () => observer.disconnect();
-    }, []);
 
     const facts = about?.facts || [];
     const counterFacts = facts.filter((f) => f.kind === 'counter' || f.kind === 'stat');
@@ -44,146 +24,76 @@ export default function AboutSection({
 
     return (
         <section
-            ref={sectionRef}
             id={section.key}
-            aria-label="Human Element Profile & Dossier"
-            className="w-full border-b-2 border-foreground bg-[var(--bg)] px-6 sm:px-8 xl:px-12 py-20 lg:py-28 select-none"
+            aria-label="About the Explorer"
+            className="relative w-full overflow-hidden px-6 sm:px-10 lg:px-16 py-24 lg:py-32 select-none"
         >
+            {/* Subtle Atmospheric Forest Nebula in Background */}
+            <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -bottom-20 left-10 w-[45vw] h-[45vw] max-w-[650px] max-h-[650px] rounded-full bg-[var(--forest)] opacity-20 blur-[130px]"
+            />
+
             <div className="mx-auto max-w-[1440px]">
-                {/* 1. Large Typographic Header Field */}
-                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase">
-                    <div className="flex items-center gap-3">
-                        <span className="stamp-orange text-[10px] tracking-widest">
-                            SEC. 02 // DOSSIER
-                        </span>
-                        <span className="font-bold text-foreground">
-                            THE HUMAN BEHIND THE MACHINE
-                        </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="text-[var(--primary)] font-bold">
-                            [IDENTITY: MONAYEM AZAM]
-                        </span>
-                    </div>
+                {/* Section Eyebrow */}
+                <div className="flex items-center gap-3 border-b border-border/40 pb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase">
+                    <span className="h-2 w-2 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
+                    <span>01 // THE EXPLORER</span>
+                    <span className="text-border">·</span>
+                    <span className="text-foreground font-semibold">HUMAN ANCHOR</span>
                 </div>
 
-                {/* Editorial Headline */}
-                <div className="mt-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-                    <div>
-                        <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
-                            // ARCHIVAL BIOGRAPHY & PHILOSOPHY
-                        </span>
-                        <h2 className="mt-2 font-display text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-foreground uppercase">
-                            ARCHITECTURAL RIGOR.
-                            <br />
-                            EXPRESSIVE KINETICS.
-                        </h2>
-                    </div>
-                    <p className="max-w-md font-mono text-xs text-muted-foreground leading-relaxed uppercase">
-                        Disciplined full-stack engineering rooted in verified operational uptime,
-                        clean system architecture, and an obsession with tactile, alive digital craft.
-                    </p>
-                </div>
-
-                {/* 2. Rectangular Mask Shutter & Editorial Portrait Reveal */}
-                <div className="mt-14 lg:mt-18 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-                    {/* Portrait Frame with Moving Crop & Geometric Mask */}
-                    <div className="lg:col-span-5 flex flex-col">
-                        <div className="relative">
-                            {/* Layered Deep-Forest Offset Backplate */}
+                {/* Two-Column Cinematic Spread */}
+                <div className="mt-16 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                    {/* Left Column: Portrait in Cinematic Atmospheric Frame */}
+                    <div className="lg:col-span-5 flex flex-col items-center lg:items-start">
+                        <div className="group relative w-full max-w-[420px] aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl space-rim-light bg-[var(--surface)]">
+                            {/* Ambient Glow behind portrait */}
                             <div
-                                className="absolute inset-0 translate-x-3 translate-y-3 sm:translate-x-5 sm:translate-y-5 border-2 border-foreground bg-[var(--forest)] select-none pointer-events-none"
                                 aria-hidden="true"
-                            >
-                                <div className="absolute bottom-4 right-5 font-display text-6xl sm:text-8xl font-black text-white/10 tracking-tighter">
-                                    MA.
-                                </div>
-                            </div>
+                                className="pointer-events-none absolute -inset-2 rounded-2xl bg-gradient-to-tr from-[var(--forest)] to-[var(--primary)] opacity-25 blur-xl group-hover:opacity-40 transition-opacity"
+                            />
 
-                            {/* Rectangular Mask Shutter Panel */}
-                            <div className="relative border-2 border-foreground bg-surface p-4 sm:p-6 shadow-sm overflow-hidden">
-                                {/* Precision Calibration Marks */}
-                                <span className="absolute top-2 left-2 font-mono text-xs font-bold text-[var(--primary)] select-none">
-                                    + [ID.FRAME]
-                                </span>
-                                <span className="absolute top-2 right-2 font-mono text-xs font-bold text-[var(--primary)] select-none">
-                                    [REC_2026] +
-                                </span>
-                                <span className="absolute bottom-2 left-2 font-mono text-xs font-bold text-[var(--primary)] select-none">
-                                    + [001/ENG]
-                                </span>
-                                <span className="absolute bottom-2 right-2 font-mono text-xs font-bold text-[var(--primary)] select-none">
-                                    [DHAKA_BD] +
-                                </span>
-
-                                {/* Editorial Image Crop with Controlled Mask Reveal */}
-                                <div className="relative aspect-[4/5] w-full overflow-hidden border border-foreground bg-[#141712]">
-                                    {photoUrl ? (
-                                        <img
-                                            src={photoUrl}
-                                            alt={settings?.site_title || 'Monayem Azam'}
-                                            className={`h-full w-full object-cover object-center transition-all duration-1000 ease-out ${
-                                                inView || isOff
-                                                    ? 'scale-100 filter-none opacity-100'
-                                                    : 'scale-105 contrast-125 opacity-0'
-                                            }`}
-                                        />
-                                    ) : (
-                                        <div className="flex h-full w-full flex-col items-center justify-center bg-[var(--surface-sand)] p-8 text-center font-mono">
-                                            <span className="font-display text-6xl font-black text-foreground">
-                                                MA.
-                                            </span>
-                                            <span className="mt-2 text-xs uppercase text-muted-foreground">
-                                                PORTRAIT ARCHIVE
-                                            </span>
-                                        </div>
-                                    )}
-
-                                    {/* Shutter Reveal Transition Cover */}
-                                    {!isOff && (
-                                        <div
-                                            className={`pointer-events-none absolute inset-0 bg-[var(--primary)] transition-transform duration-700 ease-out ${
-                                                inView
-                                                    ? '-translate-y-full'
-                                                    : 'translate-y-0'
-                                            }`}
-                                            style={{
-                                                transitionTimingFunction:
-                                                    'cubic-bezier(0.16, 1, 0.3, 1)',
-                                            }}
-                                        />
-                                    )}
-
-                                    {/* Floating Calibration Ribbon */}
-                                    <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between border border-foreground bg-background/90 px-3 py-1.5 font-mono text-[9px] uppercase tracking-wider backdrop-blur-xs text-foreground">
-                                        <span>ARCHIVAL RECORD 01</span>
-                                        <span className="text-[var(--primary)] font-bold">
-                                            VERIFIED SUBJECT
-                                        </span>
-                                    </div>
-                                </div>
-
-                                {/* Portrait Caption Plate */}
-                                <div className="mt-4 flex items-center justify-between font-mono text-[10px] text-muted-foreground uppercase border-t border-border pt-3">
-                                    <span>ROLE: PRINCIPAL FULL-STACK ENGINEER</span>
-                                    <span className="font-bold text-foreground">
-                                        DHAKA, BD · GLOBAL
+                            {/* Actual Portrait Image */}
+                            {photoUrl ? (
+                                <img
+                                    src={photoUrl}
+                                    alt={settings?.site_title || 'Monayem Azam'}
+                                    className="relative z-10 h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-102"
+                                />
+                            ) : (
+                                <div className="relative z-10 flex h-full w-full flex-col items-center justify-center bg-[var(--surface)] p-8 text-center font-mono">
+                                    <span className="font-display text-7xl font-black text-foreground">
+                                        MA
+                                    </span>
+                                    <span className="mt-3 text-xs uppercase text-muted-foreground">
+                                        ARCHIVAL PHOTOGRAPH
                                     </span>
                                 </div>
+                            )}
+
+                            {/* Floating Atmospheric Badge */}
+                            <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center justify-between rounded-lg border border-white/10 bg-black/60 backdrop-blur-md px-4 py-2 font-mono text-[11px] text-white">
+                                <span className="font-bold tracking-wider">
+                                    {settings?.site_title || 'MONAYEM AZAM'}
+                                </span>
+                                <span className="text-[var(--accent)] font-semibold">
+                                    DHAKA · GLOBAL
+                                </span>
                             </div>
                         </div>
 
                         {/* Resume Download Action */}
                         {resumeUrl && (
-                            <div className="mt-6">
+                            <div className="mt-6 w-full max-w-[420px]">
                                 <a
                                     href={resumeUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="group flex w-full items-center justify-center gap-3 border-2 border-foreground bg-background p-3.5 font-mono text-xs font-bold uppercase tracking-wider text-foreground transition-all hover:bg-foreground hover:text-background"
+                                    className="group flex w-full items-center justify-center gap-3 rounded-xl border border-border/80 bg-surface/60 backdrop-blur-md p-3.5 font-mono text-xs font-bold uppercase tracking-wider text-foreground transition-all hover:border-[var(--primary)] hover:bg-surface"
                                 >
-                                    <span>DOWNLOAD VERIFIED CURRICULUM VITAE</span>
-                                    <span className="transition-transform group-hover:translate-x-1 font-sans">
+                                    <span>DOWNLOAD FULL CURRICULUM VITAE</span>
+                                    <span className="transition-transform group-hover:translate-y-0.5 font-sans">
                                         ↓
                                     </span>
                                 </a>
@@ -191,18 +101,19 @@ export default function AboutSection({
                         )}
                     </div>
 
-                    {/* Right Column: Narrative Dossier, Principles, and Verified Counters */}
-                    <div className="lg:col-span-7 flex flex-col justify-between space-y-8">
-                        {/* 4. Biography Content */}
-                        <div className="border-2 border-foreground bg-surface p-6 sm:p-8 shadow-xs">
-                            <div className="flex items-center justify-between border-b border-border pb-3 font-mono text-xs text-muted-foreground uppercase">
-                                <span className="font-bold text-[var(--primary)]">
-                                    [CURATED PROFILE EXPOSITION]
-                                </span>
-                                <span>VERIFIED EDITORIAL RECORD</span>
-                            </div>
+                    {/* Right Column: Narrative Dossier & Verified Metrics */}
+                    <div className="lg:col-span-7 flex flex-col justify-center space-y-10">
+                        <div>
+                            <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
+                                // MISSION PHILOSOPHY
+                            </span>
+                            <h2 className="mt-3 font-display text-3xl sm:text-5xl font-black tracking-tight text-foreground uppercase leading-tight">
+                                ARCHITECTURAL RIGOR.
+                                <br />
+                                CRAFTED FOR REAL-WORLD IMPACT.
+                            </h2>
 
-                            <div className="mt-6 font-body text-base sm:text-lg leading-relaxed text-foreground/90 space-y-4">
+                            <div className="mt-6 font-body text-base sm:text-lg leading-relaxed text-foreground/80 space-y-4">
                                 {about?.bio ? (
                                     <p className="whitespace-pre-line">{about.bio}</p>
                                 ) : (
@@ -222,92 +133,76 @@ export default function AboutSection({
                             </div>
                         </div>
 
-                        {/* 5. Real Profile Counters from Database */}
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        {/* Verified Celestial Metrics (Database Counters) */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 border-t border-border/40">
                             {counterFacts.length > 0 ? (
                                 counterFacts.map((fact) => (
-                                    <div key={fact.id} className="border-2 border-foreground bg-surface p-5">
-                                        <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest block">
-                                            // {fact.label}
-                                        </span>
-                                        <div className="mt-2 flex items-baseline gap-1 font-mono text-3xl sm:text-4xl font-black text-foreground">
+                                    <div key={fact.id} className="flex flex-col">
+                                        <div className="flex items-baseline gap-1 font-display text-4xl sm:text-5xl font-black text-foreground">
                                             <AnimatedCounter value={fact.value} isReducedMotion={isOff} />
                                             {fact.suffix && (
-                                                <span className="text-xl text-[var(--primary)] font-bold">
+                                                <span className="text-2xl text-[var(--primary)] font-bold">
                                                     {fact.suffix}
                                                 </span>
                                             )}
                                         </div>
-                                        <span className="mt-1 font-mono text-xs text-muted-foreground uppercase block font-semibold">
+                                        <span className="mt-1 font-mono text-xs text-muted-foreground uppercase tracking-wider">
                                             {fact.label}
                                         </span>
                                     </div>
                                 ))
                             ) : (
                                 <>
-                                    <div className="border-2 border-foreground bg-surface p-5">
-                                        <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest block">
-                                            // PRACTICE CONTINUITY
-                                        </span>
-                                        <div className="mt-2 flex items-baseline gap-1 font-mono text-3xl sm:text-4xl font-black text-foreground">
+                                    <div className="flex flex-col">
+                                        <div className="flex items-baseline gap-1 font-display text-4xl sm:text-5xl font-black text-foreground">
                                             <AnimatedCounter value="8" isReducedMotion={isOff} />
-                                            <span className="text-xl text-[var(--primary)] font-bold">+</span>
+                                            <span className="text-2xl text-[var(--primary)] font-bold">+</span>
                                         </div>
-                                        <span className="mt-1 font-mono text-xs text-muted-foreground uppercase block font-semibold">
-                                            Years Active Craft
+                                        <span className="mt-1 font-mono text-xs text-muted-foreground uppercase tracking-wider">
+                                            Years in Practice
                                         </span>
                                     </div>
 
-                                    <div className="border-2 border-foreground bg-surface p-5">
-                                        <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest block">
-                                            // DEPLOYED SYSTEMS
-                                        </span>
-                                        <div className="mt-2 flex items-baseline gap-1 font-mono text-3xl sm:text-4xl font-black text-foreground">
+                                    <div className="flex flex-col">
+                                        <div className="flex items-baseline gap-1 font-display text-4xl sm:text-5xl font-black text-foreground">
                                             <AnimatedCounter value="24" isReducedMotion={isOff} />
-                                            <span className="text-xl text-[var(--primary)] font-bold">+</span>
+                                            <span className="text-2xl text-[var(--primary)] font-bold">+</span>
                                         </div>
-                                        <span className="mt-1 font-mono text-xs text-muted-foreground uppercase block font-semibold">
-                                            Production Releases
+                                        <span className="mt-1 font-mono text-xs text-muted-foreground uppercase tracking-wider">
+                                            Production Systems
                                         </span>
                                     </div>
 
-                                    <div className="border-2 border-foreground bg-surface p-5">
-                                        <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest block">
-                                            // CODE REVIEWS
-                                        </span>
-                                        <div className="mt-2 flex items-baseline gap-1 font-mono text-3xl sm:text-4xl font-black text-foreground">
+                                    <div className="flex flex-col">
+                                        <div className="flex items-baseline gap-1 font-display text-4xl sm:text-5xl font-black text-foreground">
                                             <AnimatedCounter value="1200" isReducedMotion={isOff} />
-                                            <span className="text-xl text-[var(--accent)] font-bold">+</span>
+                                            <span className="text-2xl text-[var(--accent)] font-bold">+</span>
                                         </div>
-                                        <span className="mt-1 font-mono text-xs text-muted-foreground uppercase block font-semibold">
-                                            Audits & Commits
+                                        <span className="mt-1 font-mono text-xs text-muted-foreground uppercase tracking-wider">
+                                            Code Audits & Commits
                                         </span>
                                     </div>
                                 </>
                             )}
                         </div>
 
-                        {/* Real Database Facts & Verifications */}
+                        {/* Real Database Facts */}
                         {standardFacts.length > 0 && (
-                            <div className="border-2 border-foreground bg-surface p-6">
-                                <div className="border-b border-border pb-3 font-mono text-xs font-bold text-foreground uppercase tracking-wider">
-                                    OPERATIONAL PILLARS & FACTS
-                                </div>
-                                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    {standardFacts.map((fact) => (
-                                        <div
-                                            key={fact.id}
-                                            className="border border-border p-3 font-mono text-xs bg-background"
-                                        >
-                                            <span className="font-bold text-[var(--primary)] block uppercase">
-                                                {fact.label}
-                                            </span>
-                                            <span className="text-foreground text-sm font-bold block mt-1">
-                                                {fact.value} {fact.suffix || ''}
-                                            </span>
-                                        </div>
-                                    ))}
-                                </div>
+                            <div className="flex flex-wrap gap-3 pt-2">
+                                {standardFacts.map((fact) => (
+                                    <div
+                                        key={fact.id}
+                                        className="rounded-full border border-border/80 bg-surface/40 backdrop-blur-sm px-4 py-1.5 font-mono text-xs text-foreground/90 flex items-center gap-2"
+                                    >
+                                        <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)]" />
+                                        <span className="font-semibold text-muted-foreground uppercase">
+                                            {fact.label}:
+                                        </span>
+                                        <span className="font-bold text-foreground">
+                                            {fact.value} {fact.suffix || ''}
+                                        </span>
+                                    </div>
+                                ))}
                             </div>
                         )}
                     </div>

@@ -18,14 +18,14 @@ interface FooterSectionProps {
 }
 
 const sectionLabels: Record<string, string> = {
-    about: 'ABOUT',
-    skills: 'SKILLS',
-    projects: 'EXHIBITS',
-    services: 'SERVICES',
-    experience: 'EXPERIENCE',
-    process: 'PROCESS',
-    testimonials: 'TESTIMONIALS',
-    contact: 'CONTACT',
+    about: 'DOSSIER',
+    skills: 'PLANETARY SKILLS',
+    projects: 'PROJECT UNIVERSE',
+    services: 'CAPABILITIES',
+    experience: 'FLIGHT LOG',
+    process: 'TRAJECTORY',
+    testimonials: 'TRANSMISSIONS',
+    contact: 'BEACON',
 };
 
 export default function FooterSection({
@@ -80,55 +80,59 @@ export default function FooterSection({
     return (
         <footer
             id="footer"
-            aria-label="Publication Colophon"
-            className="w-full border-t-2 border-foreground bg-[var(--bg)] px-6 sm:px-8 xl:px-12 py-16 sm:py-20"
+            aria-label="Universe Colophon"
+            className="w-full border-t border-border/40 bg-[var(--bg)] px-6 sm:px-10 lg:px-16 py-20 relative overflow-hidden"
         >
-            <div className="mx-auto max-w-[1440px]">
+            <div className="mx-auto max-w-[1440px] relative z-10">
                 {/* Colophon Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-10 sm:gap-12 pb-12 border-b border-border">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-10 sm:gap-12 pb-14 border-b border-border/40">
                     {/* Brand Wordmark & Descriptor */}
                     <div className="md:col-span-5 flex flex-col justify-between">
                         <div>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-3">
+                                <span className="h-2.5 w-2.5 rounded-full bg-[var(--primary)] shadow-[0_0_10px_var(--primary)]" />
                                 <span className="font-display text-2xl sm:text-3xl font-black tracking-tight text-foreground uppercase">
                                     {siteTitle}
                                 </span>
-                                <span className="h-2 w-2 bg-[var(--primary)]" />
                             </div>
-                            <p className="mt-3 font-mono text-xs text-muted-foreground uppercase leading-relaxed max-w-sm">
-                                Independent Full-Stack Software Engineer & Digital Creator.
-                                Engineered for architectural integrity, performance, and expressive interactive craft.
+                            <p className="mt-4 font-body text-sm sm:text-base text-foreground/75 leading-relaxed max-w-sm">
+                                Independent Full-Stack Software Engineer & Creative Technologist.
+                                Constructing resilient architectural systems and immersive digital universes.
                             </p>
                         </div>
 
-                        <div className="mt-6 font-mono text-[10px] text-muted-foreground uppercase tracking-widest">
-                            COLOPHON // ISSUE 2026 · EDITION 01
+                        <div className="mt-8 font-mono text-xs text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
+                            <span>MONAYEM // DEEP SPACE EXPERIENCE</span>
                         </div>
                     </div>
 
                     {/* Section Links */}
                     <div className="md:col-span-4">
                         <span className="font-mono text-xs font-bold text-foreground uppercase tracking-widest block mb-4">
-                            INDEX DIRECTORY //
+                            CELESTIAL WAYPOINTS //
                         </span>
                         <div className="grid grid-cols-2 gap-2 font-mono text-xs">
                             {navLinks.map((item, idx) => (
                                 <a
                                     key={item.key}
                                     href={`#${item.key}`}
-                                    className="text-muted-foreground hover:text-foreground transition-colors uppercase py-1"
+                                    className="text-muted-foreground hover:text-[var(--primary)] transition-colors uppercase py-1.5 flex items-center gap-2"
                                 >
-                                    {(idx + 1).toString().padStart(2, '0')} / {sectionLabels[item.key] || item.nav_label || item.title}
+                                    <span className="text-[10px] text-border">
+                                        {(idx + 1).toString().padStart(2, '0')}.
+                                    </span>
+                                    <span>{sectionLabels[item.key] || item.nav_label || item.title}</span>
                                 </a>
                             ))}
                         </div>
                     </div>
 
-                    {/* Socials & Colophon Tech Specs */}
+                    {/* Socials & Actions */}
                     <div className="md:col-span-3 flex flex-col justify-between">
                         <div>
                             <span className="font-mono text-xs font-bold text-foreground uppercase tracking-widest block mb-4">
-                                DISPATCH CHANNELS //
+                                SIGNAL CHANNELS //
                             </span>
                             <div className="flex flex-col gap-2 font-mono text-xs">
                                 {socialLinks.length > 0 ? (
@@ -138,49 +142,42 @@ export default function FooterSection({
                                             href={item.url as string}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-muted-foreground hover:text-[var(--primary)] transition-colors uppercase flex items-center justify-between"
+                                            className="text-muted-foreground hover:text-[var(--primary)] transition-colors uppercase flex items-center justify-between py-1"
                                         >
                                             <span>{item.label}</span>
-                                            <span>[↗]</span>
+                                            <span className="font-sans">↗</span>
                                         </a>
                                     ))
                                 ) : (
                                     <>
                                         <a
                                             href="#contact"
-                                            className="text-muted-foreground hover:text-[var(--primary)] transition-colors uppercase flex items-center justify-between"
+                                            className="text-muted-foreground hover:text-[var(--primary)] transition-colors uppercase flex items-center justify-between py-1"
                                         >
-                                            <span>DIRECT INQUIRY</span>
-                                            <span>[→]</span>
+                                            <span>DIRECT BEACON</span>
+                                            <span className="font-sans">→</span>
                                         </a>
                                         <a
                                             href="https://github.com"
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-muted-foreground hover:text-[var(--primary)] transition-colors uppercase flex items-center justify-between"
+                                            className="text-muted-foreground hover:text-[var(--primary)] transition-colors uppercase flex items-center justify-between py-1"
                                         >
-                                            <span>CODE ARCHIVE</span>
-                                            <span>[↗]</span>
-                                        </a>
-                                        <a
-                                            href="#about"
-                                            className="text-muted-foreground hover:text-[var(--primary)] transition-colors uppercase flex items-center justify-between"
-                                        >
-                                            <span>PROFILE DOSSIER</span>
-                                            <span>[↓]</span>
+                                            <span>REPOSITORY</span>
+                                            <span className="font-sans">↗</span>
                                         </a>
                                     </>
                                 )}
                             </div>
                         </div>
 
-                        <div className="mt-6">
+                        <div className="mt-8">
                             <button
                                 type="button"
                                 onClick={handleScrollTop}
-                                className="w-full border border-foreground py-2 font-mono text-xs font-bold uppercase tracking-wider text-foreground hover:bg-foreground hover:text-background transition-colors flex items-center justify-center gap-2"
+                                className="w-full rounded-full border border-border/80 bg-surface/60 backdrop-blur-md py-3 font-mono text-xs font-bold uppercase tracking-wider text-foreground hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all flex items-center justify-center gap-2 cursor-pointer"
                             >
-                                <span>RETURN TO TOP</span>
+                                <span>RETURN TO APEX</span>
                                 <ArrowUp className="h-3.5 w-3.5" />
                             </button>
                         </div>
@@ -189,8 +186,8 @@ export default function FooterSection({
 
                 {/* Bottom Legal & Colophon Dispatches */}
                 <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[11px] text-muted-foreground uppercase tracking-wider">
-                    <span>© {currentYear} MONAYEM AZAM · ALL RIGHTS RESERVED</span>
-                    <span>BUILT WITH LARAVEL 12, REACT 19, TYPESCRIPT & SWISS EDITORIAL CRAFT</span>
+                    <span>© {currentYear} {siteTitle} · ALL RIGHTS RESERVED</span>
+                    <span>BUILT WITH LARAVEL 12, REACT 19, THREE.JS & DEEP SPACE CRAFT</span>
                 </div>
             </div>
         </footer>

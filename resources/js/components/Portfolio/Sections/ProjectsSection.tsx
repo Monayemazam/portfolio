@@ -55,10 +55,9 @@ export default function ProjectsSection({
 
     // Keyboard navigation (Left / Right / Enter)
     useEffect(() => {
-        if (isDetailOpen) return; // Allow detail panel to handle its own keys
+        if (isDetailOpen) return;
 
         const handleKeyDown = (e: KeyboardEvent) => {
-            // Ignore if active element is an input
             const activeTag = document.activeElement?.tagName.toLowerCase();
             if (activeTag === 'input' || activeTag === 'textarea') return;
 
@@ -110,189 +109,166 @@ export default function ProjectsSection({
     if (!activeProject) return null;
 
     const accentColor = activeProject.accent_color || '#F15A24';
-    const exhibitNumber = (currentIndex + 1).toString().padStart(2, '0');
-    const totalExhibits = sorted.length.toString().padStart(2, '0');
+    const destinationNumber = (currentIndex + 1).toString().padStart(2, '0');
+    const totalDestinations = sorted.length.toString().padStart(2, '0');
 
     return (
         <section
             id={section.key}
-            aria-label="Curated Work Exhibition Stage"
-            className="w-full border-b-2 border-foreground bg-[var(--bg)] px-6 sm:px-8 xl:px-12 py-20 lg:py-28 select-none transition-colors duration-500"
+            aria-label="The Project Universe"
+            className="relative w-full overflow-hidden px-6 sm:px-10 lg:px-16 py-24 lg:py-32 select-none"
         >
-            <div className="mx-auto max-w-[1440px]">
-                {/* Calibration Eyebrow Strip */}
-                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase">
-                    <div className="flex items-center gap-3">
-                        <span className="stamp-orange text-[10px] tracking-widest">
-                            SEC. 04 // GALLERY
-                        </span>
-                        <span className="font-bold text-foreground">
-                            CURATED WORK EXHIBITION
-                        </span>
-                    </div>
+            {/* Dynamic Localized Ambient Light Wash matching active project accent */}
+            <div
+                aria-hidden="true"
+                className="pointer-events-none absolute top-1/4 right-0 w-[55vw] h-[55vw] max-w-[850px] max-h-[850px] rounded-full opacity-20 blur-[150px] transition-all duration-700"
+                style={{ backgroundColor: accentColor }}
+            />
 
-                    <div className="flex items-center gap-4 text-foreground font-semibold">
-                        <span className="hidden sm:inline text-muted-foreground">
-                            NAVIGATE: [← / → ARROWS] · [ENTER: DOSSIER]
-                        </span>
-                        <span className="h-2 w-2 bg-[var(--primary)] inline-block" />
-                        <span>
-                            STAGE: [{exhibitNumber} / {totalExhibits}]
-                        </span>
-                    </div>
+            <div className="mx-auto max-w-[1440px]">
+                {/* Section Header */}
+                <div className="flex items-center gap-3 border-b border-border/40 pb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase">
+                    <span
+                        className="h-2 w-2 rounded-full transition-colors duration-500"
+                        style={{
+                            backgroundColor: accentColor,
+                            boxShadow: `0 0 10px ${accentColor}`,
+                        }}
+                    />
+                    <span>03 // PROJECT UNIVERSE</span>
+                    <span className="text-border">·</span>
+                    <span className="text-foreground font-semibold">
+                        CURATED CELESTIAL WORLDS
+                    </span>
+                    <span className="ml-auto hidden sm:inline text-muted-foreground">
+                        USE [← / → ARROWS] OR SELECT A WORLD
+                    </span>
                 </div>
 
-                {/* Section Introduction */}
-                <div className="mt-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                {/* Section Title */}
+                <div className="mt-12 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                     <div>
                         <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
-                            // ARCHITECTURAL SYSTEMS & CASE STUDIES
+                            // SELECTED DIGITAL WORLDS
                         </span>
-                        <h2 className="mt-2 font-display text-3xl sm:text-5xl font-black tracking-tight text-foreground uppercase">
-                            SELECTED WORK,
+                        <h2 className="mt-3 font-display text-3xl sm:text-5xl font-black tracking-tight text-foreground uppercase leading-tight">
+                            EXPLORE A UNIVERSE
                             <br />
-                            BUILT TO WORK.
+                            OF REAL WORK.
                         </h2>
                     </div>
-                    <div className="max-w-md font-mono text-xs text-muted-foreground leading-relaxed uppercase">
-                        <p>
-                            An interactive stage showcasing verified production software.
-                            Each case study reveals real client architectures, delivered features,
-                            and responsive implementations.
-                        </p>
-                    </div>
+                    <p className="max-w-md font-body text-sm sm:text-base text-muted-foreground leading-relaxed">
+                        Each production system represents a distinct digital destination. Navigate
+                        through verified architectures, live commercial platforms, and delivered features.
+                    </p>
                 </div>
 
-                {/* THE MAIN INTERACTIVE EXHIBITION STAGE */}
-                <div
-                    className="mt-12 border-2 border-foreground bg-surface shadow-sm relative overflow-hidden transition-all duration-300"
-                    style={{
-                        borderColor: isDarkState() ? 'rgba(242, 239, 230, 0.4)' : '#171914',
-                    }}
-                >
-                    {/* Corner Caliper Precision Crosshairs */}
-                    <span className="absolute top-3 left-3 font-mono text-xs font-bold text-[var(--primary)] z-20 pointer-events-none">
-                        + [EXHIBIT_{exhibitNumber}]
-                    </span>
-                    <span className="absolute top-3 right-3 font-mono text-xs font-bold text-[var(--primary)] z-20 pointer-events-none">
-                        [{activeProject.year || '2026'}] +
-                    </span>
-                    <span className="absolute bottom-3 left-3 font-mono text-xs font-bold text-[var(--primary)] z-20 pointer-events-none">
-                        + [{activeProject.business_type || 'COMMERCIAL'}]
-                    </span>
-                    <span className="absolute bottom-3 right-3 font-mono text-xs font-bold text-[var(--primary)] z-20 pointer-events-none">
-                        [ACTIVE_STAGE] +
-                    </span>
+                {/* Planetary Exploration Jump Strip */}
+                <div className="mt-12 flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+                    {sorted.map((proj, idx) => {
+                        const isCurrent = idx === currentIndex;
+                        const projAccent = proj.accent_color || '#F15A24';
 
-                    {/* Top Exhibition Stage Header Bar */}
-                    <div className="relative z-10 flex flex-wrap items-center justify-between border-b-2 border-foreground bg-background px-6 py-3 font-mono text-xs uppercase">
-                        <div className="flex items-center gap-3">
-                            <span
-                                className="h-2.5 w-2.5 inline-block border border-foreground"
-                                style={{ backgroundColor: accentColor }}
-                            />
-                            <span className="font-bold text-foreground">
-                                {activeProject.title}
-                            </span>
-                            <span className="text-border">/</span>
-                            <span className="text-muted-foreground">
-                                {activeProject.role || 'FULL-STACK ENGINEER'}
-                            </span>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                            {activeProject.is_featured && (
-                                <span className="stamp-lime text-[9px]">
-                                    FEATURED PRODUCTION RELEASE
+                        return (
+                            <button
+                                key={proj.id}
+                                type="button"
+                                onClick={() => changeProject(idx)}
+                                className={`group flex items-center gap-3 rounded-full border px-5 py-2.5 transition-all whitespace-nowrap focus:outline-hidden ${
+                                    isCurrent
+                                        ? 'border-foreground bg-surface text-foreground shadow-lg'
+                                        : 'border-border/70 bg-surface/30 backdrop-blur-sm text-muted-foreground hover:border-foreground/40 hover:text-foreground'
+                                }`}
+                                aria-label={`Select ${proj.title}`}
+                            >
+                                <span
+                                    className="h-2 w-2 rounded-full transition-transform group-hover:scale-125"
+                                    style={{
+                                        backgroundColor: projAccent,
+                                        boxShadow: isCurrent ? `0 0 10px ${projAccent}` : 'none',
+                                    }}
+                                />
+                                <span className="font-mono text-xs font-bold">
+                                    {(idx + 1).toString().padStart(2, '0')}.
                                 </span>
-                            )}
-                            <span className="border border-border px-2 py-0.5 text-[10px] text-muted-foreground">
-                                SLUG: #{activeProject.slug}
-                            </span>
-                        </div>
-                    </div>
+                                <span className="font-display text-xs font-bold uppercase tracking-tight">
+                                    {proj.title}
+                                </span>
+                            </button>
+                        );
+                    })}
+                </div>
 
-                    {/* Main Stage Grid: Media Preview Left, Architectural Dossier Right */}
+                {/* THE MAIN CELESTIAL STAGE */}
+                <div className="mt-8 rounded-3xl border border-border/80 bg-surface/60 backdrop-blur-2xl p-6 sm:p-10 lg:p-14 shadow-2xl relative overflow-hidden space-rim-light">
                     <div
-                        className={`grid grid-cols-1 lg:grid-cols-12 gap-0 transition-opacity duration-200 ${
+                        className={`grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center transition-opacity duration-200 ${
                             isTransitioning ? 'opacity-30' : 'opacity-100'
                         }`}
                     >
-                        {/* Left Column: Large Image or Deterministic Typographic Cover */}
-                        <div className="lg:col-span-7 border-b lg:border-b-0 lg:border-r-2 border-foreground bg-[#141712] relative min-h-[380px] sm:min-h-[460px] lg:min-h-[540px] flex items-center justify-center overflow-hidden">
-                            <div className="w-full h-full relative">
+                        {/* Left Column: Visual Media Preview Surface */}
+                        <div className="lg:col-span-7 flex flex-col justify-center">
+                            <div className="group relative w-full aspect-[16/10] rounded-2xl overflow-hidden shadow-2xl bg-[#141712] border border-border/60">
                                 <ProjectArchitecturalCover
                                     project={activeProject}
                                     isFeatured={activeProject.is_featured}
-                                    className="h-full w-full min-h-[380px] sm:min-h-[460px] lg:min-h-[540px]"
+                                    className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-102"
                                 />
-                            </div>
 
-                            {/* Accent Color Ambient Field Wash in Corner */}
-                            <div
-                                aria-hidden="true"
-                                className="pointer-events-none absolute bottom-0 left-0 right-0 h-28 opacity-25"
-                                style={{
-                                    background: `linear-gradient(to top, ${accentColor}, transparent)`,
-                                }}
-                            />
+                                {/* Ambient rim wash at the bottom */}
+                                <div
+                                    aria-hidden="true"
+                                    className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 opacity-30"
+                                    style={{
+                                        background: `linear-gradient(to top, ${accentColor}, transparent)`,
+                                    }}
+                                />
+
+                                {/* Floating Live Badge */}
+                                <div className="absolute top-4 left-4 z-20 flex items-center gap-2 rounded-full bg-black/60 backdrop-blur-md px-3.5 py-1.5 font-mono text-[11px] text-white border border-white/10">
+                                    <span
+                                        className="h-2 w-2 rounded-full"
+                                        style={{ backgroundColor: accentColor }}
+                                    />
+                                    <span>DESTINATION {destinationNumber} // {totalDestinations}</span>
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Right Column: Architectural Project Dossier & Controls */}
-                        <div className="lg:col-span-5 p-6 sm:p-8 lg:p-10 flex flex-col justify-between bg-surface">
+                        {/* Right Column: Project World Information & Actions */}
+                        <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
                             <div>
-                                {/* Project Index Number & Classification */}
-                                <div className="flex items-baseline justify-between border-b border-border pb-3 font-mono text-xs">
-                                    <span
-                                        className="font-black text-2xl"
-                                        style={{ color: accentColor }}
-                                    >
-                                        {exhibitNumber} //
-                                    </span>
-                                    <span className="text-muted-foreground uppercase">
+                                {/* Project Tags & Year */}
+                                <div className="flex items-center gap-3 font-mono text-xs text-muted-foreground uppercase">
+                                    <span className="font-bold text-foreground">
                                         YEAR: {activeProject.year || '2026'}
                                     </span>
+                                    <span className="text-border">·</span>
+                                    <span>{activeProject.business_type || 'COMMERCIAL SYSTEM'}</span>
+                                    {activeProject.is_featured && (
+                                        <span className="ml-auto rounded-full bg-[var(--accent)]/15 border border-[var(--accent)]/40 px-2.5 py-0.5 text-[9px] font-bold text-[var(--accent)]">
+                                            FEATURED WORLD
+                                        </span>
+                                    )}
                                 </div>
 
-                                {/* Oversized Project Name */}
-                                <h3 className="mt-4 font-display text-2xl sm:text-4xl font-black uppercase tracking-tight text-foreground">
+                                {/* Project Title */}
+                                <h3 className="mt-4 font-display text-3xl sm:text-5xl font-black uppercase tracking-tight text-foreground leading-tight">
                                     {activeProject.title}
                                 </h3>
 
-                                {/* Summary */}
-                                <p className="mt-4 font-body text-sm sm:text-base leading-relaxed text-foreground/85">
+                                {/* Project Summary */}
+                                <p className="mt-4 font-body text-base leading-relaxed text-foreground/80">
                                     {activeProject.summary}
                                 </p>
 
-                                {/* Metadata Matrix */}
-                                <div className="mt-6 border border-border bg-background p-4 font-mono text-xs divide-y divide-border">
-                                    <div className="pb-2 flex justify-between">
-                                        <span className="text-muted-foreground uppercase">SYSTEM:</span>
-                                        <span className="font-bold text-foreground">
-                                            {activeProject.title}
-                                        </span>
-                                    </div>
-                                    <div className="py-2 flex justify-between">
-                                        <span className="text-muted-foreground uppercase">ROLE:</span>
-                                        <span className="font-bold text-foreground">
-                                            {activeProject.role || 'FULL-STACK LEAD'}
-                                        </span>
-                                    </div>
-                                    <div className="pt-2 flex justify-between">
-                                        <span className="text-muted-foreground uppercase">SECTOR:</span>
-                                        <span className="font-bold text-foreground">
-                                            {activeProject.business_type || 'COMMERCIAL WEB'}
-                                        </span>
-                                    </div>
-                                </div>
-
-                                {/* Tag Chips */}
+                                {/* Tags */}
                                 {activeProject.tags && activeProject.tags.length > 0 && (
-                                    <div className="mt-5 flex flex-wrap gap-2">
+                                    <div className="mt-6 flex flex-wrap gap-2">
                                         {activeProject.tags.map((tag) => (
                                             <span
                                                 key={tag.id}
-                                                className="border border-border bg-background px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground"
+                                                className="rounded-full border border-border/80 bg-surface/50 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground"
                                             >
                                                 #{tag.name}
                                             </span>
@@ -301,15 +277,15 @@ export default function ProjectsSection({
                                 )}
                             </div>
 
-                            {/* Interactive Actions & Deep Navigation */}
-                            <div className="mt-8 pt-6 border-t border-border flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                            {/* Action Buttons */}
+                            <div className="pt-6 border-t border-border/40 flex flex-wrap items-center gap-4">
                                 <button
                                     type="button"
                                     onClick={() => openDetail(activeProject)}
-                                    className="flex-1 flex items-center justify-center gap-2 bg-[var(--primary)] px-6 py-3.5 font-mono text-xs font-bold uppercase tracking-wider text-white transition-all hover:bg-[var(--primary)]/90 active:scale-98 shadow-xs"
+                                    className="flex items-center gap-3 rounded-full bg-[var(--primary)] px-7 py-3.5 font-mono text-xs font-bold uppercase tracking-wider text-white transition-all hover:bg-[var(--primary)]/90 hover:shadow-[0_0_25px_rgba(241,90,36,0.35)] active:scale-98"
                                 >
-                                    <span>OPEN COMPLETE DOSSIER</span>
-                                    <span className="font-sans font-bold">→</span>
+                                    <span>EXPLORE MISSION DOSSIER</span>
+                                    <span className="font-sans">→</span>
                                 </button>
 
                                 {activeProject.live_url && (
@@ -317,9 +293,9 @@ export default function ProjectsSection({
                                         href={activeProject.live_url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex items-center justify-center gap-2 border-2 border-foreground bg-transparent px-5 py-3.5 font-mono text-xs font-bold uppercase tracking-wider text-foreground transition-all hover:bg-foreground hover:text-background"
+                                        className="flex items-center gap-2 rounded-full border border-border bg-surface/60 backdrop-blur-sm px-6 py-3.5 font-mono text-xs font-bold uppercase tracking-wider text-foreground transition-all hover:border-[var(--primary)] hover:bg-surface"
                                     >
-                                        <span>LIVE SITE</span>
+                                        <span>LIVE PLATFORM</span>
                                         <span className="font-sans">↗</span>
                                     </a>
                                 )}
@@ -327,55 +303,31 @@ export default function ProjectsSection({
                         </div>
                     </div>
 
-                    {/* Bottom Exhibition Selector Console & Stepper Controls */}
-                    <div className="relative z-10 flex flex-wrap items-center justify-between border-t-2 border-foreground bg-background p-4 sm:p-6 gap-4">
-                        {/* Stepper Buttons */}
-                        <div className="flex items-center gap-2">
+                    {/* Stage Stepper Footer Controls */}
+                    <div className="mt-10 pt-6 border-t border-border/40 flex items-center justify-between font-mono text-xs text-muted-foreground uppercase">
+                        <div className="flex items-center gap-3">
                             <button
                                 type="button"
                                 onClick={goToPrev}
-                                className="flex items-center gap-2 border-2 border-foreground bg-surface px-4 py-2 font-mono text-xs font-bold uppercase tracking-wider text-foreground transition-all hover:bg-foreground hover:text-background active:scale-95"
-                                aria-label="Previous Exhibit"
+                                className="flex items-center gap-2 rounded-full border border-border/80 bg-surface/50 px-4 py-2 hover:border-foreground hover:text-foreground transition-all"
                             >
-                                <span className="font-sans font-bold">←</span>
-                                <span className="hidden sm:inline">PREV</span>
+                                <span className="font-sans">←</span>
+                                <span>PREVIOUS WORLD</span>
                             </button>
 
                             <button
                                 type="button"
                                 onClick={goToNext}
-                                className="flex items-center gap-2 border-2 border-foreground bg-surface px-4 py-2 font-mono text-xs font-bold uppercase tracking-wider text-foreground transition-all hover:bg-foreground hover:text-background active:scale-95"
-                                aria-label="Next Exhibit"
+                                className="flex items-center gap-2 rounded-full border border-border/80 bg-surface/50 px-4 py-2 hover:border-foreground hover:text-foreground transition-all"
                             >
-                                <span className="hidden sm:inline">NEXT</span>
-                                <span className="font-sans font-bold">→</span>
+                                <span>NEXT WORLD</span>
+                                <span className="font-sans">→</span>
                             </button>
                         </div>
 
-                        {/* Interactive Thumbnail Jump Strip */}
-                        <div className="flex items-center gap-1.5 overflow-x-auto max-w-full py-1">
-                            {sorted.map((proj, idx) => {
-                                const isCurrent = idx === currentIndex;
-                                return (
-                                    <button
-                                        key={proj.id}
-                                        type="button"
-                                        onClick={() => changeProject(idx)}
-                                        className={`group relative flex items-center gap-2 border px-3 py-1.5 font-mono text-xs transition-all ${
-                                            isCurrent
-                                                ? 'border-foreground bg-foreground text-background font-bold'
-                                                : 'border-border bg-surface text-muted-foreground hover:border-foreground hover:text-foreground'
-                                        }`}
-                                        title={proj.title}
-                                    >
-                                        <span>{(idx + 1).toString().padStart(2, '0')}</span>
-                                        <span className="hidden md:inline max-w-[100px] truncate text-[11px]">
-                                            {proj.title}
-                                        </span>
-                                    </button>
-                                );
-                            })}
-                        </div>
+                        <span className="hidden sm:inline font-bold text-foreground">
+                            ORBIT {destinationNumber} OF {totalDestinations}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -389,13 +341,5 @@ export default function ProjectsSection({
                 onSelectProject={(proj) => setSelectedProject(proj)}
             />
         </section>
-    );
-}
-
-function isDarkState(): boolean {
-    if (typeof document === 'undefined') return true;
-    return (
-        document.documentElement.classList.contains('dark') ||
-        document.documentElement.getAttribute('data-theme') === 'dark'
     );
 }

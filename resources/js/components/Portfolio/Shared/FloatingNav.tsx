@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { PortfolioSection, PortfolioSettings } from '@/types/portfolio';
 import { useTheme } from '@/hooks/use-theme';
-import { Icons } from './Icons';
+import MobileMenu from './MobileMenu';
 
 interface FloatingNavProps {
     sections: PortfolioSection[];
@@ -24,21 +24,20 @@ export default function FloatingNav({
 
     useEffect(() => {
         const handleScroll = () => {
-            setScrolled(window.scrollY > 40);
+            setScrolled(window.scrollY > 30);
         };
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // Dynamically filter to published and visible sections with sequential indices
     const candidateNavItems = [
         { key: 'about', label: 'ABOUT' },
         { key: 'skills', label: 'SKILLS' },
-        { key: 'projects', label: 'EXHIBITS' },
+        { key: 'projects', label: 'PROJECTS' },
         { key: 'services', label: 'SERVICES' },
         { key: 'experience', label: 'EXPERIENCE' },
         { key: 'process', label: 'PROCESS' },
-        { key: 'testimonials', label: 'TESTIMONIALS' },
+        { key: 'testimonials', label: 'TRANSMISSIONS' },
         { key: 'contact', label: 'CONTACT' },
     ];
 
@@ -47,11 +46,7 @@ export default function FloatingNav({
             if (item.key === 'experience' && experiencesCount === 0) return false;
             if (item.key === 'testimonials' && testimonialsCount === 0) return false;
             return sections.some((s) => s.key === item.key && s.is_visible !== false);
-        })
-        .map((item, idx) => ({
-            ...item,
-            index: (idx + 1).toString().padStart(2, '0'),
-        }));
+        });
 
     const scrollTo = (id: string) => {
         setMobileOpen(false);
@@ -64,55 +59,37 @@ export default function FloatingNav({
     return (
         <header
             role="banner"
-            className={`sticky top-0 z-50 w-full transition-colors duration-200 border-b ${
+            className={`sticky top-0 z-40 w-full transition-all duration-300 ${
                 scrolled
-                    ? 'bg-[var(--bg)] border-border shadow-xs'
-                    : 'bg-[var(--bg)] border-border'
+                    ? 'bg-[var(--bg)]/85 backdrop-blur-md border-b border-border/50 shadow-lg'
+                    : 'bg-transparent border-b border-border/20'
             }`}
         >
-            {/* Top publication ticker / masthead sub-bar */}
-            <div className="hidden lg:flex items-center justify-between border-b border-border px-6 xl:px-12 py-1.5 font-mono text-[11px] tracking-wider text-muted-foreground uppercase">
-                <div className="flex items-center gap-4">
-                    <span>INDEX NO. 2026 // MONAYEM AZAM ARCHIVE</span>
-                    <span className="text-border">|</span>
-                    <span className="flex items-center gap-1.5 text-foreground font-semibold">
-                        <span className="inline-block h-1.5 w-1.5 bg-[var(--primary)]" />
-                        AVAILABLE FOR SELECT COMMISSIONS
-                    </span>
-                </div>
-                <div className="flex items-center gap-6">
-                    <span>TIMEZONE: UTC+6 · DHAKA</span>
-                    <span className="text-border">|</span>
-                    <span>EDITION: DIGITAL FIELD NOTES 01</span>
-                </div>
-            </div>
-
-            {/* Main Publication Masthead */}
-            <div className="mx-auto flex h-16 sm:h-20 max-w-[1440px] items-center justify-between px-6 sm:px-8 xl:px-12">
-                {/* Wordmark */}
+            <div className="mx-auto flex h-18 sm:h-20 max-w-[1440px] items-center justify-between px-6 sm:px-10 lg:px-16">
+                {/* Brand Wordmark with Celestial Star Point */}
                 <a
                     href="#hero"
                     onClick={(e) => {
                         e.preventDefault();
                         scrollTo('hero');
                     }}
-                    className="group flex flex-col focus:outline-hidden"
+                    className="group flex items-center gap-3 focus:outline-hidden"
                 >
-                    <div className="flex items-center gap-2">
-                        <span className="font-display text-lg sm:text-2xl font-black tracking-tight text-foreground transition-colors group-hover:text-[var(--primary)]">
+                    <span className="h-2.5 w-2.5 rounded-full bg-[var(--primary)] shadow-[0_0_12px_var(--primary)] transition-transform group-hover:scale-125" />
+                    <div className="flex flex-col">
+                        <span className="font-display text-lg sm:text-xl font-black tracking-tight text-foreground transition-colors group-hover:text-[var(--primary)]">
                             MONAYEM AZAM
                         </span>
-                        <span className="h-2 w-2 bg-[var(--primary)] transition-transform group-hover:scale-125" />
+                        <span className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase -mt-0.5">
+                            DEEP SPACE
+                        </span>
                     </div>
-                    <span className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase -mt-0.5">
-                        INDEPENDENT DIGITAL BUILDER
-                    </span>
                 </a>
 
-                {/* Desktop Editorial Navigation Grid */}
+                {/* Desktop Celestial Navigation */}
                 <nav
                     role="navigation"
-                    aria-label="Publication Sections"
+                    aria-label="Celestial Destinations"
                     className="hidden lg:flex items-center gap-8 font-mono text-xs tracking-wider"
                 >
                     {navItems.map((item) => {
@@ -122,106 +99,80 @@ export default function FloatingNav({
                                 key={item.key}
                                 type="button"
                                 onClick={() => scrollTo(item.key)}
-                                className={`group flex items-center gap-1.5 transition-colors focus:outline-hidden py-1 ${
+                                className={`group relative py-2 transition-colors focus:outline-hidden ${
                                     isActive
-                                        ? 'text-[var(--primary)] font-bold'
-                                        : 'text-foreground/80 hover:text-foreground'
+                                        ? 'text-foreground font-bold'
+                                        : 'text-muted-foreground hover:text-foreground'
                                 }`}
                             >
-                                <span className="text-[10px] text-muted-foreground transition-colors group-hover:text-[var(--primary)]">
-                                    {item.index}/
-                                </span>
                                 <span>{item.label}</span>
                                 {isActive && (
-                                    <span className="inline-block h-1 w-1 bg-[var(--primary)]" />
+                                    <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
                                 )}
                             </button>
                         );
                     })}
                 </nav>
 
-                {/* Right controls: Theme toggle + Contact trigger */}
+                {/* Right Controls: Theme Toggle + Contact Action */}
                 <div className="flex items-center gap-3 sm:gap-4">
-                    {/* Editorial theme toggle */}
+                    {/* Theme Switcher */}
                     <button
                         type="button"
                         onClick={toggleTheme}
-                        aria-label={`Switch to ${isDark ? 'Solar (Warm Paper)' : 'Deep Space (Charcoal)'} theme`}
-                        className="flex items-center gap-2 border border-border px-2.5 sm:px-3 py-1.5 font-mono text-[11px] tracking-wider uppercase transition-colors hover:border-foreground hover:bg-muted"
+                        aria-label={`Switch to ${isDark ? 'Solar' : 'Deep Space'} theme`}
+                        className="flex items-center gap-2 rounded-full border border-border/80 bg-surface/60 backdrop-blur-sm px-3.5 py-1.5 font-mono text-[11px] tracking-wider uppercase transition-all hover:border-[var(--primary)] hover:bg-surface"
                     >
-                        <span className="inline-block h-2 w-2 rounded-none bg-[var(--primary)]" />
-                        <span className="hidden sm:inline">
-                            {isDark ? 'CHARCOAL' : 'PAPER'}
+                        <span className="h-2 w-2 rounded-full bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]" />
+                        <span className="hidden sm:inline font-semibold">
+                            {isDark ? 'DEEP SPACE' : 'SOLAR'}
                         </span>
                     </button>
 
-                    {/* Primary Contact Action */}
+                    {/* Contact Action */}
                     <button
                         type="button"
                         onClick={() => scrollTo('contact')}
-                        className="hidden sm:flex items-center gap-2 bg-[var(--primary)] px-4 py-2 font-mono text-xs font-bold uppercase tracking-wider text-white transition-opacity hover:opacity-90 active:scale-98"
+                        className="hidden sm:flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2 font-mono text-xs font-bold uppercase tracking-wider text-white transition-all hover:shadow-[0_0_20px_rgba(241,90,36,0.4)] hover:bg-[var(--primary)]/90"
                     >
-                        <span>TALK</span>
-                        <span>[→]</span>
+                        <span>GET IN TOUCH</span>
+                        <span className="font-sans">→</span>
                     </button>
 
-                    {/* Mobile Menu Toggle Button */}
+                    {/* Mobile Navigation Trigger */}
                     <button
                         type="button"
-                        onClick={() => setMobileOpen(!mobileOpen)}
-                        aria-expanded={mobileOpen}
-                        aria-label="Toggle publication menu"
-                        className="flex lg:hidden items-center justify-center border border-border p-2 text-foreground transition-colors hover:border-foreground"
+                        onClick={() => setMobileOpen(true)}
+                        aria-label="Open Navigation Menu"
+                        className="flex lg:hidden h-10 w-10 items-center justify-center rounded-full border border-border bg-surface text-foreground"
                     >
-                        {mobileOpen ? (
-                            <Icons.Close className="h-5 w-5" />
-                        ) : (
-                            <Icons.Menu className="h-5 w-5" />
-                        )}
+                        <svg
+                            className="h-5 w-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M4 6h16M4 12h16m-7 6h7"
+                            />
+                        </svg>
                     </button>
                 </div>
             </div>
 
-            {/* Mobile Publication Menu Overlay */}
-            {mobileOpen && (
-                <div
-                    role="dialog"
-                    aria-modal="true"
-                    aria-label="Navigation Menu"
-                    className="fixed inset-x-0 top-[65px] bottom-0 z-50 flex flex-col bg-[var(--bg)] border-t border-border px-6 py-8 overflow-y-auto"
-                >
-                    <div className="flex flex-col gap-6">
-                        <div className="font-mono text-[11px] tracking-widest text-muted-foreground uppercase border-b border-border pb-3">
-                            CATALOGUE DIRECTORY // SELECT DISPATCH
-                        </div>
-                        {navItems.map((item) => (
-                            <button
-                                key={item.key}
-                                type="button"
-                                onClick={() => scrollTo(item.key)}
-                                className="flex items-baseline justify-between border-b border-border/50 py-3 text-left focus:outline-hidden"
-                            >
-                                <span className="font-display text-2xl font-black tracking-tight text-foreground">
-                                    {item.label}
-                                </span>
-                                <span className="font-mono text-sm text-[var(--primary)]">
-                                    {item.index} //
-                                </span>
-                            </button>
-                        ))}
-
-                        <div className="pt-6">
-                            <button
-                                type="button"
-                                onClick={() => scrollTo('contact')}
-                                className="w-full bg-[var(--primary)] py-3 font-mono text-sm font-bold uppercase tracking-wider text-white"
-                            >
-                                INITIATE DIALOGUE [→]
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* Mobile Drawer Menu */}
+            <MobileMenu
+                isOpen={mobileOpen}
+                onClose={() => setMobileOpen(false)}
+                sections={sections}
+                activeSection={activeSection}
+                settings={settings}
+                experiencesCount={experiencesCount}
+                testimonialsCount={testimonialsCount}
+            />
         </header>
     );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import StarfieldStatic from './StarfieldStatic';
+import CelestialBackground from './CelestialBackground';
 
 interface StarfieldContainerProps {
     effectiveLevel?: string;
@@ -7,7 +7,9 @@ interface StarfieldContainerProps {
 }
 
 export default function StarfieldContainer({
+    effectiveLevel,
     isDark = true,
 }: StarfieldContainerProps) {
-    return <StarfieldStatic isDark={isDark} />;
+    const isReduced = effectiveLevel === 'off';
+    return <CelestialBackground isDark={isDark} isReducedMotion={isReduced} />;
 }

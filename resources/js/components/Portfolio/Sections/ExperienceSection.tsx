@@ -61,19 +61,23 @@ function MilestoneItem({ exp, idx, isOff }: MilestoneCardProps) {
             }`}
         >
             {/* Center Node Marker (Desktop) */}
-            <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 z-10 h-7 w-7 items-center justify-center bg-background border-2 border-foreground transition-colors group-hover:border-[var(--primary)]">
+            <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 z-10 h-7 w-7 items-center justify-center rounded-full bg-background border border-border/80 shadow-[0_0_12px_rgba(241,90,36,0.3)] transition-transform group-hover:scale-110">
                 <div
-                    className={`h-2.5 w-2.5 transition-colors ${
-                        exp.is_current ? 'bg-[var(--accent)] ring-2 ring-[var(--primary)]' : 'bg-[var(--primary)]'
+                    className={`rounded-full transition-all ${
+                        exp.is_current
+                            ? 'h-3 w-3 bg-[var(--accent)] shadow-[0_0_10px_var(--accent)] ring-2 ring-[var(--accent)]/40'
+                            : 'h-2.5 w-2.5 bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]'
                     }`}
                 />
             </div>
 
             {/* Left Node Marker (Mobile) */}
-            <div className="flex md:hidden absolute left-5 -translate-x-1/2 z-10 h-5 w-5 items-center justify-center bg-background border-2 border-foreground">
+            <div className="flex md:hidden absolute left-5 -translate-x-1/2 z-10 h-6 w-6 items-center justify-center rounded-full bg-background border border-border/80">
                 <div
-                    className={`h-1.5 w-1.5 ${
-                        exp.is_current ? 'bg-[var(--accent)] ring-1 ring-[var(--primary)]' : 'bg-[var(--primary)]'
+                    className={`rounded-full ${
+                        exp.is_current
+                            ? 'h-2.5 w-2.5 bg-[var(--accent)] ring-2 ring-[var(--accent)]/40'
+                            : 'h-2 w-2 bg-[var(--primary)]'
                     }`}
                 />
             </div>
@@ -86,10 +90,10 @@ function MilestoneItem({ exp, idx, isOff }: MilestoneCardProps) {
                         : 'md:w-1/2 md:pl-12 md:ml-auto md:text-left'
                 }`}
             >
-                <div className="border-2 border-foreground bg-surface p-6 sm:p-8 transition-colors hover:border-[var(--primary)]">
+                <div className="rounded-2xl border border-border/50 bg-surface/50 backdrop-blur-md p-6 sm:p-8 transition-all hover:border-[var(--primary)]/60 hover:shadow-[0_0_30px_rgba(241,90,36,0.1)]">
                     {/* Top Metadata Strip */}
                     <div
-                        className={`flex items-center gap-3 border-b border-border pb-3 font-mono text-xs ${
+                        className={`flex items-center gap-3 border-b border-border/40 pb-3 font-mono text-xs ${
                             isEven ? 'md:justify-end' : 'md:justify-start'
                         }`}
                     >
@@ -100,15 +104,15 @@ function MilestoneItem({ exp, idx, isOff }: MilestoneCardProps) {
                             {startStr} — {endStr}
                         </span>
                         {Boolean(exp.is_current) && (
-                            <span className="bg-[var(--accent)] text-black px-2 py-0.5 font-bold text-[10px] uppercase tracking-wider">
-                                PRESENT
+                            <span className="rounded-full bg-[var(--accent)]/15 border border-[var(--accent)]/40 px-2.5 py-0.5 font-mono text-[10px] font-bold text-[var(--accent)] uppercase tracking-wider">
+                                CURRENT MISSION
                             </span>
                         )}
                     </div>
 
                     {/* Role and Company */}
                     <div className="mt-4">
-                        <h3 className="font-display text-xl sm:text-2xl font-black tracking-tight text-foreground uppercase">
+                        <h3 className="font-display text-2xl font-black tracking-tight text-foreground uppercase">
                             {exp.role}
                         </h3>
                         <div className="mt-1 font-mono text-xs tracking-wider text-[var(--primary)] uppercase font-semibold">
@@ -118,19 +122,19 @@ function MilestoneItem({ exp, idx, isOff }: MilestoneCardProps) {
 
                     {/* Description */}
                     {exp.description && (
-                        <p className="mt-4 font-body text-sm sm:text-base leading-relaxed text-foreground/80">
+                        <p className="mt-4 font-body text-base leading-relaxed text-foreground/80">
                             {exp.description}
                         </p>
                     )}
 
                     {/* Flight Log Coordinates Stamp */}
                     <div
-                        className={`mt-6 pt-3 border-t border-border flex items-center gap-4 font-mono text-[10px] text-muted-foreground uppercase tracking-widest ${
+                        className={`mt-6 pt-3 border-t border-border/40 flex items-center gap-4 font-mono text-[11px] text-muted-foreground uppercase tracking-widest ${
                             isEven ? 'md:justify-end' : 'md:justify-start'
                         }`}
                     >
-                        <span>MISSION STATUS: VERIFIED</span>
-                        <span>[LOGGED]</span>
+                        <span>MISSION LOG: VERIFIED RECORD</span>
+                        <span className="text-[var(--primary)]">[LOGGED]</span>
                     </div>
                 </div>
             </div>
@@ -159,43 +163,48 @@ export default function ExperienceSection({
         <section
             id="experience"
             aria-label="Career Flight Log"
-            className="w-full border-b border-border bg-[var(--bg)] px-6 sm:px-8 xl:px-12 py-20 lg:py-28"
+            className="w-full border-b border-border/40 bg-[var(--bg)] px-6 sm:px-10 lg:px-16 py-24 lg:py-32 relative overflow-hidden"
         >
-            <div className="mx-auto max-w-[1440px]">
+            <div className="mx-auto max-w-[1440px] relative z-10">
                 {/* Section Header Strip */}
-                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase">
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/40 pb-4 font-mono text-xs tracking-wider text-muted-foreground uppercase">
                     <div className="flex items-center gap-3">
-                        <span className="bg-[var(--primary)] text-white px-2 py-0.5 font-bold">
-                            SEC. 05
+                        <span className="h-2 w-2 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
+                        <span className="font-bold text-foreground">
+                            {section?.title || 'CHRONOLOGY OF PRACTICE'}
                         </span>
-                        <span>FLIGHT LOG // CAREER MILESTONES & STATIONS</span>
+                        <span className="text-border">/</span>
+                        <span>FLIGHT LOG & STATIONS</span>
                     </div>
-                    <span>TOTAL STATIONS: [{experiences.length.toString().padStart(2, '0')}]</span>
+                    <span>TOTAL MISSIONS LOGGED: [{experiences.length.toString().padStart(2, '0')}]</span>
                 </div>
 
                 {/* Section Title */}
                 <div className="mt-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div>
-                        <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
-                            // VERIFIED FLIGHT LOG
-                        </span>
-                        <h2 className="mt-2 font-display text-4xl sm:text-6xl font-black tracking-tight text-foreground uppercase">
-                            {section?.title || 'CHRONOLOGY OF PRACTICE.'}
+                        <div className="flex items-center gap-2 font-mono text-xs text-[var(--primary)] uppercase tracking-widest">
+                            <span className="h-1 w-1 rounded-full bg-[var(--primary)]" />
+                            <span>CAREER TRAJECTORY</span>
+                        </div>
+                        <h2 className="mt-3 font-display text-4xl sm:text-6xl font-black tracking-tight text-foreground uppercase">
+                            STATIONS OF
+                            <br />
+                            <span className="text-[var(--primary)]">ENGINEERING PRACTICE.</span>
                         </h2>
                     </div>
-                    <p className="max-w-md font-mono text-xs text-muted-foreground leading-relaxed uppercase">
-                        A continuous flight log of engineering roles, architectural appointments,
-                        and production missions across independent clients and corporate ecosystems.
+                    <p className="max-w-md font-body text-sm sm:text-base text-foreground/75 leading-relaxed">
+                        A continuous flight log of senior engineering appointments, architectural missions,
+                        and production leadership across high-growth products and engineering orgs.
                     </p>
                 </div>
 
                 {/* Vertical Flight Log Timeline */}
                 <div ref={containerRef} className="relative mt-16 sm:mt-24">
                     {/* Desktop Center Track Line */}
-                    <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 bg-border" />
+                    <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-[2px] -translate-x-1/2 bg-gradient-to-b from-[var(--primary)] via-border to-border/20" />
 
                     {/* Mobile Left Track Line */}
-                    <div className="block md:hidden absolute left-5 top-0 bottom-0 w-0.5 bg-border" />
+                    <div className="block md:hidden absolute left-5 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[var(--primary)] via-border to-border/20" />
 
                     {/* Scrubbed Comet Traveling Down Timeline on Scroll */}
                     {!isOff && (
@@ -205,8 +214,8 @@ export default function ExperienceSection({
                                 style={{ top: cometTop }}
                                 className="hidden md:flex absolute left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex-col items-center pointer-events-none"
                             >
-                                <div className="h-16 w-0.5 bg-gradient-to-t from-[var(--primary)] to-transparent" />
-                                <div className="h-4 w-4 rounded-none bg-[var(--primary)] shadow-[0_0_14px_var(--primary)] ring-4 ring-[var(--primary)]/30 transform rotate-45" />
+                                <div className="h-16 w-[2px] bg-gradient-to-t from-[var(--primary)] to-transparent" />
+                                <div className="h-4 w-4 rounded-full bg-[var(--primary)] shadow-[0_0_16px_var(--primary)] ring-4 ring-[var(--primary)]/30" />
                             </motion.div>
 
                             {/* Mobile Left Comet */}
@@ -214,8 +223,8 @@ export default function ExperienceSection({
                                 style={{ top: cometTop }}
                                 className="flex md:hidden absolute left-5 -translate-x-1/2 -translate-y-1/2 z-20 flex-col items-center pointer-events-none"
                             >
-                                <div className="h-12 w-0.5 bg-gradient-to-t from-[var(--primary)] to-transparent" />
-                                <div className="h-3 w-3 rounded-none bg-[var(--primary)] shadow-[0_0_10px_var(--primary)] ring-2 ring-[var(--primary)]/30 transform rotate-45" />
+                                <div className="h-12 w-[2px] bg-gradient-to-t from-[var(--primary)] to-transparent" />
+                                <div className="h-3 w-3 rounded-full bg-[var(--primary)] shadow-[0_0_12px_var(--primary)] ring-2 ring-[var(--primary)]/30" />
                             </motion.div>
                         </>
                     )}

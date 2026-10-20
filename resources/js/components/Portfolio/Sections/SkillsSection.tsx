@@ -58,47 +58,46 @@ export default function SkillsSection({
     return (
         <section
             id={section.key}
-            aria-label="Living Technical Skills Instrument"
-            className="w-full border-b-2 border-foreground bg-[var(--bg)] px-6 sm:px-8 xl:px-12 py-20 lg:py-28 select-none"
+            aria-label="Planetary Technical Skills Universe"
+            className="relative w-full overflow-hidden px-6 sm:px-10 lg:px-16 py-24 lg:py-32 select-none"
         >
+            {/* Ambient Background Nebulae */}
+            <div
+                aria-hidden="true"
+                className="pointer-events-none absolute top-1/3 right-10 w-[40vw] h-[40vw] max-w-[600px] max-h-[600px] rounded-full bg-[var(--forest)] opacity-25 blur-[140px]"
+            />
+
             <div className="mx-auto max-w-[1440px]">
-                {/* Section Calibration Header */}
-                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase">
-                    <div className="flex items-center gap-3">
-                        <span className="stamp-orange text-[10px] tracking-widest">
-                            SEC. 03 // INSTRUMENT
-                        </span>
-                        <span className="font-bold text-foreground">
-                            TECHNICAL FIELD GUIDE & CAPABILITIES
-                        </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="h-1.5 w-1.5 bg-[var(--accent)] inline-block" />
-                        <span>CATALOGUE: [{skills.length} VERIFIED TECHNOLOGIES]</span>
-                    </div>
+                {/* Section Header */}
+                <div className="flex items-center gap-3 border-b border-border/40 pb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase">
+                    <span className="h-2 w-2 rounded-full bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]" />
+                    <span>02 // SKILLS CONSTELLATION</span>
+                    <span className="text-border">·</span>
+                    <span className="text-foreground font-semibold">
+                        PLANETARY TECHNICAL ARCHITECTURE
+                    </span>
                 </div>
 
-                {/* Section Introduction */}
-                <div className="mt-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                {/* Section Title & Manifesto */}
+                <div className="mt-12 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                     <div>
                         <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
-                            // RUNTIME CAPABILITIES
+                            // ORBITAL CAPABILITY SYSTEM
                         </span>
-                        <h2 className="mt-2 font-display text-3xl sm:text-5xl font-black tracking-tight text-foreground uppercase">
-                            LIVING TECHNICAL
+                        <h2 className="mt-3 font-display text-3xl sm:text-5xl font-black tracking-tight text-foreground uppercase leading-tight">
+                            TECHNICAL EXPERTISE,
                             <br />
-                            INSTRUMENT PANEL.
+                            MAPPED AS A SOLAR SYSTEM.
                         </h2>
                     </div>
-                    <p className="max-w-md font-mono text-xs text-muted-foreground leading-relaxed uppercase">
-                        Select an engineering channel to transform the instrument stage.
-                        Evaluated against verified production deployments, high-availability architecture,
-                        and clean design patterns.
+                    <p className="max-w-md font-body text-sm sm:text-base text-muted-foreground leading-relaxed">
+                        Explore core engineering sectors by switching orbital bands. Each planetary group
+                        represents verified mastery in active production deployments.
                     </p>
                 </div>
 
-                {/* Large Typographic Category Selectors (Instrument Channels) */}
-                <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-0 border-2 border-foreground bg-surface">
+                {/* Planetary Category Waypoint Orbit Controls */}
+                <div className="mt-14 flex flex-wrap gap-4 sm:gap-6">
                     {categories.map((cat, idx) => {
                         const isSelected = cat === selectedCategory;
                         const catNumber = (idx + 1).toString().padStart(2, '0');
@@ -109,78 +108,48 @@ export default function SkillsSection({
                                 key={cat}
                                 type="button"
                                 onClick={() => setSelectedCategory(cat)}
-                                className={`group relative flex flex-col justify-between p-6 sm:p-8 text-left transition-all border-b md:border-b-0 md:border-r border-foreground last:border-r-0 ${
+                                className={`group flex items-center gap-4 rounded-full border px-6 py-3.5 transition-all focus:outline-hidden ${
                                     isSelected
-                                        ? 'bg-foreground text-background'
-                                        : 'hover:bg-muted/40 text-foreground'
+                                        ? 'border-[var(--primary)] bg-[var(--primary)]/15 text-foreground shadow-[0_0_20px_rgba(241,90,36,0.25)]'
+                                        : 'border-border/80 bg-surface/40 backdrop-blur-sm text-muted-foreground hover:border-foreground/50 hover:text-foreground'
                                 }`}
                                 aria-pressed={isSelected}
                             >
-                                <div className="flex items-center justify-between w-full font-mono text-xs">
-                                    <span
-                                        className={`font-black tracking-wider ${
-                                            isSelected ? 'text-[var(--accent)]' : 'text-[var(--primary)]'
-                                        }`}
-                                    >
-                                        CHANNEL // {catNumber}
-                                    </span>
-                                    <span
-                                        className={`px-2 py-0.5 text-[10px] font-bold border ${
-                                            isSelected
-                                                ? 'border-background/40 bg-background/20 text-background'
-                                                : 'border-border bg-background text-foreground'
-                                        }`}
-                                    >
-                                        {count} STACKS
-                                    </span>
-                                </div>
-
-                                <div className="mt-6 font-display text-xl sm:text-2xl font-black uppercase tracking-tight">
-                                    {formatCategoryName(cat)}
-                                </div>
-
-                                <div className="mt-4 flex items-center justify-between font-mono text-[10px] tracking-wider uppercase opacity-80">
-                                    <span>STATUS: {isSelected ? 'ACTIVE CHANNEL' : 'STANDBY'}</span>
-                                    <span className="font-sans font-bold">
-                                        {isSelected ? '●' : '→'}
-                                    </span>
-                                </div>
+                                <span
+                                    className={`h-2.5 w-2.5 rounded-full transition-all ${
+                                        isSelected
+                                            ? 'bg-[var(--accent)] shadow-[0_0_10px_var(--accent)] scale-125'
+                                            : 'bg-muted-foreground/60 group-hover:bg-foreground'
+                                    }`}
+                                />
+                                <span className="font-mono text-xs font-bold uppercase tracking-wider text-foreground">
+                                    SECTOR {catNumber} // {cat.replace(/[_-]/g, ' ')}
+                                </span>
+                                <span className="rounded-full bg-surface px-2.5 py-0.5 font-mono text-[10px] text-muted-foreground border border-border/60">
+                                    {count}
+                                </span>
                             </button>
                         );
                     })}
                 </div>
 
-                {/* The Transformed Instrument Stage */}
-                <div className="mt-8 border-2 border-foreground bg-surface p-6 sm:p-10 shadow-sm relative overflow-hidden">
-                    {/* Stage Caliper Markers */}
-                    <span className="absolute top-3 left-3 font-mono text-xs font-bold text-[var(--primary)] pointer-events-none">
-                        + [CH.{activeCategoryIndex + 1}]
-                    </span>
-                    <span className="absolute top-3 right-3 font-mono text-xs font-bold text-[var(--primary)] pointer-events-none">
-                        [STAGE_ACTIVE] +
-                    </span>
-                    <span className="absolute bottom-3 left-3 font-mono text-xs font-bold text-[var(--primary)] pointer-events-none">
-                        + [SYS_READY]
-                    </span>
-                    <span className="absolute bottom-3 right-3 font-mono text-xs font-bold text-[var(--primary)] pointer-events-none">
-                        [VERIFIED] +
-                    </span>
-
-                    {/* Active Channel Header */}
-                    <div className="flex flex-wrap items-center justify-between gap-4 border-b-2 border-foreground pb-4 font-mono text-xs uppercase">
+                {/* Transformed Planetary Stage & Technical Constellation Panel */}
+                <div className="mt-10 rounded-2xl border border-border/80 bg-surface/60 backdrop-blur-xl p-8 sm:p-12 shadow-2xl relative overflow-hidden space-rim-light">
+                    {/* Stage Header */}
+                    <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/40 pb-5">
                         <div className="flex items-center gap-3">
-                            <span className="os-beacon" />
-                            <span className="font-bold text-foreground text-sm">
-                                ACTIVE SECTOR: {formatCategoryName(selectedCategory)}
-                            </span>
+                            <span className="h-3 w-3 rounded-full bg-[var(--accent)] animate-pulse shadow-[0_0_10px_var(--accent)]" />
+                            <h3 className="font-display text-xl sm:text-2xl font-black uppercase tracking-tight text-foreground">
+                                {formatCategoryName(selectedCategory)}
+                            </h3>
                         </div>
-                        <span className="stamp-orange text-[10px]">
-                            {activeSkills.length} TECHNOLOGIES ENGAGED
+                        <span className="font-mono text-xs text-[var(--primary)] font-semibold tracking-wider">
+                            [{activeSkills.length} VERIFIED TECHNOLOGIES IN ORBIT]
                         </span>
                     </div>
 
-                    {/* Dynamic Skill Roster with Kinetic Entry */}
-                    <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {/* Skill Constellation Grid */}
+                    <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {activeSkills.map((skill, index) => {
                             const IconComponent = resolveLineicon(skill.icon);
                             const level = skill.level ?? 80;
@@ -190,60 +159,47 @@ export default function SkillsSection({
                             return (
                                 <div
                                     key={skill.id}
-                                    className={`group relative flex flex-col justify-between border-2 border-foreground bg-background p-5 transition-all duration-300 hover:border-[var(--primary)] hover:-translate-y-1 ${
+                                    className={`group flex items-center justify-between rounded-xl border border-border/60 bg-surface/50 backdrop-blur-md p-5 transition-all duration-300 hover:border-[var(--primary)] hover:bg-surface/90 hover:shadow-[0_0_25px_rgba(241,90,36,0.15)] hover:-translate-y-1 ${
                                         !isOff
                                             ? 'animate-in fade-in slide-in-from-bottom-2 duration-300'
                                             : ''
                                     }`}
                                     style={{
-                                        animationDelay: `${index * 50}ms`,
+                                        animationDelay: `${index * 40}ms`,
                                     }}
                                 >
-                                    {/* Top Row: Icon + Skill Name + Level Badge */}
-                                    <div className="flex items-start justify-between gap-3">
-                                        <div className="flex items-center gap-3">
-                                            {IconComponent ? (
-                                                <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-foreground bg-surface text-foreground transition-colors group-hover:bg-[var(--primary)] group-hover:text-white">
-                                                    <IconComponent className="h-5 w-5" />
-                                                </div>
-                                            ) : (
-                                                <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-foreground bg-surface font-mono text-xs font-black text-foreground group-hover:bg-[var(--primary)] group-hover:text-white">
-                                                    {skill.name.slice(0, 2).toUpperCase()}
-                                                </div>
-                                            )}
-
-                                            <div>
-                                                <h3 className="font-display text-lg font-black tracking-tight text-foreground uppercase group-hover:text-[var(--primary)] transition-colors">
-                                                    {skill.name}
-                                                </h3>
-                                                <span className="font-mono text-[10px] text-muted-foreground uppercase">
-                                                    RATING: {level}%
-                                                </span>
+                                    <div className="flex items-center gap-4">
+                                        {/* Icon or Monogram */}
+                                        {IconComponent ? (
+                                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border/80 bg-surface text-foreground transition-colors group-hover:border-[var(--primary)] group-hover:text-[var(--primary)]">
+                                                <IconComponent className="h-5 w-5" />
                                             </div>
+                                        ) : (
+                                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border/80 bg-surface font-mono text-xs font-black text-foreground group-hover:border-[var(--primary)] group-hover:text-[var(--primary)]">
+                                                {skill.name.slice(0, 2).toUpperCase()}
+                                            </div>
+                                        )}
+
+                                        <div>
+                                            <h4 className="font-display text-base sm:text-lg font-black tracking-tight text-foreground uppercase group-hover:text-[var(--primary)] transition-colors">
+                                                {skill.name}
+                                            </h4>
+                                            <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-wider block">
+                                                CONFIDENCE: {level}%
+                                            </span>
                                         </div>
-
-                                        {/* Status Badge */}
-                                        <span
-                                            className={`font-mono text-[9px] font-bold px-2 py-0.5 uppercase tracking-wider border ${
-                                                isHighLevel
-                                                    ? 'bg-[var(--accent)] text-[#171914] border-foreground'
-                                                    : 'bg-surface text-foreground border-border'
-                                            }`}
-                                        >
-                                            {levelLabel}
-                                        </span>
                                     </div>
 
-                                    {/* Bottom Calibration Footnote */}
-                                    <div className="mt-6 flex items-center justify-between border-t border-border pt-3 font-mono text-[10px] text-muted-foreground uppercase">
-                                        <span className="flex items-center gap-1.5">
-                                            <span className="h-1.5 w-1.5 bg-[var(--primary)] inline-block" />
-                                            STATION: 2026
-                                        </span>
-                                        <span className="font-bold text-foreground">
-                                            VERIFIED PRODUCTION
-                                        </span>
-                                    </div>
+                                    {/* Level Pill */}
+                                    <span
+                                        className={`rounded-full px-2.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider border ${
+                                            isHighLevel
+                                                ? 'border-[var(--accent)]/50 bg-[var(--accent)]/15 text-[var(--accent)]'
+                                                : 'border-border bg-surface text-muted-foreground'
+                                        }`}
+                                    >
+                                        {levelLabel}
+                                    </span>
                                 </div>
                             );
                         })}

@@ -45,167 +45,144 @@ export default function ServicesSection({
     return (
         <section
             id={section.key}
-            aria-label="Interactive Capabilities System"
-            className="w-full border-b-2 border-foreground bg-[var(--bg)] px-6 sm:px-8 xl:px-12 py-20 lg:py-28 select-none"
+            aria-label="Capabilities System"
+            className="relative w-full overflow-hidden px-6 sm:px-10 lg:px-16 py-24 lg:py-32 select-none"
         >
-            <div className="mx-auto max-w-[1440px]">
-                {/* Calibration Eyebrow Strip */}
-                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase">
-                    <div className="flex items-center gap-3">
-                        <span className="stamp-orange text-[10px] tracking-widest">
-                            SEC. 05 // SYSTEM
-                        </span>
-                        <span className="font-bold text-foreground">
-                            CONNECTED CAPABILITIES MATRIX
-                        </span>
-                    </div>
+            {/* Ambient Nebula */}
+            <div
+                aria-hidden="true"
+                className="pointer-events-none absolute bottom-1/4 left-10 w-[45vw] h-[45vw] max-w-[650px] max-h-[650px] rounded-full bg-[var(--forest)] opacity-20 blur-[130px]"
+            />
 
-                    <div className="flex items-center gap-2">
-                        <span className="h-1.5 w-1.5 bg-[var(--accent)] inline-block" />
-                        <span>CATALOGUED DISCIPLINES: [{services.length.toString().padStart(2, '0')}]</span>
-                    </div>
+            <div className="mx-auto max-w-[1440px]">
+                {/* Section Header */}
+                <div className="flex items-center gap-3 border-b border-border/40 pb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase">
+                    <span className="h-2 w-2 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
+                    <span>04 // CAPABILITY SYSTEMS</span>
+                    <span className="text-border">·</span>
+                    <span className="text-foreground font-semibold">
+                        CONNECTED DISCIPLINE MATRIX
+                    </span>
                 </div>
 
-                {/* Section Introduction */}
-                <div className="mt-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                {/* Section Title */}
+                <div className="mt-12 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                     <div>
                         <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
-                            // ARCHITECTURAL CAPABILITY SYSTEM
+                            // ARCHITECTURAL DISCIPLINES
                         </span>
-                        <h2 className="mt-2 font-display text-3xl sm:text-5xl font-black tracking-tight text-foreground uppercase">
-                            CONNECTED DISCIPLINE,
+                        <h2 className="mt-3 font-display text-3xl sm:text-5xl font-black tracking-tight text-foreground uppercase leading-tight">
+                            ENGINEERED CAPABILITIES,
                             <br />
                             DELIVERED AT SCALE.
                         </h2>
                     </div>
-                    <p className="max-w-md font-mono text-xs text-muted-foreground leading-relaxed uppercase">
-                        Select a capability discipline to inspect verified engineering deliverables,
+                    <p className="max-w-md font-body text-sm sm:text-base text-muted-foreground leading-relaxed">
+                        Select a capability to inspect verified engineering deliverables,
                         architectural focus areas, and technical implementation scopes.
                     </p>
                 </div>
 
-                {/* Main Connected Capabilities Console */}
+                {/* Connected Capability System Spread */}
                 <div className="mt-14 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                    {/* Left Column: Typographic Capability Selector List */}
-                    <div className="lg:col-span-6 border-2 border-foreground bg-surface divide-y-2 divide-foreground">
+                    {/* Left Column: Capability Selector Items */}
+                    <div className="lg:col-span-5 space-y-4">
                         {services.map((service, idx) => {
                             const isSelected = service.id === activeService?.id;
-                            const indexStr = (idx + 1).toString().padStart(2, '0');
                             const IconComponent = resolveLineicon(service.icon);
+                            const indexStr = (idx + 1).toString().padStart(2, '0');
 
                             return (
                                 <button
                                     key={service.id}
                                     type="button"
                                     onClick={() => setActiveServiceId(service.id)}
-                                    className={`group w-full p-6 sm:p-8 text-left transition-all flex items-start justify-between gap-4 ${
+                                    className={`group w-full rounded-2xl border p-6 text-left transition-all flex items-center justify-between gap-4 focus:outline-hidden ${
                                         isSelected
-                                            ? 'bg-foreground text-background'
-                                            : 'hover:bg-muted/30 text-foreground'
+                                            ? 'border-[var(--primary)] bg-surface shadow-[0_0_30px_rgba(241,90,36,0.2)]'
+                                            : 'border-border/60 bg-surface/40 backdrop-blur-md hover:border-foreground/40 hover:bg-surface/70'
                                     }`}
-                                    aria-expanded={isSelected}
                                 >
-                                    <div className="flex items-start gap-4">
-                                        <span
-                                            className={`font-mono text-xl sm:text-2xl font-black ${
+                                    <div className="flex items-center gap-4">
+                                        <div
+                                            className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border transition-colors ${
                                                 isSelected
-                                                    ? 'text-[var(--accent)]'
-                                                    : 'text-[var(--primary)]'
+                                                    ? 'border-[var(--primary)] bg-[var(--primary)]/15 text-[var(--primary)]'
+                                                    : 'border-border bg-surface text-muted-foreground group-hover:text-foreground'
                                             }`}
                                         >
-                                            {indexStr} //
-                                        </span>
+                                            {IconComponent ? (
+                                                <IconComponent className="h-6 w-6" />
+                                            ) : (
+                                                <span className="font-mono text-xs font-bold">
+                                                    {indexStr}
+                                                </span>
+                                            )}
+                                        </div>
 
                                         <div>
-                                            <h3 className="font-display text-xl sm:text-2xl font-black uppercase tracking-tight">
+                                            <h3 className="font-display text-lg sm:text-xl font-black uppercase tracking-tight text-foreground">
                                                 {service.title}
                                             </h3>
-                                            <p
-                                                className={`mt-2 font-body text-xs sm:text-sm line-clamp-2 max-w-md ${
-                                                    isSelected
-                                                        ? 'text-background/80'
-                                                        : 'text-muted-foreground'
-                                                }`}
-                                            >
-                                                {service.description}
-                                            </p>
+                                            <span className="font-mono text-xs text-muted-foreground uppercase">
+                                                DISCIPLINE {indexStr}
+                                            </span>
                                         </div>
                                     </div>
 
-                                    <div className="flex flex-col items-end gap-2 shrink-0">
-                                        {IconComponent && (
-                                            <div
-                                                className={`h-8 w-8 flex items-center justify-center border ${
-                                                    isSelected
-                                                        ? 'border-background/40 bg-background/20 text-background'
-                                                        : 'border-border bg-background text-foreground'
-                                                }`}
-                                            >
-                                                <IconComponent className="h-4 w-4" />
-                                            </div>
-                                        )}
-                                        <span className="font-mono text-[10px] uppercase font-bold tracking-wider">
-                                            {isSelected ? '● ACTIVE' : 'SELECT →'}
-                                        </span>
-                                    </div>
+                                    <span
+                                        className={`font-sans text-xl transition-transform ${
+                                            isSelected
+                                                ? 'text-[var(--primary)] translate-x-1 font-bold'
+                                                : 'text-muted-foreground group-hover:text-foreground'
+                                        }`}
+                                    >
+                                        →
+                                    </span>
                                 </button>
                             );
                         })}
                     </div>
 
-                    {/* Right Column: Focus Capability Display & Scope Matrix */}
+                    {/* Right Column: Active Capability Focus Presentation */}
                     {activeService && (
-                        <div className="lg:col-span-6 border-2 border-foreground bg-surface p-6 sm:p-10 shadow-sm relative overflow-hidden">
-                            {/* Caliper Registration Crosshairs */}
-                            <span className="absolute top-3 left-3 font-mono text-xs font-bold text-[var(--primary)] pointer-events-none">
-                                + [CAP.SPEC]
-                            </span>
-                            <span className="absolute top-3 right-3 font-mono text-xs font-bold text-[var(--primary)] pointer-events-none">
-                                [DISCIPLINE] +
-                            </span>
-                            <span className="absolute bottom-3 left-3 font-mono text-xs font-bold text-[var(--primary)] pointer-events-none">
-                                + [VERIFIED]
-                            </span>
-                            <span className="absolute bottom-3 right-3 font-mono text-xs font-bold text-[var(--primary)] pointer-events-none">
-                                [PRODUCTION] +
-                            </span>
-
-                            {/* Service Details Header */}
-                            <div className="flex items-center justify-between border-b-2 border-foreground pb-4 font-mono text-xs uppercase">
-                                <div className="flex items-center gap-2">
-                                    <span className="os-beacon" />
-                                    <span className="font-bold text-foreground">
-                                        FOCUSED CAPABILITY SCOPE
+                        <div className="lg:col-span-7 rounded-3xl border border-border/80 bg-surface/60 backdrop-blur-2xl p-8 sm:p-12 shadow-2xl relative space-rim-light">
+                            {/* Focus Header */}
+                            <div className="flex items-center justify-between border-b border-border/40 pb-5">
+                                <div className="flex items-center gap-3">
+                                    <span className="h-2.5 w-2.5 rounded-full bg-[var(--accent)] shadow-[0_0_10px_var(--accent)]" />
+                                    <span className="font-mono text-xs text-muted-foreground uppercase tracking-wider">
+                                        ACTIVE CAPABILITY SCOPE
                                     </span>
                                 </div>
-                                <span className="stamp-orange text-[10px]">
+                                <span className="rounded-full bg-[var(--primary)]/15 border border-[var(--primary)]/30 px-3 py-1 font-mono text-[10px] font-bold uppercase text-[var(--primary)]">
                                     VERIFIED DISCIPLINE
                                 </span>
                             </div>
 
-                            <div className="mt-6">
-                                <h4 className="font-display text-2xl sm:text-3xl font-black uppercase text-foreground">
+                            <div className="mt-8">
+                                <h4 className="font-display text-2xl sm:text-4xl font-black uppercase text-foreground leading-tight">
                                     {activeService.title}
                                 </h4>
-                                <p className="mt-4 font-body text-base sm:text-lg leading-relaxed text-foreground/85">
+                                <p className="mt-4 font-body text-base sm:text-lg leading-relaxed text-foreground/80">
                                     {activeService.description}
                                 </p>
                             </div>
 
-                            {/* Deliverables & Technical Deliveries List */}
-                            <div className="mt-8 border-t border-border pt-6">
+                            {/* Standard Deliverables Scope */}
+                            <div className="mt-8 pt-6 border-t border-border/40">
                                 <span className="font-mono text-xs font-bold uppercase text-[var(--primary)] tracking-wider block mb-4">
-                                    // STANDARD ARCHITECTURAL DELIVERABLES
+                                    // ARCHITECTURAL DELIVERABLES & INTEGRATION
                                 </span>
 
                                 <div className="space-y-3 font-mono text-xs">
                                     {standardDeliverables.map((item, dIdx) => (
                                         <div
                                             key={dIdx}
-                                            className="flex items-center gap-3 border border-border bg-background p-3.5"
+                                            className="flex items-center gap-3 rounded-lg border border-border/60 bg-surface/50 p-3.5"
                                         >
-                                            <span className="h-1.5 w-1.5 bg-[var(--primary)] shrink-0" />
-                                            <span className="font-bold text-foreground uppercase tracking-wide">
+                                            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)] shrink-0" />
+                                            <span className="text-foreground uppercase tracking-wide">
                                                 {item}
                                             </span>
                                         </div>
@@ -213,16 +190,17 @@ export default function ServicesSection({
                                 </div>
                             </div>
 
-                            {/* Direct Inquiry CTA button */}
-                            <div className="mt-8 pt-6 border-t border-border flex items-center justify-between">
-                                <span className="font-mono text-[11px] text-muted-foreground uppercase">
+                            {/* Commission CTA */}
+                            <div className="mt-8 pt-6 border-t border-border/40 flex flex-wrap items-center justify-between gap-4">
+                                <span className="font-mono text-xs text-muted-foreground uppercase">
                                     READY TO COMMISSION THIS DISCIPLINE?
                                 </span>
                                 <a
                                     href="#contact"
-                                    className="border-2 border-foreground bg-foreground text-background px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-wider hover:bg-[var(--primary)] hover:border-[var(--primary)] hover:text-white transition-colors"
+                                    className="flex items-center gap-2 rounded-full bg-[var(--primary)] px-6 py-2.5 font-mono text-xs font-bold uppercase tracking-wider text-white hover:bg-[var(--primary)]/90 hover:shadow-[0_0_20px_rgba(241,90,36,0.3)] transition-all"
                                 >
-                                    COMMISSION DISCIPLINE →
+                                    <span>COMMISSION DISCIPLINE</span>
+                                    <span className="font-sans">→</span>
                                 </a>
                             </div>
                         </div>

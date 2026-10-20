@@ -77,16 +77,18 @@ export default function TestimonialsSection({
             role="region"
             aria-roledescription="carousel"
             aria-label="Client Transmissions"
-            className="w-full border-b border-border bg-[var(--bg)] px-6 sm:px-8 xl:px-12 py-20 lg:py-28"
+            className="w-full border-b border-border/40 bg-[var(--bg)] px-6 sm:px-10 lg:px-16 py-24 lg:py-32 relative overflow-hidden"
         >
-            <div className="mx-auto max-w-[1440px]">
+            <div className="mx-auto max-w-[1440px] relative z-10">
                 {/* Section Header Strip */}
-                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase">
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/40 pb-4 font-mono text-xs tracking-wider text-muted-foreground uppercase">
                     <div className="flex items-center gap-3">
-                        <span className="bg-[var(--primary)] text-white px-2 py-0.5 font-bold">
-                            SEC. 07
+                        <span className="h-2 w-2 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
+                        <span className="font-bold text-foreground">
+                            {section?.title || 'CLIENT TRANSMISSIONS'}
                         </span>
-                        <span>EDITORIAL TRANSMISSIONS // CLIENT OBSERVATIONS</span>
+                        <span className="text-border">/</span>
+                        <span>INTERCEPTED COMMENDATIONS</span>
                     </div>
                     <span>TOTAL TRANSMISSIONS: [{totalNum}]</span>
                 </div>
@@ -94,20 +96,23 @@ export default function TestimonialsSection({
                 {/* Section Title */}
                 <div className="mt-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div>
-                        <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
-                            // VERIFIED FIELD DISPATCHES
-                        </span>
-                        <h2 className="mt-2 font-display text-4xl sm:text-6xl font-black tracking-tight text-foreground uppercase">
-                            {section?.title || 'CLIENT TRANSMISSIONS.'}
+                        <div className="flex items-center gap-2 font-mono text-xs text-[var(--primary)] uppercase tracking-widest">
+                            <span className="h-1 w-1 rounded-full bg-[var(--primary)]" />
+                            <span>FIELD OBSERVATIONS</span>
+                        </div>
+                        <h2 className="mt-3 font-display text-4xl sm:text-6xl font-black tracking-tight text-foreground uppercase">
+                            VOICES FROM
+                            <br />
+                            <span className="text-[var(--primary)]">THE PRODUCTION FRONTIER.</span>
                         </h2>
                     </div>
-                    <p className="max-w-md font-mono text-xs text-muted-foreground leading-relaxed uppercase">
-                        Unedited testimonials from founders, product directors, and technical teams
-                        evaluating production delivery, velocity, and craftsmanship.
+                    <p className="max-w-md font-body text-sm sm:text-base text-foreground/75 leading-relaxed">
+                        Unedited dispatches from founders, VP of Engineering leaders, and product architects
+                        who partnered with me to construct mission-critical digital systems.
                     </p>
                 </div>
 
-                {/* Signal-Wave Carousel Container */}
+                {/* Celestial Transmission Container */}
                 <div
                     tabIndex={0}
                     onKeyDown={handleKeyDown}
@@ -117,7 +122,7 @@ export default function TestimonialsSection({
                     onBlurCapture={() => setIsPaused(false)}
                     onTouchStart={handleTouchStart}
                     onTouchEnd={handleTouchEnd}
-                    className="relative mx-auto mt-14 max-w-4xl border-2 border-foreground bg-surface p-6 sm:p-12 lg:p-16 focus:outline-hidden focus:ring-2 focus:ring-[var(--primary)] overflow-hidden"
+                    className="relative mx-auto mt-14 max-w-4xl rounded-3xl border border-border/60 bg-surface/60 backdrop-blur-xl p-8 sm:p-14 lg:p-16 shadow-[0_0_50px_rgba(0,0,0,0.25)] focus:outline-hidden focus:ring-2 focus:ring-[var(--primary)] overflow-hidden"
                 >
                     {/* Background Oscilloscope Signal Wave */}
                     <div className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 opacity-15 overflow-hidden">
@@ -134,9 +139,9 @@ export default function TestimonialsSection({
                     </div>
 
                     {/* Carousel Top Technical Metadata */}
-                    <div className="relative z-10 flex items-center justify-between border-b border-border pb-4 font-mono text-xs text-muted-foreground">
+                    <div className="relative z-10 flex items-center justify-between border-b border-border/40 pb-4 font-mono text-xs text-muted-foreground">
                         <div className="flex items-center gap-2">
-                            <span className="inline-block h-2 w-2 bg-[var(--primary)]" />
+                            <span className="h-2 w-2 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
                             <span className="uppercase tracking-widest font-bold text-foreground">
                                 TRANSMISSION {currentNum} OF {totalNum}
                             </span>
@@ -144,17 +149,17 @@ export default function TestimonialsSection({
                         <div className="hidden sm:flex items-center gap-2 text-[10px] tracking-widest uppercase">
                             <span>FREQUENCY: 1420.405 MHZ</span>
                             <span>//</span>
-                            <span>VERIFIED</span>
+                            <span className="text-[var(--accent)] font-bold">VERIFIED DISPATCH</span>
                         </div>
                     </div>
 
-                    {/* Active Slide (with accessible live region) */}
+                    {/* Active Slide */}
                     <div
                         role="group"
                         aria-roledescription="slide"
                         aria-label={`Transmission ${currentIndex + 1} of ${total}`}
                         aria-live={isPaused ? 'polite' : 'off'}
-                        className="relative z-10 my-8 sm:my-10 min-h-[160px] flex flex-col justify-center"
+                        className="relative z-10 my-8 sm:my-12 min-h-[160px] flex flex-col justify-center"
                     >
                         <AnimatePresence mode="wait">
                             <motion.div
@@ -178,82 +183,54 @@ export default function TestimonialsSection({
                     </div>
 
                     {/* Author Attribution & Media Bar */}
-                    <div className="relative z-10 pt-6 border-t border-border flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                    <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-t border-border/40 pt-6">
                         <div className="flex items-center gap-4">
                             {current.photo?.url ? (
                                 <img
                                     src={current.photo.url}
-                                    alt={current.photo.alt_text || current.author_name}
-                                    className="h-12 w-12 border-2 border-foreground object-cover"
+                                    alt={current.author_name}
+                                    className="h-12 w-12 rounded-full border border-border/80 object-cover shadow-xs"
                                 />
                             ) : (
-                                <div className="flex h-12 w-12 items-center justify-center border-2 border-foreground bg-background font-mono text-sm font-bold text-[var(--primary)]">
-                                    {current.author_name.slice(0, 2).toUpperCase()}
+                                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border/80 bg-surface font-mono text-sm font-bold text-[var(--primary)]">
+                                    {current.author_name
+                                        .split(' ')
+                                        .map((n: string) => n[0])
+                                        .join('')
+                                        .slice(0, 2)}
                                 </div>
                             )}
 
                             <div>
-                                <div className="font-display text-base sm:text-lg font-black text-foreground uppercase tracking-tight">
+                                <h3 className="font-display text-lg font-bold text-foreground uppercase tracking-tight">
                                     {current.author_name}
-                                </div>
-                                <div className="font-mono text-xs text-[var(--primary)] uppercase font-semibold mt-0.5">
+                                </h3>
+                                <p className="font-mono text-xs text-muted-foreground">
                                     {current.author_role}
-                                    {current.company && ` // ${current.company}`}
-                                </div>
-                                {current.project && (
-                                    <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">
-                                        COMMISSION: {current.project.title}
-                                    </div>
-                                )}
+                                    {current.company ? ` · ${current.company}` : ''}
+                                </p>
                             </div>
                         </div>
 
-                        {/* Navigation Controls: Arrows & Dots */}
-                        {total > 1 && (
-                            <div className="flex items-center gap-4 self-end sm:self-auto">
-                                {/* Navigation Dots */}
-                                <div
-                                    className="flex items-center gap-1.5"
-                                    role="tablist"
-                                    aria-label="Transmission slides"
-                                >
-                                    {testimonials.map((_, idx) => (
-                                        <button
-                                            key={idx}
-                                            type="button"
-                                            onClick={() => setCurrentIndex(idx)}
-                                            aria-label={`Go to transmission ${idx + 1}`}
-                                            aria-current={idx === currentIndex ? 'true' : undefined}
-                                            className={`transition-all focus:outline-hidden ${
-                                                idx === currentIndex
-                                                    ? 'h-2 w-6 bg-[var(--primary)]'
-                                                    : 'h-2 w-2 bg-border hover:bg-foreground'
-                                            }`}
-                                        />
-                                    ))}
-                                </div>
-
-                                {/* Previous / Next Buttons */}
-                                <div className="flex items-center gap-2 border-l border-border pl-4">
-                                    <button
-                                        type="button"
-                                        onClick={handlePrev}
-                                        aria-label="Previous transmission"
-                                        className="border border-border p-2 bg-background text-foreground hover:bg-foreground hover:text-background transition-colors focus:outline-hidden focus:ring-1 focus:ring-[var(--primary)]"
-                                    >
-                                        <ArrowLeft className="h-4 w-4" />
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={handleNext}
-                                        aria-label="Next transmission"
-                                        className="border border-border p-2 bg-background text-foreground hover:bg-foreground hover:text-background transition-colors focus:outline-hidden focus:ring-1 focus:ring-[var(--primary)]"
-                                    >
-                                        <ArrowRight className="h-4 w-4" />
-                                    </button>
-                                </div>
-                            </div>
-                        )}
+                        {/* Navigation Controls */}
+                        <div className="flex items-center gap-3">
+                            <button
+                                type="button"
+                                onClick={handlePrev}
+                                aria-label="Previous transmission"
+                                className="flex h-10 w-10 items-center justify-center rounded-full border border-border/80 bg-surface text-foreground transition-all hover:border-[var(--primary)] hover:text-[var(--primary)] active:scale-95 cursor-pointer"
+                            >
+                                <ArrowLeft className="h-4 w-4" />
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleNext}
+                                aria-label="Next transmission"
+                                className="flex h-10 w-10 items-center justify-center rounded-full border border-border/80 bg-surface text-foreground transition-all hover:border-[var(--primary)] hover:text-[var(--primary)] active:scale-95 cursor-pointer"
+                            >
+                                <ArrowRight className="h-4 w-4" />
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

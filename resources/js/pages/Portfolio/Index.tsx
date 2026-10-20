@@ -14,12 +14,11 @@ import { useTheme } from '@/hooks/use-theme';
 import { useMotionLevel } from '@/hooks/use-motion-level';
 import { useSmoothScroll } from '@/hooks/use-smooth-scroll';
 import StarfieldContainer from '@/components/Portfolio/Motion/StarfieldContainer';
-import MonayemOSBoot from '@/components/Portfolio/Motion/MonayemOSBoot';
+import ConstellationWaypoint from '@/components/Portfolio/Motion/ConstellationWaypoint';
 import TopProgressBar from '@/components/Portfolio/Motion/TopProgressBar';
 import ReduceEffectsToggle from '@/components/Portfolio/Motion/ReduceEffectsToggle';
 import FloatingNav from '@/components/Portfolio/Shared/FloatingNav';
 import HeroSection from '@/components/Portfolio/Sections/HeroSection';
-import PortfolioIndexStrip from '@/components/Portfolio/Sections/PortfolioIndexStrip';
 import AboutSection from '@/components/Portfolio/Sections/AboutSection';
 import SkillsSection from '@/components/Portfolio/Sections/SkillsSection';
 import ProjectsSection from '@/components/Portfolio/Sections/ProjectsSection';
@@ -211,8 +210,15 @@ export default function PortfolioIndex({
             {/* Top Architectural Telemetry Progress Bar */}
             <TopProgressBar progress={scrollProgress} />
 
-            {/* Monayem OS Boot Sequence */}
-            <MonayemOSBoot reducedMotion={isOff} />
+            {/* Constellation Waypoint Navigator */}
+            <ConstellationWaypoint
+                sections={sections}
+                activeSection={activeSection}
+                onSelectSection={(key) => {
+                    const el = document.getElementById(key);
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+            />
 
             {/* Publication Masthead Navigation */}
             <FloatingNav
@@ -235,22 +241,15 @@ export default function PortfolioIndex({
                     switch (section.key) {
                         case 'hero':
                             return (
-                                <React.Fragment key={section.key}>
-                                    <HeroSection
-                                        section={section}
-                                        hero={hero}
-                                        settings={settings}
-                                        isFull={isFull}
-                                        isOff={isOff}
-                                        isDark={isDark}
-                                    />
-                                    {/* Section 6: Publication Visual Index Strip */}
-                                    <PortfolioIndexStrip
-                                        sections={sections}
-                                        experiencesCount={experiences.length}
-                                        testimonialsCount={testimonials.length}
-                                    />
-                                </React.Fragment>
+                                <HeroSection
+                                    key={section.key}
+                                    section={section}
+                                    hero={hero}
+                                    settings={settings}
+                                    isFull={isFull}
+                                    isOff={isOff}
+                                    isDark={isDark}
+                                />
                             );
                         case 'about':
                             return (

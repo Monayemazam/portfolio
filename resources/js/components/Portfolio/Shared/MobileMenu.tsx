@@ -1,28 +1,45 @@
 import React, { useEffect, useState } from 'react';
 import { MenuHamburger1, Xmark } from './Icons';
-import { PortfolioSection } from '@/types/portfolio';
+import { PortfolioSection, PortfolioSettings } from '@/types/portfolio';
 import ThemeToggle from './ThemeToggle';
 
 interface MobileMenuProps {
     sections: PortfolioSection[];
     activeSection: string;
+    isOpen?: boolean;
+    onClose?: () => void;
+    settings?: PortfolioSettings;
+    experiencesCount?: number;
+    testimonialsCount?: number;
 }
 
 export default function MobileMenu({
     sections,
     activeSection,
+    isOpen: controlledOpen,
+    onClose,
 }: MobileMenuProps) {
-    const [isOpen, setIsOpen] = useState(false);
+    const [internalOpen, setInternalOpen] = useState(false);
+    const isControlled = controlledOpen !== undefined;
+    const open = isControlled ? controlledOpen : internalOpen;
+
+    const setOpen = (val: boolean) => {
+        if (isControlled) {
+            if (!val) onClose?.();
+        } else {
+            setInternalOpen(val);
+        }
+    };
 
     // Trap Escape key to close
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
-                setIsOpen(false);
+                setOpen(false);
             }
         };
 
-        if (isOpen) {
+        if (open) {
             document.body.style.overflow = 'hidden';
             window.addEventListener('keydown', handleKeyDown);
         } else {
@@ -33,10 +50,10 @@ export default function MobileMenu({
             document.body.style.overflow = '';
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [isOpen]);
+    }, [open]);
 
     const handleLinkClick = (key: string) => {
-        setIsOpen(false);
+        setOpen(false);
         const el = document.getElementById(key);
         if (el) {
             setTimeout(() => {
@@ -46,50 +63,63 @@ export default function MobileMenu({
         }
     };
 
+    const visibleSections = sections.filter(
+        (s) => s.is_visible !== false && s.key !== 'footer'
+    );
+
     return (
         <div className="lg:hidden">
-            {/* Floating Action Button */}
-            <button
-                type="button"
-                onClick={() => setIsOpen(!isOpen)}
-                aria-label={
-                    isOpen ? 'Close navigation menu' : 'Open navigation menu'
-                }
-                aria-expanded={isOpen}
-                className="fixed right-6 bottom-6 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-[var(--surface-border)] bg-[var(--surface)] text-[var(--text)] shadow-2xl backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:border-[var(--secondary)] focus:ring-2 focus:ring-[var(--secondary)] focus:outline-none"
-                style={{
-                    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)',
-                }}
-            >
-                {isOpen ? (
-                    <Xmark className="h-6 w-6 text-[var(--secondary)]" />
-                ) : (
-                    <MenuHamburger1 className="h-6 w-6 text-[var(--secondary)]" />
-                )}
-            </button>
+            {/* Floating Action Button (Only rendered in uncontrolled mode) */}
+            {!isControlled && (
+                <button
+                    type="button"
+                    onClick={() => setOpen(!open)}
+                    aria-label={
+                        open ? 'Close navigation menu' : 'Open navigation menu'
+                    }
+                    aria-expanded={open}
+                    className="fixed right-6 bottom-6 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-border/80 bg-surface/80 text-foreground shadow-2xl backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)] focus:outline-hidden"
+                >
+                    {open ? (
+                        <Xmark className="h-6 w-6 text-[var(--primary)]" />
+                    ) : (
+                        <MenuHamburger1 className="h-6 w-6 text-[var(--primary)]" />
+                    )}
+                </button>
+            )}
 
             {/* Full-screen Glass Overlay */}
-            {isOpen && (
+            {open && (
                 <div
                     role="dialog"
                     aria-modal="true"
-                    aria-label="Mobile Navigation"
-                    className="fixed inset-0 z-40 flex animate-in flex-col justify-between bg-[var(--bg)]/90 p-8 backdrop-blur-2xl transition-all duration-300 fade-in"
+                    aria-label="Mobile Celestial Navigation"
+                    className="fixed inset-0 z-50 flex flex-col justify-between bg-[var(--bg)]/95 p-6 sm:p-8 backdrop-blur-2xl transition-all duration-300"
                 >
                     {/* Header */}
-                    <div className="flex items-center justify-between border-b border-[var(--surface-border)] pb-4">
+                    <div className="flex items-center justify-between border-b border-border/40 pb-4">
                         <div className="flex items-center gap-2">
-                            <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--secondary)]" />
-                            <span className="font-mono text-xs font-bold tracking-[0.14em] text-[var(--secondary)] uppercase">
-                                MISSION NAVIGATION
+                            <span className="h-2 w-2 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)] animate-pulse" />
+                            <span className="font-mono text-xs font-bold tracking-wider text-foreground uppercase">
+                                MONAYEM // DEEP SPACE
                             </span>
                         </div>
-                        <ThemeToggle showLabel />
+                        <div className="flex items-center gap-4">
+                            <ThemeToggle showLabel />
+                            <button
+                                type="button"
+                                onClick={() => setOpen(false)}
+                                className="flex h-10 w-10 items-center justify-center rounded-full border border-border/80 bg-surface text-foreground hover:border-[var(--primary)] hover:text-[var(--primary)]"
+                                aria-label="Close menu"
+                            >
+                                <Xmark className="h-5 w-5" />
+                            </button>
+                        </div>
                     </div>
 
                     {/* Section Links */}
                     <nav className="my-auto flex max-h-[70vh] flex-col gap-3 overflow-y-auto py-6">
-                        {sections.map((section, idx) => {
+                        {visibleSections.map((section, idx) => {
                             const isActive = activeSection === section.key;
                             const stepNumber = String(idx + 1).padStart(2, '0');
 
@@ -98,20 +128,20 @@ export default function MobileMenu({
                                     key={section.key}
                                     type="button"
                                     onClick={() => handleLinkClick(section.key)}
-                                    className={`flex items-center gap-4 py-2.5 text-left transition-colors ${
+                                    className={`flex items-center gap-4 py-3 text-left transition-colors border-b border-border/20 ${
                                         isActive
-                                            ? 'text-[var(--secondary)]'
-                                            : 'text-[var(--text)] hover:text-[var(--secondary)]'
+                                            ? 'text-[var(--primary)]'
+                                            : 'text-foreground hover:text-[var(--primary)]'
                                     }`}
                                 >
-                                    <span className="font-mono text-xs text-[var(--text-muted)]">
+                                    <span className="font-mono text-xs text-muted-foreground">
                                         {stepNumber}
                                     </span>
-                                    <span className="font-display text-xl font-bold tracking-tight">
-                                        {section.nav_label}
+                                    <span className="font-display text-2xl font-bold tracking-tight uppercase">
+                                        {section.nav_label || section.title || section.key}
                                     </span>
                                     {isActive && (
-                                        <span className="ml-auto h-2 w-2 rounded-full bg-[var(--secondary)] shadow-[0_0_8px_var(--secondary)]" />
+                                        <span className="ml-auto h-2 w-2 rounded-full bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]" />
                                     )}
                                 </button>
                             );
@@ -119,8 +149,9 @@ export default function MobileMenu({
                     </nav>
 
                     {/* Footer inside menu */}
-                    <div className="border-t border-[var(--surface-border)] pt-4 text-center font-mono text-xs text-[var(--text-muted)]">
-                        PRESS ESC OR TAP OUTSIDE TO RETURN
+                    <div className="border-t border-border/40 pt-4 flex items-center justify-between font-mono text-xs text-muted-foreground uppercase">
+                        <span>CELESTIAL WAYPOINTS</span>
+                        <span>[TAP TO JUMP]</span>
                     </div>
                 </div>
             )}
