@@ -23,6 +23,15 @@ const ICON_ALIASES: Record<string, string> = {
     laravel: 'Laravel',
     php: 'Php',
     wordpress: 'Wordpress',
+    server: 'Globe1',
+    'cloud-network': 'Cloud2',
+    'stats-up': 'BarChart4',
+    website: 'Globe1',
+    brush: 'Brush2',
+    pen: 'Pencil1',
+    video: 'CameraMovie1',
+    bullhorn: 'TowerBroadcast1',
+    facebook: 'Facebook',
 };
 
 export function resolveSkillIcon(
