@@ -1,6 +1,12 @@
 import React, { useMemo, useState } from 'react';
-import * as LineIcons from 'lineicons-react';
 import { PortfolioSection, SkillItem } from '@/types/portfolio';
+import {
+    buildConstellationGraph,
+    ConstellationNode,
+} from '../Skills/constellationGeometry';
+import ConstellationCanvas from '../Skills/ConstellationCanvas';
+import SkillTelemetryDrawer from '../Skills/SkillTelemetryDrawer';
+import TechnologyMatrix from '../Skills/TechnologyMatrix';
 
 interface SkillsSectionProps {
     section: PortfolioSection;
@@ -9,123 +15,272 @@ interface SkillsSectionProps {
     isDark?: boolean;
 }
 
-const iconMap = LineIcons as unknown as Record<
-    string,
-    React.ComponentType<{ className?: string }>
->;
-
-function resolveLineicon(iconName?: string | null) {
-    if (!iconName) return null;
-    if (iconMap[iconName]) return iconMap[iconName];
-    const clean = iconName.replace(/^lni-/, '');
-    const pascal = clean
-        .split(/[-_]/)
-        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-        .join('');
-    return iconMap[pascal] || iconMap[`Lni${pascal}`] || null;
-}
-
 export default function SkillsSection({
     section,
     skills,
     isOff = false,
 }: SkillsSectionProps) {
-    // Group skills by category
-    const grouped = useMemo(() => {
-        return skills.reduce<Record<string, SkillItem[]>>((acc, skill) => {
-            const cat = skill.category || 'Core Engineering';
-            if (!acc[cat]) acc[cat] = [];
-            acc[cat].push(skill);
-            return acc;
-        }, {});
+    // 1. Group skills by actual CMS-managed category
+    const categories = useMemo(() => {
+        const unique = new Set<string>();
+        skills.forEach((s) => {
+            if (s.is_published) {
+                unique.add(s.category || 'Core');
+            }
+        });
+        return Array.from(unique);
     }, [skills]);
 
-    const categories = Object.keys(grouped);
-    const [selectedCategory, setSelectedCategory] = useState<string>(
-        categories[0] || 'Backend Engineering'
+    // 2. Compute celestial graph
+    const { nodes, edges, sectors } = useMemo(() => {
+        return buildConstellationGraph(skills, categories);
+    }, [skills, categories]);
+
+    // 3. Selection state
+    const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
+    const [activeSkill, setActiveSkill] = useState<ConstellationNode | null>(
+        nodes[0] || null,
     );
 
-    const activeSkills = grouped[selectedCategory] || [];
-    const activeCategoryIndex = categories.indexOf(selectedCategory);
+    // Derived statistics from actual data
+    const totalSkills = nodes.length;
+    const totalCategories = sectors.length;
+    const averageMastery = useMemo(() => {
+        if (totalSkills === 0) return 0;
+        const sum = nodes.reduce((acc, curr) => acc + (curr.level ?? 80), 0);
+        return Math.round(sum / totalSkills);
+    }, [nodes, totalSkills]);
 
-    const formatCategoryName = (cat: string) => {
-        const clean = cat.replace(/[_-]/g, ' ').toUpperCase();
-        return clean.includes('DEVELOPMENT') || clean.includes('ENGINEERING')
-            ? clean
-            : `${clean} ENGINEERING`;
+    // Active Sector Meta
+    const activeSector = useMemo(() => {
+        if (!activeSkill) return null;
+        return (
+            sectors.find((s) => s.category === activeSkill.category) || null
+        );
+    }, [activeSkill, sectors]);
+
+    // Navigation for Active Skill
+    const activeSkillList = useMemo(() => {
+        if (selectedCategory === 'ALL') return nodes;
+        return nodes.filter((n) => n.category === selectedCategory);
+    }, [nodes, selectedCategory]);
+
+    const activeSkillIndex = activeSkill
+        ? activeSkillList.findIndex((n) => n.id === activeSkill.id)
+        : -1;
+
+    const handleNavigateNext = () => {
+        if (activeSkillIndex >= 0 && activeSkillIndex < activeSkillList.length - 1) {
+            setActiveSkill(activeSkillList[activeSkillIndex + 1]);
+        } else if (activeSkillList.length > 0) {
+            setActiveSkill(activeSkillList[0]);
+        }
+    };
+
+    const handleNavigatePrev = () => {
+        if (activeSkillIndex > 0) {
+            setActiveSkill(activeSkillList[activeSkillIndex - 1]);
+        } else if (activeSkillList.length > 0) {
+            setActiveSkill(activeSkillList[activeSkillList.length - 1]);
+        }
     };
 
     return (
         <section
             id={section.key}
-            aria-label="Planetary Technical Skills Universe"
-            className="relative w-full overflow-hidden px-6 sm:px-10 lg:px-16 py-24 lg:py-32 select-none"
+            aria-label="Technical Skills Constellation"
+            className="relative w-full overflow-hidden px-4 sm:px-8 lg:px-16 py-20 lg:py-32"
         >
-            {/* Ambient Background Nebulae */}
+            {/* Ambient Background Nebula Glow */}
             <div
                 aria-hidden="true"
-                className="pointer-events-none absolute top-1/3 right-10 w-[40vw] h-[40vw] max-w-[600px] max-h-[600px] rounded-full bg-[var(--forest)] opacity-25 blur-[140px]"
+                className="pointer-events-none absolute top-1/4 right-0 w-[50vw] h-[50vw] max-w-[700px] max-h-[700px] rounded-full bg-[var(--forest)] opacity-20 blur-[160px]"
+            />
+            <div
+                aria-hidden="true"
+                className="pointer-events-none absolute bottom-1/4 left-0 w-[40vw] h-[40vw] max-w-[600px] max-h-[600px] rounded-full bg-[var(--signal-orange)] opacity-10 blur-[180px]"
             />
 
-            <div className="mx-auto max-w-[1440px]">
-                {/* Section Header */}
-                <div className="flex items-center gap-3 border-b border-border/40 pb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase">
-                    <span className="h-2 w-2 rounded-full bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]" />
-                    <span>02 // SKILLS CONSTELLATION</span>
-                    <span className="text-border">·</span>
-                    <span className="text-foreground font-semibold">
-                        PLANETARY TECHNICAL ARCHITECTURE
-                    </span>
+            <div className="relative mx-auto max-w-[1440px]">
+                {/* 1. Technical Telemetry Eyebrow Strip */}
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--surface-border)] pb-4 font-mono text-xs tracking-widest text-[var(--text-muted)] uppercase">
+                    <div className="flex items-center gap-2.5">
+                        <span className="relative flex h-2.5 w-2.5">
+                            <span
+                                className={`absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                                    !isOff ? 'animate-ping' : ''
+                                } bg-[var(--accent)]`}
+                            />
+                            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[var(--accent)]" />
+                        </span>
+                        <span className="font-bold text-[var(--accent)]">
+                            {section.eyebrow || '02 // TECHNICAL CONSTELLATION'}
+                        </span>
+                        <span className="text-[var(--surface-border)]">·</span>
+                        <span className="text-[var(--text)] font-semibold">
+                            CELESTIAL ARCHITECTURE
+                        </span>
+                    </div>
+
+                    <div className="flex items-center gap-4 text-[11px]">
+                        <span>COORDINATES: RA 14h 22m // DEC +19°</span>
+                        <span className="hidden sm:inline text-[var(--surface-border)]">
+                            |
+                        </span>
+                        <span className="hidden sm:inline text-[var(--accent)]">
+                            STATUS: TELEMETRY ACTIVE
+                        </span>
+                    </div>
                 </div>
 
-                {/* Section Title & Manifesto */}
-                <div className="mt-12 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-                    <div>
-                        <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
+                {/* 2. Section Heading & Manifesto */}
+                <div className="mt-10 flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+                    <div className="max-w-3xl">
+                        <span className="font-mono text-xs font-bold uppercase tracking-widest text-[var(--primary)]">
                             // ORBITAL CAPABILITY SYSTEM
                         </span>
-                        <h2 className="mt-3 font-display text-3xl sm:text-5xl font-black tracking-tight text-foreground uppercase leading-tight">
-                            TECHNICAL EXPERTISE,
-                            <br />
-                            MAPPED AS A SOLAR SYSTEM.
+                        <h2 className="mt-3 font-display text-3xl font-black uppercase tracking-tight text-[var(--text)] sm:text-5xl lg:text-6xl leading-tight">
+                            {section.title || 'TECHNICAL EXPERTISE, MAPPED AS A CONSTELLATION.'}
                         </h2>
                     </div>
-                    <p className="max-w-md font-body text-sm sm:text-base text-muted-foreground leading-relaxed">
-                        Explore core engineering sectors by switching orbital bands. Each planetary group
-                        represents verified mastery in active production deployments.
+                    <p className="max-w-md font-body text-sm sm:text-base text-[var(--text-muted)] leading-relaxed">
+                        {section.subtitle ||
+                            'Explore core engineering sectors across connected orbital bands. Every node represents verified mastery in active production deployments.'}
                     </p>
                 </div>
 
-                {/* Planetary Category Waypoint Orbit Controls */}
-                <div className="mt-14 flex flex-wrap gap-4 sm:gap-6">
-                    {categories.map((cat, idx) => {
-                        const isSelected = cat === selectedCategory;
-                        const catNumber = (idx + 1).toString().padStart(2, '0');
-                        const count = grouped[cat]?.length || 0;
+                {/* 3. Capability Summary HUD Strip (Derived dynamically from CMS data) */}
+                <div className="mt-10 grid grid-cols-2 gap-4 rounded-2xl border border-[var(--surface-border)] bg-[var(--surface)]/70 p-4 sm:grid-cols-4 sm:p-6 backdrop-blur-xl shadow-lg">
+                    <div className="border-r border-[var(--surface-border)] pr-4 last:border-r-0">
+                        <span className="block font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-wider">
+                            VERIFIED TECHNOLOGIES
+                        </span>
+                        <span className="mt-1 block font-display text-2xl font-black text-[var(--text)] sm:text-3xl">
+                            {totalSkills}
+                        </span>
+                        <span className="font-mono text-[10px] text-[var(--accent)]">
+                            100% IN PRODUCTION
+                        </span>
+                    </div>
+
+                    <div className="border-r border-[var(--surface-border)] pr-4 sm:pl-4 last:border-r-0">
+                        <span className="block font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-wider">
+                            ACTIVE CONSTELLATIONS
+                        </span>
+                        <span className="mt-1 block font-display text-2xl font-black text-[var(--text)] sm:text-3xl">
+                            {totalCategories}
+                        </span>
+                        <span className="font-mono text-[10px] text-[var(--text-muted)]">
+                            ENGINEERING SECTORS
+                        </span>
+                    </div>
+
+                    <div className="border-r border-[var(--surface-border)] pr-4 last:border-r-0 sm:pl-4">
+                        <span className="block font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-wider">
+                            AVG PROFICIENCY
+                        </span>
+                        <span className="mt-1 block font-display text-2xl font-black text-[var(--primary)] sm:text-3xl">
+                            {averageMastery}%
+                        </span>
+                        <span className="font-mono text-[10px] text-[var(--text-muted)]">
+                            PRODUCTION MASTERY
+                        </span>
+                    </div>
+
+                    <div className="sm:pl-4">
+                        <span className="block font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-wider">
+                            ACTIVE CELESTIAL VIEW
+                        </span>
+                        <span className="mt-1 block font-display text-lg sm:text-xl font-black text-[var(--text)] uppercase truncate">
+                            {selectedCategory === 'ALL'
+                                ? 'ALL SECTORS'
+                                : selectedCategory}
+                        </span>
+                        <span className="font-mono text-[10px] text-[var(--accent)] uppercase truncate block">
+                            {selectedCategory === 'ALL'
+                                ? 'COMPLETE SKY MAP'
+                                : `${nodes.filter((n) => n.category === selectedCategory).length} STARS ILLUMINATED`}
+                        </span>
+                    </div>
+                </div>
+
+                {/* 4. Interactive Waypoint Category Selector */}
+                <div
+                    role="tablist"
+                    aria-label="Constellation Category Filter"
+                    className="mt-10 flex flex-wrap items-center gap-3 sm:gap-4"
+                >
+                    {/* All Constellations Button */}
+                    <button
+                        type="button"
+                        role="tab"
+                        aria-selected={selectedCategory === 'ALL'}
+                        onClick={() => setSelectedCategory('ALL')}
+                        className={`group flex items-center gap-3 rounded-full border px-5 py-3 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] ${
+                            selectedCategory === 'ALL'
+                                ? 'border-[var(--primary)] bg-[var(--primary)] text-[var(--paper)] shadow-[0_0_24px_rgba(241,90,36,0.3)] ring-2 ring-[var(--primary)]/30'
+                                : 'border-[var(--surface-border)] bg-[var(--surface)]/60 text-[var(--text-muted)] hover:border-[var(--text)] hover:text-[var(--text)]'
+                        }`}
+                    >
+                        <span
+                            className={`h-2.5 w-2.5 rounded-full transition-all ${
+                                selectedCategory === 'ALL'
+                                    ? 'bg-[var(--accent)] scale-125'
+                                    : 'bg-[var(--text-muted)] group-hover:bg-[var(--text)]'
+                            }`}
+                        />
+                        <span className="font-mono text-xs font-bold uppercase tracking-wider">
+                            ALL CONSTELLATIONS
+                        </span>
+                        <span
+                            className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${
+                                selectedCategory === 'ALL'
+                                    ? 'bg-[var(--paper)] text-[var(--ink)]'
+                                    : 'bg-[var(--bg)] text-[var(--text-muted)] border border-[var(--surface-border)]'
+                            }`}
+                        >
+                            {totalSkills}
+                        </span>
+                    </button>
+
+                    {/* Individual Sector Category Buttons */}
+                    {sectors.map((sec, idx) => {
+                        const isSelected = selectedCategory === sec.category;
+                        const count = nodes.filter(
+                            (n) => n.category === sec.category,
+                        ).length;
 
                         return (
                             <button
-                                key={cat}
+                                key={sec.category}
                                 type="button"
-                                onClick={() => setSelectedCategory(cat)}
-                                className={`group flex items-center gap-4 rounded-full border px-6 py-3.5 transition-all focus:outline-hidden ${
+                                role="tab"
+                                aria-selected={isSelected}
+                                onClick={() => setSelectedCategory(sec.category)}
+                                className={`group flex items-center gap-3 rounded-full border px-5 py-3 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] ${
                                     isSelected
-                                        ? 'border-[var(--primary)] bg-[var(--primary)]/15 text-foreground shadow-[0_0_20px_rgba(241,90,36,0.25)]'
-                                        : 'border-border/80 bg-surface/40 backdrop-blur-sm text-muted-foreground hover:border-foreground/50 hover:text-foreground'
+                                        ? 'border-[var(--accent)] bg-[var(--surface)] text-[var(--text)] shadow-[0_0_24px_rgba(213,243,74,0.25)] ring-2 ring-[var(--accent)]/30'
+                                        : 'border-[var(--surface-border)] bg-[var(--surface)]/60 text-[var(--text-muted)] hover:border-[var(--text)] hover:text-[var(--text)]'
                                 }`}
-                                aria-pressed={isSelected}
                             >
                                 <span
-                                    className={`h-2.5 w-2.5 rounded-full transition-all ${
-                                        isSelected
-                                            ? 'bg-[var(--accent)] shadow-[0_0_10px_var(--accent)] scale-125'
-                                            : 'bg-muted-foreground/60 group-hover:bg-foreground'
-                                    }`}
+                                    className="h-2.5 w-2.5 rounded-full transition-all"
+                                    style={{
+                                        backgroundColor: isSelected
+                                            ? 'var(--accent)'
+                                            : sec.accentVar,
+                                    }}
                                 />
-                                <span className="font-mono text-xs font-bold uppercase tracking-wider text-foreground">
-                                    SECTOR {catNumber} // {cat.replace(/[_-]/g, ' ')}
+                                <span className="font-mono text-xs font-bold uppercase tracking-wider">
+                                    SECTOR 0{idx + 1} // {sec.category}
                                 </span>
-                                <span className="rounded-full bg-surface px-2.5 py-0.5 font-mono text-[10px] text-muted-foreground border border-border/60">
+                                <span
+                                    className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${
+                                        isSelected
+                                            ? 'bg-[var(--accent)] text-[var(--ink)]'
+                                            : 'bg-[var(--bg)] text-[var(--text-muted)] border border-[var(--surface-border)]'
+                                    }`}
+                                >
                                     {count}
                                 </span>
                             </button>
@@ -133,78 +288,52 @@ export default function SkillsSection({
                     })}
                 </div>
 
-                {/* Transformed Planetary Stage & Technical Constellation Panel */}
-                <div className="mt-10 rounded-2xl border border-border/80 bg-surface/60 backdrop-blur-xl p-8 sm:p-12 shadow-2xl relative overflow-hidden space-rim-light">
-                    {/* Stage Header */}
-                    <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/40 pb-5">
-                        <div className="flex items-center gap-3">
-                            <span className="h-3 w-3 rounded-full bg-[var(--accent)] animate-pulse shadow-[0_0_10px_var(--accent)]" />
-                            <h3 className="font-display text-xl sm:text-2xl font-black uppercase tracking-tight text-foreground">
-                                {formatCategoryName(selectedCategory)}
-                            </h3>
-                        </div>
-                        <span className="font-mono text-xs text-[var(--primary)] font-semibold tracking-wider">
-                            [{activeSkills.length} VERIFIED TECHNOLOGIES IN ORBIT]
-                        </span>
-                    </div>
-
-                    {/* Skill Constellation Grid */}
-                    <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {activeSkills.map((skill, index) => {
-                            const IconComponent = resolveLineicon(skill.icon);
-                            const level = skill.level ?? 80;
-                            const isHighLevel = level >= 90;
-                            const levelLabel = level >= 90 ? 'LEAD' : level >= 80 ? 'ADVANCED' : 'CORE';
-
-                            return (
-                                <div
-                                    key={skill.id}
-                                    className={`group flex items-center justify-between rounded-xl border border-border/60 bg-surface/50 backdrop-blur-md p-5 transition-all duration-300 hover:border-[var(--primary)] hover:bg-surface/90 hover:shadow-[0_0_25px_rgba(241,90,36,0.15)] hover:-translate-y-1 ${
-                                        !isOff
-                                            ? 'animate-in fade-in slide-in-from-bottom-2 duration-300'
-                                            : ''
-                                    }`}
-                                    style={{
-                                        animationDelay: `${index * 40}ms`,
-                                    }}
-                                >
-                                    <div className="flex items-center gap-4">
-                                        {/* Icon or Monogram */}
-                                        {IconComponent ? (
-                                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border/80 bg-surface text-foreground transition-colors group-hover:border-[var(--primary)] group-hover:text-[var(--primary)]">
-                                                <IconComponent className="h-5 w-5" />
-                                            </div>
-                                        ) : (
-                                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border/80 bg-surface font-mono text-xs font-black text-foreground group-hover:border-[var(--primary)] group-hover:text-[var(--primary)]">
-                                                {skill.name.slice(0, 2).toUpperCase()}
-                                            </div>
-                                        )}
-
-                                        <div>
-                                            <h4 className="font-display text-base sm:text-lg font-black tracking-tight text-foreground uppercase group-hover:text-[var(--primary)] transition-colors">
-                                                {skill.name}
-                                            </h4>
-                                            <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-wider block">
-                                                CONFIDENCE: {level}%
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    {/* Level Pill */}
-                                    <span
-                                        className={`rounded-full px-2.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider border ${
-                                            isHighLevel
-                                                ? 'border-[var(--accent)]/50 bg-[var(--accent)]/15 text-[var(--accent)]'
-                                                : 'border-border bg-surface text-muted-foreground'
-                                        }`}
-                                    >
-                                        {levelLabel}
-                                    </span>
-                                </div>
-                            );
-                        })}
-                    </div>
+                {/* 5. Centerpiece Visual: The Technical Constellation Canvas */}
+                <div className="mt-8">
+                    <ConstellationCanvas
+                        nodes={nodes}
+                        edges={edges}
+                        sectors={sectors}
+                        selectedCategory={selectedCategory}
+                        activeSkill={activeSkill}
+                        onSelectSkill={(skill) => setActiveSkill(skill)}
+                        isOff={isOff}
+                    />
                 </div>
+
+                {/* 6. Mission Control Telemetry Inspector Panel */}
+                {activeSkill && (
+                    <div className="mt-8">
+                        <SkillTelemetryDrawer
+                            skill={activeSkill}
+                            sector={activeSector}
+                            onClose={() => setActiveSkill(null)}
+                            onNavigateNext={handleNavigateNext}
+                            onNavigatePrev={handleNavigatePrev}
+                            hasNext={activeSkillList.length > 1}
+                            hasPrev={activeSkillList.length > 1}
+                            isOff={isOff}
+                        />
+                    </div>
+                )}
+
+                {/* 7. Accessible High-Contrast Master Technology Matrix (Index) */}
+                <TechnologyMatrix
+                    nodes={nodes}
+                    sectors={sectors}
+                    selectedCategory={selectedCategory}
+                    activeSkill={activeSkill}
+                    onSelectSkill={(skill) => {
+                        setActiveSkill(skill);
+                        // Smoothly scroll constellation into view if needed
+                        const el = document.getElementById(section.key);
+                        if (el) {
+                            el.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }}
+                    onSelectCategory={(cat) => setSelectedCategory(cat)}
+                    isOff={isOff}
+                />
             </div>
         </section>
     );
