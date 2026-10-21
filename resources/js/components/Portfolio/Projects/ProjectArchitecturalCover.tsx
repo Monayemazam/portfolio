@@ -25,47 +25,36 @@ export default function ProjectArchitecturalCover({
     const style = project.planet_style || 'generic';
     const accent = project.accent_color || '#F15A24';
 
-    // If actual uploaded media exists, display it with architectural editorial treatment
+    // If actual uploaded media exists, display it with clean architectural editorial treatment
     if (project.cover_media?.url) {
         return (
             <div
-                className={`relative w-full h-full overflow-hidden bg-[#171914] ${className}`}
+                className={`relative w-full h-full overflow-hidden bg-[var(--surface)] ${className}`}
             >
-                {/* Real Media Image with subtle crop shift on hover */}
+                {/* Real Media Image with smooth subtle scale on hover */}
                 <img
                     src={project.cover_media.webp_url || project.cover_media.url}
                     alt={project.cover_media.alt_text || project.title}
-                    className="h-full w-full object-cover grayscale contrast-110 transition-all duration-500 group-hover:scale-[1.03] group-hover:grayscale-0"
-                />
-
-                {/* Subtle Architectural Grid Overlay */}
-                <div
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-0 opacity-20"
-                    style={{
-                        backgroundImage: `linear-gradient(to right, #F2EFE6 1px, transparent 1px),
-                                          linear-gradient(to bottom, #F2EFE6 1px, transparent 1px)`,
-                        backgroundSize: '40px 40px',
-                    }}
+                    className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                 />
 
                 {/* Corner Hairline Registration Marks */}
-                <span className="pointer-events-none absolute top-2 left-2 font-mono text-xs font-bold text-[#F15A24] z-10 select-none">
+                <span className="pointer-events-none absolute top-2 left-2 font-mono text-xs font-bold text-[var(--primary)] z-10 select-none opacity-70">
                     +
                 </span>
-                <span className="pointer-events-none absolute top-2 right-2 font-mono text-xs font-bold text-[#F15A24] z-10 select-none">
+                <span className="pointer-events-none absolute top-2 right-2 font-mono text-xs font-bold text-[var(--primary)] z-10 select-none opacity-70">
                     +
                 </span>
-                <span className="pointer-events-none absolute bottom-2 left-2 font-mono text-xs font-bold text-[#F15A24] z-10 select-none">
+                <span className="pointer-events-none absolute bottom-2 left-2 font-mono text-xs font-bold text-[var(--primary)] z-10 select-none opacity-70">
                     +
                 </span>
-                <span className="pointer-events-none absolute bottom-2 right-2 font-mono text-xs font-bold text-[#F15A24] z-10 select-none">
+                <span className="pointer-events-none absolute bottom-2 right-2 font-mono text-xs font-bold text-[var(--primary)] z-10 select-none opacity-70">
                     +
                 </span>
 
                 {/* Architectural Caption Strip */}
-                <div className="absolute bottom-3 left-3 z-10 bg-[#171914]/90 border border-border px-3 py-1 font-mono text-[10px] font-bold tracking-widest text-[#F2EFE6] uppercase backdrop-blur-xs flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 bg-[#F15A24]" />
+                <div className="absolute bottom-3 left-3 z-10 bg-[var(--surface)]/90 border border-[var(--surface-border)] px-3 py-1 font-mono text-[10px] font-bold tracking-widest text-[var(--text)] uppercase backdrop-blur-md flex items-center gap-2 shadow-sm">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)]" />
                     <span>{project.slug} // ARCHIVE</span>
                 </div>
             </div>
@@ -347,7 +336,7 @@ export default function ProjectArchitecturalCover({
                 )}
 
             {/* Subtle Hover Accent Bar along the bottom */}
-            <div className="absolute inset-x-0 bottom-0 h-1 bg-[#F15A24] transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100 z-30" />
+            <div className="absolute inset-x-0 bottom-0 h-1 bg-[var(--primary)] transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100 z-30" />
         </div>
     );
 }

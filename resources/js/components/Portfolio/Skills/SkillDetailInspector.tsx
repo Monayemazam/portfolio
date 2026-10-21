@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { SkillItem } from '@/types/portfolio';
-import { resolveSkillIcon } from './iconResolver';
+import SkillBrandIcon from './SkillBrandIcon';
 
 interface SkillDetailInspectorProps {
     skill: SkillItem | null;
@@ -25,7 +25,6 @@ export default function SkillDetailInspector({
 
     if (!skill) return null;
 
-    const IconComponent = resolveSkillIcon(skill.icon);
     const level = skill.level ?? 80;
 
     return (
@@ -57,14 +56,12 @@ export default function SkillDetailInspector({
             <div className="mt-6 flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
                 <div className="flex items-center gap-5">
                     {/* Icon container */}
-                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border border-[var(--surface-border)] bg-[var(--bg)] text-[var(--primary)] shadow-inner">
-                        {IconComponent ? (
-                            <IconComponent className="h-8 w-8" />
-                        ) : (
-                            <span className="font-mono text-sm font-black">
-                                {skill.name.slice(0, 2).toUpperCase()}
-                            </span>
-                        )}
+                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border border-[var(--surface-border)] bg-[var(--surface)]/90 p-3 shadow-inner">
+                        <SkillBrandIcon
+                            name={skill.name}
+                            icon={skill.icon}
+                            className="h-10 w-10"
+                        />
                     </div>
 
                     <div>

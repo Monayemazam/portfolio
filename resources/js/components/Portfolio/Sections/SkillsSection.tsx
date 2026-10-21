@@ -3,7 +3,7 @@ import { PortfolioSection, SkillItem } from '@/types/portfolio';
 import SkillAtlasHeader from '../Skills/SkillAtlasHeader';
 import SkillAtlasNav, { SkillCategoryFilter } from '../Skills/SkillAtlasNav';
 import SkillDetailInspector from '../Skills/SkillDetailInspector';
-import { resolveSkillIcon } from '../Skills/iconResolver';
+import SkillBrandIcon from '../Skills/SkillBrandIcon';
 
 interface SkillsSectionProps {
     section: PortfolioSection;
@@ -205,9 +205,6 @@ export default function SkillsSection({
                             <div className="lg:col-span-8">
                                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                     {engineering.map((skill, idx) => {
-                                        const IconComponent = resolveSkillIcon(
-                                            skill.icon,
-                                        );
                                         const isSelected =
                                             selectedSkill?.id === skill.id;
                                         const itemCode = `01.${(idx + 1)
@@ -231,23 +228,19 @@ export default function SkillsSection({
                                                 aria-label={`Inspect ${skill.name}`}
                                             >
                                                 <div className="flex items-center gap-3.5">
-                                                    {/* Minimalist Lineicon Box */}
+                                                    {/* Authentic Colourful Brand Icon Box */}
                                                     <div
-                                                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border transition-colors ${
+                                                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border p-1.5 transition-colors ${
                                                             isSelected
-                                                                ? 'border-[var(--primary)] bg-[var(--primary)] text-[var(--paper)]'
-                                                                : 'border-[var(--surface-border)] bg-[var(--bg)] text-[var(--text)] group-hover:border-[var(--primary)] group-hover:text-[var(--primary)]'
+                                                                ? 'border-[var(--primary)] bg-[var(--primary)]/10 ring-1 ring-[var(--primary)]'
+                                                                : 'border-[var(--surface-border)] bg-[var(--surface)]/90 group-hover:border-[var(--primary)]/50'
                                                         }`}
                                                     >
-                                                        {IconComponent ? (
-                                                            <IconComponent className="h-5 w-5" />
-                                                        ) : (
-                                                            <span className="font-mono text-xs font-black">
-                                                                {skill.name
-                                                                    .slice(0, 2)
-                                                                    .toUpperCase()}
-                                                            </span>
-                                                        )}
+                                                        <SkillBrandIcon
+                                                            name={skill.name}
+                                                            icon={skill.icon}
+                                                            className="h-6 w-6 transition-transform duration-200 group-hover:scale-110"
+                                                        />
                                                     </div>
 
                                                     <div>
@@ -325,9 +318,6 @@ export default function SkillsSection({
                             <div className="lg:col-span-8">
                                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                     {deployment.map((skill, idx) => {
-                                        const IconComponent = resolveSkillIcon(
-                                            skill.icon,
-                                        );
                                         const isSelected =
                                             selectedSkill?.id === skill.id;
                                         const isHosting =
@@ -356,21 +346,17 @@ export default function SkillsSection({
                                             >
                                                 <div className="flex items-center gap-3.5">
                                                     <div
-                                                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border transition-colors ${
+                                                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border p-1.5 transition-colors ${
                                                             isSelected
-                                                                ? 'border-[var(--primary)] bg-[var(--primary)] text-[var(--paper)]'
-                                                                : 'border-[var(--surface-border)] bg-[var(--bg)] text-[var(--text)] group-hover:border-[var(--primary)] group-hover:text-[var(--primary)]'
+                                                                ? 'border-[var(--primary)] bg-[var(--primary)]/10 ring-1 ring-[var(--primary)]'
+                                                                : 'border-[var(--surface-border)] bg-[var(--surface)]/90 group-hover:border-[var(--primary)]/50'
                                                         }`}
                                                     >
-                                                        {IconComponent ? (
-                                                            <IconComponent className="h-5 w-5" />
-                                                        ) : (
-                                                            <span className="font-mono text-xs font-black">
-                                                                {skill.name
-                                                                    .slice(0, 2)
-                                                                    .toUpperCase()}
-                                                            </span>
-                                                        )}
+                                                        <SkillBrandIcon
+                                                            name={skill.name}
+                                                            icon={skill.icon}
+                                                            className="h-6 w-6 transition-transform duration-200 group-hover:scale-110"
+                                                        />
                                                     </div>
 
                                                     <div>
@@ -444,9 +430,6 @@ export default function SkillsSection({
                             <div className="lg:col-span-8">
                                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                     {creative.map((skill, idx) => {
-                                        const IconComponent = resolveSkillIcon(
-                                            skill.icon,
-                                        );
                                         const isSelected =
                                             selectedSkill?.id === skill.id;
                                         const isAd =
@@ -474,21 +457,17 @@ export default function SkillsSection({
                                             >
                                                 <div className="flex items-center gap-3.5">
                                                     <div
-                                                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border transition-colors ${
+                                                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border p-1.5 transition-colors ${
                                                             isSelected
-                                                                ? 'border-[var(--primary)] bg-[var(--primary)] text-[var(--paper)]'
-                                                                : 'border-[var(--surface-border)] bg-[var(--bg)] text-[var(--text)] group-hover:border-[var(--primary)] group-hover:text-[var(--primary)]'
+                                                                ? 'border-[var(--primary)] bg-[var(--primary)]/10 ring-1 ring-[var(--primary)]'
+                                                                : 'border-[var(--surface-border)] bg-[var(--surface)]/90 group-hover:border-[var(--primary)]/50'
                                                         }`}
                                                     >
-                                                        {IconComponent ? (
-                                                            <IconComponent className="h-5 w-5" />
-                                                        ) : (
-                                                            <span className="font-mono text-xs font-black">
-                                                                {skill.name
-                                                                    .slice(0, 2)
-                                                                    .toUpperCase()}
-                                                            </span>
-                                                        )}
+                                                        <SkillBrandIcon
+                                                            name={skill.name}
+                                                            icon={skill.icon}
+                                                            className="h-6 w-6 transition-transform duration-200 group-hover:scale-110"
+                                                        />
                                                     </div>
 
                                                     <div>
