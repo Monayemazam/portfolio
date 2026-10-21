@@ -77,26 +77,19 @@ export default function SkillDetailInspector({
                     </div>
                 </div>
 
-                {/* Level / Verification Indicator */}
+                {/* Verified Capability Status */}
                 <div className="flex flex-col sm:items-end">
                     <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
-                        PRODUCTION CONFIDENCE
+                        VERIFIED STATUS
                     </span>
-                    <div className="mt-1 flex items-center gap-3">
-                        <div className="h-2 w-32 overflow-hidden rounded-full bg-[var(--surface-border)]">
-                            <div
-                                className="h-full rounded-full bg-[var(--primary)] transition-all duration-500 ease-out"
-                                style={{ width: `${level}%` }}
-                            />
-                        </div>
-                        <span className="font-mono text-sm font-black text-[var(--text)]">
-                            {level}%
+                    <div className="mt-1 flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]" />
+                        <span className="font-mono text-sm font-bold text-[var(--text)] uppercase">
+                            PRODUCTION READY
                         </span>
                     </div>
                     <span className="mt-1 font-mono text-[10px] text-[var(--text-muted)]">
-                        {level >= 90
-                            ? 'Lead Architecture Standard'
-                            : 'Production Active Deployment'}
+                        Active in live client systems
                     </span>
                 </div>
             </div>

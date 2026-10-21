@@ -20,7 +20,7 @@ class HeroSeeder extends Seeder
                 'eyebrow' => 'FULL-STACK WEB DEVELOPER',
                 'primary_button_label' => 'View Projects',
                 'primary_button_url' => '#projects',
-                'secondary_button_label' => 'Get in touch',
+                'secondary_button_label' => 'Contact Me',
                 'secondary_button_url' => '#contact',
             ]);
         } else {
@@ -29,7 +29,7 @@ class HeroSeeder extends Seeder
                 'eyebrow' => 'FULL-STACK WEB DEVELOPER',
                 'primary_button_label' => 'View Projects',
                 'primary_button_url' => '#projects',
-                'secondary_button_label' => 'Get in touch',
+                'secondary_button_label' => 'Contact Me',
                 'secondary_button_url' => '#contact',
             ]);
         }

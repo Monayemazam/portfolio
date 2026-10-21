@@ -120,11 +120,12 @@ export default function FloatingNav({
                     <button
                         type="button"
                         onClick={toggleTheme}
+                        suppressHydrationWarning
                         aria-label={`Switch to ${isDark ? 'Solar' : 'Deep Space'} theme`}
-                        className="flex items-center gap-2 rounded-full border border-border/80 bg-surface/60 backdrop-blur-sm px-3.5 py-1.5 font-mono text-[11px] tracking-wider uppercase transition-all hover:border-[var(--primary)] hover:bg-surface"
+                        className="flex items-center gap-2 rounded-full border border-border/80 bg-surface/60 backdrop-blur-sm px-3.5 py-1.5 font-mono text-[11px] tracking-wider uppercase transition-all hover:border-[var(--primary)] hover:bg-surface cursor-pointer"
                     >
                         <span className="h-2 w-2 rounded-full bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]" />
-                        <span className="hidden sm:inline font-semibold">
+                        <span className="hidden sm:inline font-semibold" suppressHydrationWarning>
                             {isDark ? 'DEEP SPACE' : 'SOLAR'}
                         </span>
                     </button>

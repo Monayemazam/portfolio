@@ -14,15 +14,17 @@ class AboutSeeder extends Seeder
     public function run(): void
     {
         $about = AboutContent::first();
+        $bio = "I'm Monayem Azam, a Full-Stack Web Developer with over 6 years of experience building digital products and web applications. I love turning ideas into practical, reliable experiences through thoughtful design and engineering. For me, development is more than writing code—it's a passion for creating things that work well and make a difference.";
+
         if ($about) {
             $about->update([
                 'heading' => 'BUILT WITH PURPOSE.',
-                'bio' => "I'm Monayem Azam, a Full-Stack Web Developer with 6+ years of experience building digital experiences and web applications. I enjoy turning ideas into practical, reliable products, combining thoughtful design with solid engineering. With 50+ satisfied clients and 10+ live projects, I bring a passion for creating digital solutions that work in the real world.",
+                'bio' => $bio,
             ]);
         } else {
             $about = AboutContent::create([
                 'heading' => 'BUILT WITH PURPOSE.',
-                'bio' => "I'm Monayem Azam, a Full-Stack Web Developer with 6+ years of experience building digital experiences and web applications. I enjoy turning ideas into practical, reliable products, combining thoughtful design with solid engineering. With 50+ satisfied clients and 10+ live projects, I bring a passion for creating digital solutions that work in the real world.",
+                'bio' => $bio,
             ]);
         }
 

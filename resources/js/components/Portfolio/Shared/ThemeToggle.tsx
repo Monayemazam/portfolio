@@ -19,6 +19,7 @@ export default function ThemeToggle({
                 type="button"
                 role="switch"
                 aria-checked={isDark}
+                suppressHydrationWarning
                 aria-label={`Switch to ${isDark ? 'Solar (light)' : 'Deep Space (dark)'} theme`}
                 onClick={toggleTheme}
                 className="relative inline-flex h-6 w-10 flex-shrink-0 cursor-pointer rounded-full border border-[var(--surface-border)] bg-[var(--surface)] p-0.5 transition-colors duration-300 focus:ring-2 focus:ring-[var(--secondary)] focus:ring-offset-2 focus:ring-offset-[var(--bg)] focus:outline-none"
@@ -41,7 +42,7 @@ export default function ThemeToggle({
                 </span>
             </button>
             {showLabel && (
-                <span className="font-mono text-xs tracking-wider text-[var(--text-muted)] uppercase select-none">
+                <span className="font-mono text-xs tracking-wider text-[var(--text-muted)] uppercase select-none" suppressHydrationWarning>
                     {isDark ? 'Deep Space' : 'Solar'}
                 </span>
             )}
