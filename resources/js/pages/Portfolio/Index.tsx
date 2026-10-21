@@ -17,6 +17,7 @@ import StarfieldContainer from '@/components/Portfolio/Motion/StarfieldContainer
 import ConstellationWaypoint from '@/components/Portfolio/Motion/ConstellationWaypoint';
 import TopProgressBar from '@/components/Portfolio/Motion/TopProgressBar';
 import ReduceEffectsToggle from '@/components/Portfolio/Motion/ReduceEffectsToggle';
+import UnknownSignalPreloader from '@/components/Portfolio/Motion/UnknownSignalPreloader';
 import FloatingNav from '@/components/Portfolio/Shared/FloatingNav';
 import HeroSection from '@/components/Portfolio/Sections/HeroSection';
 import AboutSection from '@/components/Portfolio/Sections/AboutSection';
@@ -200,6 +201,9 @@ export default function PortfolioIndex({
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
                 />
             </Head>
+
+            {/* Cinematic Unknown Signal Space Preloader */}
+            <UnknownSignalPreloader reducedMotion={isOff} />
 
             {/* Tactile Architectural Background Grid */}
             <StarfieldContainer
