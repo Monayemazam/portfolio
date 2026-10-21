@@ -84,33 +84,32 @@ export default function FooterSection({
             className="w-full border-t border-border/40 bg-[var(--bg)] px-6 sm:px-10 lg:px-16 py-20 relative overflow-hidden"
         >
             <div className="mx-auto max-w-[1440px] relative z-10">
-                {/* Colophon Grid */}
+                {/* Footer Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-10 sm:gap-12 pb-14 border-b border-border/40">
                     {/* Brand Wordmark & Descriptor */}
                     <div className="md:col-span-5 flex flex-col justify-between">
                         <div>
                             <div className="flex items-center gap-3">
                                 <span className="h-2.5 w-2.5 rounded-full bg-[var(--primary)] shadow-[0_0_10px_var(--primary)]" />
-                                <span className="font-display text-2xl sm:text-3xl font-black tracking-tight text-foreground uppercase">
-                                    {siteTitle}
-                                </span>
+                                <div>
+                                    <span className="font-display text-2xl sm:text-3xl font-black tracking-tight text-foreground uppercase block">
+                                        MONAYEM AZAM
+                                    </span>
+                                    <span className="font-mono text-xs tracking-wider text-[var(--primary)] font-bold uppercase block mt-0.5">
+                                        FULL-STACK WEB DEVELOPER
+                                    </span>
+                                </div>
                             </div>
                             <p className="mt-4 font-body text-sm sm:text-base text-foreground/75 leading-relaxed max-w-sm">
-                                Independent Full-Stack Software Engineer & Creative Technologist.
-                                Constructing resilient architectural systems and immersive digital universes.
+                                Turning ideas into practical, reliable digital products, combining thoughtful design with solid engineering.
                             </p>
-                        </div>
-
-                        <div className="mt-8 font-mono text-xs text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-                            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
-                            <span>MONAYEM // DEEP SPACE EXPERIENCE</span>
                         </div>
                     </div>
 
                     {/* Section Links */}
                     <div className="md:col-span-4">
                         <span className="font-mono text-xs font-bold text-foreground uppercase tracking-widest block mb-4">
-                            CELESTIAL WAYPOINTS //
+                            NAVIGATION //
                         </span>
                         <div className="grid grid-cols-2 gap-2 font-mono text-xs">
                             {navLinks.map((item, idx) => (
@@ -122,7 +121,7 @@ export default function FooterSection({
                                     <span className="text-[10px] text-border">
                                         {(idx + 1).toString().padStart(2, '0')}.
                                     </span>
-                                    <span>{sectionLabels[item.key] || item.nav_label || item.title}</span>
+                                    <span>{item.nav_label || item.title}</span>
                                 </a>
                             ))}
                         </div>
@@ -132,7 +131,7 @@ export default function FooterSection({
                     <div className="md:col-span-3 flex flex-col justify-between">
                         <div>
                             <span className="font-mono text-xs font-bold text-foreground uppercase tracking-widest block mb-4">
-                                SIGNAL CHANNELS //
+                                CONNECT //
                             </span>
                             <div className="flex flex-col gap-2 font-mono text-xs">
                                 {socialLinks.length > 0 ? (
@@ -149,24 +148,13 @@ export default function FooterSection({
                                         </a>
                                     ))
                                 ) : (
-                                    <>
-                                        <a
-                                            href="#contact"
-                                            className="text-muted-foreground hover:text-[var(--primary)] transition-colors uppercase flex items-center justify-between py-1"
-                                        >
-                                            <span>DIRECT BEACON</span>
-                                            <span className="font-sans">→</span>
-                                        </a>
-                                        <a
-                                            href="https://github.com"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-muted-foreground hover:text-[var(--primary)] transition-colors uppercase flex items-center justify-between py-1"
-                                        >
-                                            <span>REPOSITORY</span>
-                                            <span className="font-sans">↗</span>
-                                        </a>
-                                    </>
+                                    <a
+                                        href="#contact"
+                                        className="text-muted-foreground hover:text-[var(--primary)] transition-colors uppercase flex items-center justify-between py-1"
+                                    >
+                                        <span>GET IN TOUCH</span>
+                                        <span className="font-sans">→</span>
+                                    </a>
                                 )}
                             </div>
                         </div>
@@ -177,17 +165,17 @@ export default function FooterSection({
                                 onClick={handleScrollTop}
                                 className="w-full rounded-full border border-border/80 bg-surface/60 backdrop-blur-md py-3 font-mono text-xs font-bold uppercase tracking-wider text-foreground hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all flex items-center justify-center gap-2 cursor-pointer"
                             >
-                                <span>RETURN TO APEX</span>
+                                <span>BACK TO TOP</span>
                                 <ArrowUp className="h-3.5 w-3.5" />
                             </button>
                         </div>
                     </div>
                 </div>
 
-                {/* Bottom Legal & Colophon Dispatches */}
+                {/* Bottom Bar */}
                 <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[11px] text-muted-foreground uppercase tracking-wider">
-                    <span>© {currentYear} {siteTitle} · ALL RIGHTS RESERVED</span>
-                    <span>BUILT WITH LARAVEL 12, REACT 19, THREE.JS & DEEP SPACE CRAFT</span>
+                    <span>© {currentYear} MONAYEM AZAM · ALL RIGHTS RESERVED</span>
+                    <span>FULL-STACK WEB DEVELOPER</span>
                 </div>
             </div>
         </footer>

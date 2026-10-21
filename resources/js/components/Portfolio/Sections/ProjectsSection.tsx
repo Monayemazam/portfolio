@@ -149,7 +149,7 @@ export default function ProjectsSection({
             />
 
             <div className="mx-auto max-w-[1440px]">
-                {/* 1. Archive Section Telemetry Header */}
+                {/* 1. Archive Section Header */}
                 <div className="flex items-center gap-3 border-b border-border/40 pb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase">
                     <span
                         className="h-2 w-2 rounded-full transition-colors duration-500"
@@ -158,42 +158,37 @@ export default function ProjectsSection({
                             boxShadow: `0 0 10px ${accentColor}`,
                         }}
                     />
-                    <span>03 // THE COSMIC ARCHIVE</span>
-                    <span className="text-border">·</span>
-                    <span className="text-foreground font-semibold">
-                        WORLDS I HAVE BUILT
-                    </span>
+                    <span className="font-bold text-foreground">PROJECTS</span>
+                    <span className="text-border">/</span>
+                    <span>SELECTED WORK</span>
                     <span className="ml-auto hidden sm:inline text-muted-foreground">
-                        CURATED DIGITAL DESTINATIONS
+                        {sorted.length} PUBLISHED WORK{sorted.length === 1 ? '' : 'S'}
                     </span>
                 </div>
 
-                {/* 2. Section Heroic Headline */}
+                {/* 2. Section Headline */}
                 <div className="mt-12 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                     <div>
                         <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
-                            // WORLDS I HAVE BUILT
+                            // SELECTED PROJECTS
                         </span>
                         <h2 className="mt-3 font-display text-3xl sm:text-5xl font-black tracking-tight text-foreground uppercase leading-tight">
-                            THE COSMIC ARCHIVE:
-                            <br />
-                            NAVIGATE MY CREATIONS.
+                            SELECTED WORK
                         </h2>
                     </div>
                     <p className="max-w-md font-body text-sm sm:text-base text-muted-foreground leading-relaxed">
-                        An interactive exhibition of production architectures, live enterprise platforms,
-                        and commercial ecommerce systems. Each world has its own atmosphere, purpose, and story.
+                        Production web applications, corporate logistics platforms, and ecommerce systems built with modern full-stack engineering.
                     </p>
                 </div>
 
-                {/* 3. ELEMENT A: The Universe View (Constellation Deck) */}
+                {/* 3. The Project Constellation Deck */}
                 <div className="mt-12">
                     <div className="flex items-center justify-between pb-3 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
                         <div className="flex items-center gap-2">
                             <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
-                            <span>CONSTELLATION VIEW // CHOOSE A WORLD DESTINATION</span>
+                            <span>PROJECT ARCHIVE</span>
                         </div>
-                        <span className="hidden sm:inline">SWIPE OR CLICK TO ENTER</span>
+                        <span className="hidden sm:inline">CLICK OR ARROW KEYS TO NAVIGATE</span>
                     </div>
 
                     <div

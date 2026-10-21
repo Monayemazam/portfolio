@@ -13,31 +13,40 @@ class AboutSeeder extends Seeder
      */
     public function run(): void
     {
-        $about = AboutContent::firstOrCreate(
-            ['heading' => 'Mission Briefing'],
-            [
-                'bio' => 'Full-stack software engineer with deep expertise in modern web architectures including Laravel, React, Vue.js, and TypeScript. Dedicated to engineering robust backends, immersive frontends, and reliable business-critical systems.',
-            ]
-        );
+        $about = AboutContent::first();
+        if ($about) {
+            $about->update([
+                'heading' => 'BUILT WITH PURPOSE.',
+                'bio' => "I'm Monayem Azam, a Full-Stack Web Developer with 6+ years of experience building digital experiences and web applications. I enjoy turning ideas into practical, reliable products, combining thoughtful design with solid engineering. With 50+ satisfied clients and 10+ live projects, I bring a passion for creating digital solutions that work in the real world.",
+            ]);
+        } else {
+            $about = AboutContent::create([
+                'heading' => 'BUILT WITH PURPOSE.',
+                'bio' => "I'm Monayem Azam, a Full-Stack Web Developer with 6+ years of experience building digital experiences and web applications. I enjoy turning ideas into practical, reliable products, combining thoughtful design with solid engineering. With 50+ satisfied clients and 10+ live projects, I bring a passion for creating digital solutions that work in the real world.",
+            ]);
+        }
+
+        // Clean up any extra or demo facts
+        AboutFact::where('about_content_id', $about->id)->delete();
 
         $facts = [
             [
                 'kind' => 'counter',
-                'label' => 'Production Projects',
+                'label' => 'Experience',
                 'value' => '6',
-                'suffix' => '+',
+                'suffix' => '+ years',
                 'sort_order' => 1,
             ],
             [
                 'kind' => 'counter',
-                'label' => 'Years Experience',
-                'value' => '3',
+                'label' => 'Satisfied Clients',
+                'value' => '50',
                 'suffix' => '+',
                 'sort_order' => 2,
             ],
             [
                 'kind' => 'counter',
-                'label' => 'Happy Clients',
+                'label' => 'Live Projects',
                 'value' => '10',
                 'suffix' => '+',
                 'sort_order' => 3,
@@ -45,13 +54,10 @@ class AboutSeeder extends Seeder
         ];
 
         foreach ($facts as $fact) {
-            AboutFact::updateOrCreate(
-                [
-                    'about_content_id' => $about->id,
-                    'label' => $fact['label'],
-                ],
-                $fact
-            );
+            AboutFact::create([
+                'about_content_id' => $about->id,
+                ...$fact,
+            ]);
         }
     }
 }

@@ -31,7 +31,7 @@ export default function SkillAtlasHeader({
 
     return (
         <header className="relative w-full border-b border-[var(--surface-border)] pb-12 sm:pb-16">
-            {/* Top Coordinate & Telemetry Eyebrow */}
+            {/* Top Coordinate & Category Eyebrow */}
             <div className="flex flex-wrap items-center justify-between gap-4 font-mono text-xs tracking-widest text-[var(--text-muted)] uppercase">
                 <div className="flex items-center gap-2.5">
                     <span className="relative flex h-2 w-2">
@@ -43,18 +43,14 @@ export default function SkillAtlasHeader({
                         <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--accent)]" />
                     </span>
                     <span className="font-bold text-[var(--text)] tracking-[0.16em]">
-                        {displayEyebrow}
+                        SKILLS
                     </span>
-                    <span className="text-[var(--surface-border)]">·</span>
-                    <span className="text-[var(--text-muted)]">THE SKILL ATLAS</span>
+                    <span className="text-[var(--surface-border)]">/</span>
+                    <span className="text-[var(--text-muted)]">TECHNICAL EXPERTISE</span>
                 </div>
 
-                <div className="hidden sm:flex items-center gap-4 text-[11px]">
-                    <span>GRID REF: 42°18′N // 04h 35m</span>
-                    <span className="text-[var(--surface-border)]">|</span>
-                    <span className="text-[var(--primary)] font-semibold">
-                        EDITED FOR PRODUCTION
-                    </span>
+                <div className="hidden sm:flex items-center gap-2 text-[11px] text-[var(--accent)] font-semibold">
+                    <span>{totalSkills} VERIFIED TECHNOLOGIES</span>
                 </div>
             </div>
 

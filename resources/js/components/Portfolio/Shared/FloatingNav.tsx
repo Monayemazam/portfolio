@@ -81,7 +81,7 @@ export default function FloatingNav({
                             MONAYEM AZAM
                         </span>
                         <span className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase -mt-0.5">
-                            DEEP SPACE
+                            FULL-STACK WEB DEVELOPER
                         </span>
                     </div>
                 </a>

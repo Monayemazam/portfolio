@@ -17,14 +17,14 @@ class SettingSeeder extends Seeder
             [
                 'group' => 'general',
                 'key' => 'site_title',
-                'value' => 'Monayem Azam, Full-Stack Developer',
+                'value' => 'Monayem Azam | Full-Stack Web Developer',
                 'type' => 'string',
                 'label' => 'Site Title',
             ],
             [
                 'group' => 'general',
                 'key' => 'site_tagline',
-                'value' => 'Building fast, beautiful web apps',
+                'value' => 'Full-Stack Web Developer turning ideas into practical, reliable digital products.',
                 'type' => 'string',
                 'label' => 'Site Tagline',
             ],

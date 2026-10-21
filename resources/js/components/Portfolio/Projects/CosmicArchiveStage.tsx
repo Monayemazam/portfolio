@@ -52,29 +52,29 @@ export default function CosmicArchiveStage({
                             }}
                         />
                         <span className="font-bold text-foreground">
-                            WORLD {sectorNumber} // {totalSectors}
+                            PROJECT {sectorNumber} / {totalSectors}
                         </span>
                         <span className="text-border">·</span>
-                        <span className="truncate max-w-[200px] sm:max-w-none">{project.business_type || 'COMMERCIAL SYSTEM'}</span>
+                        <span className="truncate max-w-[200px] sm:max-w-none">{project.business_type || 'PRODUCTION APPLICATION'}</span>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                         <span className="text-muted-foreground">
-                            ROLE: <strong className="text-foreground">{project.role || 'FULL-STACK'}</strong>
+                            ROLE: <strong className="text-foreground">{project.role || 'FULL-STACK DEVELOPER'}</strong>
                         </span>
                         <span className="text-border">·</span>
                         <span className="text-muted-foreground">
-                            ERA: <strong className="text-foreground">{project.year || '2025'}</strong>
+                            YEAR: <strong className="text-foreground">{project.year || '2025'}</strong>
                         </span>
                         {project.is_featured && (
                             <span className="rounded-full bg-[var(--accent)]/15 border border-[var(--accent)]/40 px-2 py-0.5 text-[8px] sm:text-[9px] font-bold text-[var(--accent)]">
-                                PRIME FEATURED
+                                FEATURED
                             </span>
                         )}
                     </div>
                 </div>
 
-                {/* 2. Monumental World Title */}
+                {/* 2. World Title */}
                 <div>
                     <h3 className="font-display text-3xl sm:text-5xl lg:text-7xl font-black uppercase tracking-tight text-foreground leading-[1] break-words">
                         {project.title}
@@ -90,12 +90,12 @@ export default function CosmicArchiveStage({
                     isOff={isOff}
                 />
 
-                {/* 4. Executive Narrative Dossier & Tech Chips */}
+                {/* 4. Narrative Dossier & Tech Chips */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-2">
                     {/* Summary Narrative */}
                     <div className="lg:col-span-8">
                         <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
-                            // MISSION ARCHIVE SUMMARY
+                            // ABOUT THIS PROJECT
                         </span>
                         <p className="mt-2 font-body text-base sm:text-lg text-foreground/85 leading-relaxed">
                             {project.summary}
@@ -123,7 +123,7 @@ export default function CosmicArchiveStage({
                             onClick={onExplore}
                             className="w-full sm:w-auto flex items-center justify-center gap-3 rounded-full bg-[var(--primary)] px-8 py-4 font-mono text-xs font-bold uppercase tracking-wider text-white transition-all hover:bg-[var(--primary)]/90 hover:shadow-[0_0_30px_rgba(241,90,36,0.4)] active:scale-98"
                         >
-                            <span>EXPLORE MISSION DOSSIER</span>
+                            <span>VIEW PROJECT DETAILS</span>
                             <span className="font-sans">→</span>
                         </button>
 
@@ -134,7 +134,7 @@ export default function CosmicArchiveStage({
                                 rel="noopener noreferrer"
                                 className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-full border border-border bg-surface/60 backdrop-blur-sm px-7 py-3.5 font-mono text-xs font-bold uppercase tracking-wider text-foreground transition-all hover:border-[var(--primary)] hover:bg-surface"
                             >
-                                <span>LAUNCH LIVE PLATFORM</span>
+                                <span>VISIT LIVE WEBSITE</span>
                                 <span className="font-sans">↗</span>
                             </a>
                         )}
