@@ -17,7 +17,7 @@ export default function ProjectsSection({
     projects,
     isOff = false,
 }: ProjectsSectionProps) {
-    // 1. Sort projects strictly by featured status then sort_order
+    // 1. Sort projects by featured first, then database sort_order
     const sorted = useMemo(() => {
         return [...projects].sort((a, b) => {
             if (a.is_featured && !b.is_featured) return -1;
@@ -26,32 +26,25 @@ export default function ProjectsSection({
         });
     }, [projects]);
 
-    // 2. Identify the genuinely featured project (or top sorted)
-    const featuredProject = useMemo(() => {
-        return sorted.find((p) => p.is_featured) || sorted[0];
-    }, [sorted]);
+    // 2. Currently selected active project on the stage
+    const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(() => {
+        return sorted.find((p) => p.is_featured) || sorted[0] || null;
+    });
 
-    // 3. Supporting projects in the asymmetric archive
-    const supportingProjects = useMemo(() => {
-        if (!featuredProject) return [];
-        return sorted.filter((p) => p.id !== featuredProject.id);
-    }, [sorted, featuredProject]);
-
-    const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
+    const [isScanning, setIsScanning] = useState(false);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
-    const [activeSlug, setActiveSlug] = useState<string>(featuredProject?.slug || '');
 
     // Deep link handling (e.g. #asn-group or #mercury-bangladesh)
     useEffect(() => {
-        if (typeof window === 'undefined') return;
+        if (typeof window === 'undefined' || sorted.length === 0) return;
 
         const checkHash = () => {
             const hash = window.location.hash.replace('#', '');
             if (hash) {
                 const target = sorted.find((p) => p.slug === hash);
                 if (target) {
-                    setActiveSlug(target.slug);
-                    const el = document.getElementById(`project-${target.slug}`);
+                    setSelectedProject(target);
+                    const el = document.getElementById('project-stage');
                     if (el) {
                         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
@@ -64,21 +57,23 @@ export default function ProjectsSection({
         return () => window.removeEventListener('hashchange', checkHash);
     }, [sorted]);
 
-    const openDetail = (project: ProjectItem) => {
-        setSelectedProject(project);
-        setIsDetailOpen(true);
-    };
+    // Handle project selection with signature scanning interaction
+    const handleSelectProject = (project: ProjectItem) => {
+        if (selectedProject?.id === project.id) return;
 
-    const scrollToProject = (slug: string) => {
-        setActiveSlug(slug);
-        const el = document.getElementById(`project-${slug}`);
-        if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (!isOff) {
+            setIsScanning(true);
+            setTimeout(() => {
+                setSelectedProject(project);
+                setTimeout(() => setIsScanning(false), 240);
+            }, 80);
+        } else {
+            setSelectedProject(project);
         }
     };
 
     // Deliberate empty state if no projects are published
-    if (!sorted || sorted.length === 0 || !featuredProject) {
+    if (!sorted || sorted.length === 0 || !selectedProject) {
         return (
             <section
                 id={section.key}
@@ -102,19 +97,19 @@ export default function ProjectsSection({
         );
     }
 
-    const featuredAccent = featuredProject.accent_color || '#F15A24';
+    const activeAccent = selectedProject.accent_color || '#F15A24';
 
     return (
         <section
             id={section.key}
-            aria-label="The Work Archive — Curated Digital Case Studies"
-            className="relative w-full overflow-hidden px-6 sm:px-10 lg:px-16 py-24 lg:py-32"
+            aria-label="Interactive Work Archive — Curated Digital Case Studies"
+            className="relative w-full overflow-hidden px-4 sm:px-8 lg:px-16 py-20 lg:py-32 select-none"
         >
-            {/* Ambient Celestial Horizon Glow behind the exhibition */}
+            {/* Dynamic Ambient Horizon Glow tuned to active project's accent */}
             <div
                 aria-hidden="true"
-                className="pointer-events-none absolute top-1/4 -right-24 w-[50vw] h-[50vw] max-w-[700px] max-h-[700px] rounded-full opacity-10 blur-[160px] transition-all duration-1000"
-                style={{ backgroundColor: featuredAccent }}
+                className="pointer-events-none absolute top-1/4 -right-24 w-[50vw] h-[50vw] max-w-[650px] max-h-[650px] rounded-full opacity-15 blur-[160px] transition-all duration-700"
+                style={{ backgroundColor: activeAccent }}
             />
 
             <div className="mx-auto max-w-[1440px]">
@@ -130,9 +125,9 @@ export default function ProjectsSection({
                         />
                         <span className="font-bold text-[var(--text)]">PROJECTS</span>
                         <span className="text-[var(--surface-border)]">/</span>
-                        <span>SELECTED WORK</span>
+                        <span>INTERACTIVE ARCHIVE</span>
                         <span className="text-[var(--surface-border)]">/</span>
-                        <span className="text-[var(--primary)] font-bold">THE WORK ARCHIVE</span>
+                        <span className="text-[var(--primary)] font-bold">STAGE &amp; INDEX</span>
                     </div>
                     <div className="flex items-center gap-4 text-[11px]">
                         <span className="hidden sm:inline">COORDS // RA 14h // SPEC.PROD</span>
@@ -155,36 +150,38 @@ export default function ProjectsSection({
                         </h2>
                     </div>
                     <p className="max-w-md font-body text-sm sm:text-base text-[var(--text-muted)] leading-relaxed">
-                        Curated case studies of production web applications, corporate logistics platforms, and custom ecommerce stores engineered for performance and reliability.
+                        An interactive editorial archive of production web applications, corporate logistics portals, and custom ecommerce stores. Select any project to explore its architecture.
                     </p>
                 </div>
 
-                {/* 3. Refined Project Quick-Jump Index */}
-                <div className="mt-10 border-y border-[var(--surface-border)] py-4">
-                    <div className="flex items-center justify-between gap-4 pb-2 font-mono text-[11px] tracking-widest text-[var(--text-muted)] uppercase">
+                {/* 3. Mobile / Tablet Quick-Select Tab Bar */}
+                <div className="mt-10 lg:hidden border-y border-[var(--surface-border)] py-3">
+                    <div className="flex items-center justify-between gap-4 pb-2 font-mono text-[10px] tracking-widest text-[var(--text-muted)] uppercase">
                         <div className="flex items-center gap-2">
                             <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
-                            <span>ARCHIVE INDEX</span>
+                            <span>TAP A PROJECT TO PREVIEW</span>
                         </div>
-                        <span className="hidden sm:inline">SELECT AN ENTRY TO JUMP OR INSPECT</span>
+                        <span>{sorted.length} ENTRIES</span>
                     </div>
                     <div
-                        className="flex items-center gap-2 overflow-x-auto pt-1 pb-2 scrollbar-none"
-                        role="navigation"
-                        aria-label="Archive Index"
+                        className="flex items-center gap-2 overflow-x-auto pt-1 pb-1 scrollbar-none"
+                        role="tablist"
+                        aria-label="Projects tab list"
                     >
                         {sorted.map((proj, idx) => {
-                            const isCurrent = activeSlug === proj.slug;
+                            const isCurrent = selectedProject.id === proj.id;
                             const indexNumber = (idx + 1).toString().padStart(2, '0');
 
                             return (
                                 <button
                                     key={proj.id}
                                     type="button"
-                                    onClick={() => scrollToProject(proj.slug)}
-                                    className={`group flex flex-shrink-0 items-center gap-2 rounded-lg border px-3.5 py-2 font-mono text-xs transition-all duration-200 ${
+                                    role="tab"
+                                    aria-selected={isCurrent}
+                                    onClick={() => handleSelectProject(proj)}
+                                    className={`group flex shrink-0 items-center gap-2 rounded-lg border px-3.5 py-2 font-mono text-xs transition-all duration-200 cursor-pointer ${
                                         isCurrent
-                                            ? 'border-[var(--primary)] bg-[var(--surface)] text-[var(--text)] shadow-xs'
+                                            ? 'border-[var(--primary)] bg-[var(--surface)] text-[var(--text)] shadow-sm ring-1 ring-[var(--primary)]'
                                             : 'border-[var(--surface-border)] bg-[var(--surface)]/50 text-[var(--text-muted)] hover:border-[var(--text)]/30 hover:text-[var(--text)]'
                                     }`}
                                 >
@@ -192,7 +189,7 @@ export default function ProjectsSection({
                                         className={`font-bold transition-colors ${
                                             isCurrent
                                                 ? 'text-[var(--primary)]'
-                                                : 'text-[var(--text-muted)] group-hover:text-[var(--primary)]'
+                                                : 'text-[var(--text-muted)]'
                                         }`}
                                     >
                                         {indexNumber}.
@@ -201,7 +198,7 @@ export default function ProjectsSection({
                                         {proj.title}
                                     </span>
                                     {proj.is_featured && (
-                                        <span className="rounded bg-[var(--primary)]/15 px-1.5 py-0.5 text-[9px] font-bold text-[var(--primary)]">
+                                        <span className="rounded bg-[var(--primary)]/15 px-1 py-0.5 text-[8px] font-bold text-[var(--primary)]">
                                             FEATURED
                                         </span>
                                     )}
@@ -211,71 +208,162 @@ export default function ProjectsSection({
                     </div>
                 </div>
 
-                {/* 4. FEATURED PROJECT: Monumental Art-Directed Case Study */}
-                <div
-                    id={`project-${featuredProject.slug}`}
-                    className="mt-12 rounded-3xl border border-[var(--surface-border)] bg-[var(--surface)] p-6 sm:p-10 lg:p-12 relative overflow-hidden group shadow-lg transition-all duration-300 hover:border-[var(--text)]/25"
-                >
-                    {/* Corner Registration Marks */}
-                    <span className="pointer-events-none absolute top-3 left-3 font-mono text-xs font-bold text-[var(--primary)] z-20 select-none opacity-60">
-                        +
-                    </span>
-                    <span className="pointer-events-none absolute top-3 right-3 font-mono text-xs font-bold text-[var(--primary)] z-20 select-none opacity-60">
-                        +
-                    </span>
-                    <span className="pointer-events-none absolute bottom-3 left-3 font-mono text-xs font-bold text-[var(--primary)] z-20 select-none opacity-60">
-                        +
-                    </span>
-                    <span className="pointer-events-none absolute bottom-3 right-3 font-mono text-xs font-bold text-[var(--primary)] z-20 select-none opacity-60">
-                        +
-                    </span>
-
-                    {/* Subtle Top Status Strip */}
-                    <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--surface-border)] pb-4 font-mono text-xs tracking-widest text-[var(--text-muted)] uppercase">
-                        <div className="flex items-center gap-2.5">
-                            <span className="h-2 w-2 rounded-full bg-[var(--primary)] animate-pulse" />
-                            <span className="font-bold text-[var(--primary)]">
-                                FEATURED CASE STUDY // 01
-                            </span>
-                            <span className="text-[var(--surface-border)]">|</span>
-                            <span>{featuredProject.business_type || 'DIGITAL SYSTEM'}</span>
+                {/* 4. THE TWO COORDINATED AREAS: PROJECT INDEX (LEFT) + FEATURED STAGE (RIGHT) */}
+                <div className="mt-8 sm:mt-12 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+                    
+                    {/* ========================================================= */}
+                    {/* AREA A: PROJECT INDEX (Compact Desktop List)              */}
+                    {/* ========================================================= */}
+                    <div className="hidden lg:flex lg:col-span-5 flex-col space-y-3 sticky top-28">
+                        <div className="flex items-center justify-between border-b border-[var(--surface-border)] pb-3 font-mono text-[11px] tracking-widest text-[var(--text-muted)] uppercase">
+                            <div className="flex items-center gap-2">
+                                <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)]" />
+                                <span className="font-bold text-[var(--text)]">PROJECT INDEX</span>
+                            </div>
+                            <span>SELECT TO INSPECT STAGE</span>
                         </div>
-                        <div className="flex items-center gap-3">
-                            <span className="text-[11px] text-[var(--text-muted)]">
-                                {featuredProject.year || '2025'} EDITION
-                            </span>
-                            <span className="rounded-full bg-[var(--accent)]/15 border border-[var(--accent)]/30 px-2.5 py-0.5 text-[10px] font-bold text-[var(--accent-foreground)]">
-                                PRODUCTION LIVE
-                            </span>
+
+                        <div className="flex flex-col space-y-2.5 pt-1">
+                            {sorted.map((proj, idx) => {
+                                const isCurrent = selectedProject.id === proj.id;
+                                const indexNumber = (idx + 1).toString().padStart(2, '0');
+                                const projAccent = proj.accent_color || '#F15A24';
+
+                                return (
+                                    <button
+                                        key={proj.id}
+                                        type="button"
+                                        onClick={() => handleSelectProject(proj)}
+                                        aria-label={`Select ${proj.title}`}
+                                        className={`group relative flex items-center justify-between rounded-xl border p-4 text-left transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--primary)] ${
+                                            isCurrent
+                                                ? 'border-[var(--primary)] bg-[var(--surface)] shadow-[0_0_20px_rgba(241,90,36,0.18)] ring-1 ring-[var(--primary)] translate-x-1'
+                                                : 'border-[var(--surface-border)] bg-[var(--surface)]/40 hover:border-[var(--primary)]/60 hover:bg-[var(--surface)] hover:translate-x-0.5'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-3.5">
+                                            {/* Index number with active beacon */}
+                                            <div className="flex flex-col items-center">
+                                                <span
+                                                    className={`font-mono text-xs font-bold transition-colors ${
+                                                        isCurrent
+                                                            ? 'text-[var(--primary)]'
+                                                            : 'text-[var(--text-muted)] group-hover:text-[var(--primary)]'
+                                                    }`}
+                                                >
+                                                    {indexNumber}
+                                                </span>
+                                                <span
+                                                    className={`mt-1 h-1.5 w-1.5 rounded-full transition-all ${
+                                                        isCurrent
+                                                            ? 'bg-[var(--primary)] shadow-[0_0_8px_var(--primary)] scale-125'
+                                                            : 'bg-transparent group-hover:bg-[var(--primary)]/40'
+                                                    }`}
+                                                />
+                                            </div>
+
+                                            {/* Title and metadata */}
+                                            <div className="min-w-0">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="font-display text-base sm:text-lg font-black uppercase tracking-tight text-[var(--text)] group-hover:text-[var(--primary)] transition-colors truncate">
+                                                        {proj.title}
+                                                    </span>
+                                                    {proj.is_featured && (
+                                                        <span className="shrink-0 rounded bg-[var(--primary)]/15 px-1.5 py-0.5 font-mono text-[9px] font-bold text-[var(--primary)]">
+                                                            FEATURED
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <span className="block font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-wider truncate mt-0.5">
+                                                    {proj.business_type || 'PRODUCTION APPLICATION'} · {proj.year || '2025'}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <span className="font-mono text-xs text-[var(--text-muted)] transition-transform group-hover:translate-x-1">
+                                            →
+                                        </span>
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
 
-                    {/* Case Study Split: Left Preview & Right Dossier */}
-                    <div className="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-                        {/* Left: Prominent Browser-Style Viewport (7 cols) */}
-                        <div className="lg:col-span-7">
-                            <div className="rounded-2xl border border-[var(--surface-border)] bg-[var(--bg)] overflow-hidden shadow-md">
-                                {/* Browser Window Chrome Bar */}
-                                <div className="flex items-center justify-between border-b border-[var(--surface-border)] bg-[var(--surface)] px-4 py-2.5">
-                                    <div className="flex items-center gap-1.5">
-                                        <span className="h-2.5 w-2.5 rounded-full bg-[#EF4444]/80" />
-                                        <span className="h-2.5 w-2.5 rounded-full bg-[#F59E0B]/80" />
-                                        <span className="h-2.5 w-2.5 rounded-full bg-[#10B981]/80" />
-                                    </div>
-                                    <div className="max-w-[280px] sm:max-w-xs truncate rounded-md border border-[var(--surface-border)] bg-[var(--bg)] px-3 py-1 font-mono text-[10px] text-[var(--text-muted)]">
-                                        {featuredProject.live_url
-                                            ? featuredProject.live_url.replace(/\/$/, '')
-                                            : `archive://${featuredProject.slug}.local`}
-                                    </div>
-                                    <div className="font-mono text-[9px] font-bold text-[var(--accent)] uppercase hidden sm:block">
-                                        200 OK
-                                    </div>
-                                </div>
+                    {/* ========================================================= */}
+                    {/* AREA B: FEATURED PROJECT STAGE (Dynamic Showcase)         */}
+                    {/* ========================================================= */}
+                    <div
+                        id="project-stage"
+                        className="lg:col-span-7 rounded-3xl border border-[var(--surface-border)] bg-[var(--surface)] p-6 sm:p-8 lg:p-10 relative overflow-hidden group shadow-xl transition-all duration-300"
+                    >
+                        {/* Corner Registration Crosshairs */}
+                        <span className="pointer-events-none absolute top-3 left-3 font-mono text-xs font-bold text-[var(--primary)] z-20 select-none opacity-60">
+                            +
+                        </span>
+                        <span className="pointer-events-none absolute top-3 right-3 font-mono text-xs font-bold text-[var(--primary)] z-20 select-none opacity-60">
+                            +
+                        </span>
+                        <span className="pointer-events-none absolute bottom-3 left-3 font-mono text-xs font-bold text-[var(--primary)] z-20 select-none opacity-60">
+                            +
+                        </span>
+                        <span className="pointer-events-none absolute bottom-3 right-3 font-mono text-xs font-bold text-[var(--primary)] z-20 select-none opacity-60">
+                            +
+                        </span>
 
-                                {/* Preview Surface: Real screenshot or Architectural Plate */}
-                                <div className="relative aspect-[16/10] w-full overflow-hidden bg-[var(--bg)]">
+                        {/* Top Telemetry & Status Strip */}
+                        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--surface-border)] pb-4 font-mono text-xs tracking-widest text-[var(--text-muted)] uppercase">
+                            <div className="flex items-center gap-2.5">
+                                <span className="h-2 w-2 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
+                                <span className="font-bold text-[var(--primary)]">
+                                    ACTIVE CASE STUDY // {selectedProject.slug}
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <span className="text-[11px] text-[var(--text-muted)]">
+                                    {selectedProject.year || '2025'} EDITION
+                                </span>
+                                <span className="rounded-full bg-[var(--accent)]/15 border border-[var(--accent)]/30 px-2.5 py-0.5 text-[10px] font-bold text-[var(--accent-foreground)]">
+                                    PRODUCTION LIVE
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Interactive Viewport Plate with Signature Scanning Line */}
+                        <div className="mt-6 rounded-2xl border border-[var(--surface-border)] bg-[var(--bg)] overflow-hidden shadow-md relative">
+                            {/* Browser Chrome Bar */}
+                            <div className="flex items-center justify-between border-b border-[var(--surface-border)] bg-[var(--surface)] px-4 py-2.5">
+                                <div className="flex items-center gap-1.5">
+                                    <span className="h-2.5 w-2.5 rounded-full bg-[#EF4444]/80" />
+                                    <span className="h-2.5 w-2.5 rounded-full bg-[#F59E0B]/80" />
+                                    <span className="h-2.5 w-2.5 rounded-full bg-[#10B981]/80" />
+                                </div>
+                                <div className="max-w-[240px] sm:max-w-xs truncate rounded-md border border-[var(--surface-border)] bg-[var(--bg)] px-3 py-1 font-mono text-[10px] text-[var(--text-muted)]">
+                                    {selectedProject.live_url
+                                        ? selectedProject.live_url.replace(/\/$/, '')
+                                        : `archive://${selectedProject.slug}.local`}
+                                </div>
+                                <div className="font-mono text-[9px] font-bold text-[var(--accent)] uppercase hidden sm:block">
+                                    200 OK
+                                </div>
+                            </div>
+
+                            {/* Viewport Surface */}
+                            <div className="relative aspect-[16/10] w-full overflow-hidden bg-[var(--bg)]">
+                                {/* Signature Laser Scanning Line Beam */}
+                                {isScanning && (
+                                    <div
+                                        aria-hidden="true"
+                                        className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[var(--primary)] to-transparent z-30 shadow-[0_0_14px_var(--primary)] animate-[scan-line_0.24s_linear_infinite]"
+                                    />
+                                )}
+
+                                <div
+                                    className={`h-full w-full transition-all duration-300 ${
+                                        isScanning ? 'opacity-40 scale-[0.99] filter blur-[1px]' : 'opacity-100 scale-100 filter-none'
+                                    }`}
+                                >
                                     <ProjectArchitecturalCover
-                                        project={featuredProject}
+                                        project={selectedProject}
                                         isFeatured={true}
                                         className="h-full w-full"
                                     />
@@ -283,36 +371,36 @@ export default function ProjectsSection({
                             </div>
                         </div>
 
-                        {/* Right: Curated Dossier Metadata & Actions (5 cols) */}
-                        <div className="lg:col-span-5 flex flex-col justify-between">
+                        {/* Dossier Metadata & Narrative Details */}
+                        <div className="mt-8 flex flex-col justify-between">
                             <div>
                                 <span className="font-mono text-xs font-bold uppercase tracking-wider text-[var(--primary)]">
-                                    {featuredProject.role || 'LEAD FULL-STACK DEVELOPER'}
+                                    {selectedProject.role || 'LEAD FULL-STACK DEVELOPER'}
                                 </span>
                                 <h3 className="mt-2 font-display text-3xl sm:text-4xl font-black uppercase tracking-tight text-[var(--text)]">
-                                    {featuredProject.title}
+                                    {selectedProject.title}
                                 </h3>
 
                                 <p className="mt-4 font-body text-sm sm:text-base text-[var(--text-muted)] leading-relaxed">
-                                    {featuredProject.summary || featuredProject.description}
+                                    {selectedProject.summary || selectedProject.description}
                                 </p>
 
                                 {/* Real Tag Chips */}
-                                {featuredProject.tags && featuredProject.tags.length > 0 && (
+                                {selectedProject.tags && selectedProject.tags.length > 0 && (
                                     <div className="mt-6 flex flex-wrap gap-2">
-                                        {featuredProject.tags.map((tag) => (
+                                        {selectedProject.tags.map((tag) => (
                                             <TagChip key={tag.id}>{tag.name}</TagChip>
                                         ))}
                                     </div>
                                 )}
 
-                                {/* Key Verified Features List */}
-                                {featuredProject.features && featuredProject.features.length > 0 && (
+                                {/* Key Deliverables from Database */}
+                                {selectedProject.features && selectedProject.features.length > 0 && (
                                     <div className="mt-6 space-y-2 border-t border-[var(--surface-border)] pt-4">
                                         <span className="font-mono text-[10px] font-bold tracking-widest text-[var(--text-muted)] uppercase">
-                                            // KEY ARCHITECTURAL DELIVERABLES:
+                                            // ARCHITECTURAL DELIVERABLES:
                                         </span>
-                                        {featuredProject.features.slice(0, 3).map((f) => (
+                                        {selectedProject.features.slice(0, 3).map((f) => (
                                             <div
                                                 key={f.id}
                                                 className="flex items-start gap-2.5 font-body text-xs text-[var(--text-muted)]"
@@ -327,23 +415,23 @@ export default function ProjectsSection({
                                 )}
                             </div>
 
-                            {/* Direct Action Buttons */}
-                            <div className="mt-8 flex flex-wrap items-center gap-3 pt-4 border-t border-[var(--surface-border)]">
+                            {/* Direct Actions: Visit Live System & Explore Full Dossier */}
+                            <div className="mt-8 flex flex-wrap items-center gap-3 pt-5 border-t border-[var(--surface-border)]">
                                 <button
                                     type="button"
-                                    onClick={() => openDetail(featuredProject)}
-                                    className="inline-flex items-center gap-2 rounded-xl border border-[var(--surface-border-strong)] bg-[var(--text)] px-5 py-3 font-mono text-xs font-bold uppercase tracking-wider text-[var(--text-paper)] shadow-sm transition-all duration-200 hover:bg-[var(--primary)] hover:border-[var(--primary)] hover:text-white"
+                                    onClick={() => setIsDetailOpen(true)}
+                                    className="inline-flex items-center gap-2 rounded-xl border border-[var(--surface-border-strong)] bg-[var(--text)] px-5 py-3 font-mono text-xs font-bold uppercase tracking-wider text-[var(--text-paper)] shadow-sm transition-all duration-200 hover:bg-[var(--primary)] hover:border-[var(--primary)] hover:text-white cursor-pointer"
                                 >
                                     <span>Explore Full Dossier</span>
                                     <ArrowRight className="h-4 w-4" />
                                 </button>
 
-                                {featuredProject.live_url && (
+                                {selectedProject.live_url && (
                                     <a
-                                        href={featuredProject.live_url}
+                                        href={selectedProject.live_url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--surface-border)] bg-[var(--surface)] px-4 py-3 font-mono text-xs font-bold uppercase tracking-wider text-[var(--text)] transition-all duration-200 hover:border-[var(--text)] hover:bg-[var(--surface)]"
+                                        className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--surface-border)] bg-[var(--surface)] px-4 py-3 font-mono text-xs font-bold uppercase tracking-wider text-[var(--text)] transition-all duration-200 hover:border-[var(--primary)] hover:text-[var(--primary)] hover:bg-[var(--surface)] cursor-pointer"
                                     >
                                         <span>Visit Live System</span>
                                         <ArrowAngularTopRight className="h-4 w-4 text-[var(--primary)]" />
@@ -351,150 +439,14 @@ export default function ProjectsSection({
                                 )}
                             </div>
                         </div>
+
                     </div>
+
                 </div>
 
-                {/* 5. ASYMMETRIC EDITORIAL GALLERY: Supporting Work Archive */}
-                {supportingProjects.length > 0 && (
-                    <div className="mt-16 sm:mt-24">
-                        {/* Editorial Section Divider */}
-                        <div className="flex items-center justify-between border-b border-[var(--surface-border)] pb-4 font-mono text-xs tracking-widest text-[var(--text-muted)] uppercase">
-                            <div className="flex items-center gap-2">
-                                <Layers1 className="h-4 w-4 text-[var(--primary)]" />
-                                <span className="font-bold text-[var(--text)]">
-                                    THE ASYMMETRIC ARCHIVE
-                                </span>
-                                <span className="text-[var(--surface-border)]">/</span>
-                                <span>ALL DOCUMENTED RELEASES</span>
-                            </div>
-                            <span className="hidden sm:inline text-[11px]">
-                                {supportingProjects.length} ADDITIONAL PRODUCTION SYSTEMS
-                            </span>
-                        </div>
-
-                        {/* Asymmetric 12-Column Responsive Layout */}
-                        <div className="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
-                            {supportingProjects.map((proj, idx) => {
-                                const indexNumber = (idx + 2).toString().padStart(2, '0');
-                                const projAccent = proj.accent_color || '#F15A24';
-
-                                // Alternating asymmetric spans on desktop (7 vs 5, 5 vs 7, etc.)
-                                const isWide = idx % 3 === 0 || (idx % 3 === 2 && idx === supportingProjects.length - 1);
-                                const colSpanClass = isWide
-                                    ? 'lg:col-span-7'
-                                    : idx % 3 === 1
-                                    ? 'lg:col-span-5'
-                                    : 'lg:col-span-5';
-
-                                return (
-                                    <article
-                                        key={proj.id}
-                                        id={`project-${proj.slug}`}
-                                        className={`${colSpanClass} flex flex-col justify-between rounded-2xl border border-[var(--surface-border)] bg-[var(--surface)] p-6 sm:p-8 relative overflow-hidden group transition-all duration-300 hover:border-[var(--text)]/30 hover:shadow-lg`}
-                                    >
-                                        {/* Corner registration mark */}
-                                        <span className="pointer-events-none absolute top-2.5 right-2.5 font-mono text-xs font-bold text-[var(--primary)] z-10 opacity-50 select-none">
-                                            +
-                                        </span>
-
-                                        <div>
-                                            {/* Item Top Metadata Bar */}
-                                            <div className="flex items-center justify-between border-b border-[var(--surface-border)] pb-3 font-mono text-[11px] tracking-widest text-[var(--text-muted)] uppercase">
-                                                <div className="flex items-center gap-2">
-                                                    <span
-                                                        className="h-2 w-2 rounded-full"
-                                                        style={{ backgroundColor: projAccent }}
-                                                    />
-                                                    <span className="font-bold text-[var(--text)]">
-                                                        SPEC.{indexNumber}
-                                                    </span>
-                                                    <span className="text-[var(--surface-border)]">/</span>
-                                                    <span className="truncate max-w-[150px] sm:max-w-none">
-                                                        {proj.business_type || 'ENTERPRISE SYSTEM'}
-                                                    </span>
-                                                </div>
-                                                <span>{proj.year || '2024'}</span>
-                                            </div>
-
-                                            {/* Media / Architectural Viewport */}
-                                            <div className="mt-5 rounded-xl border border-[var(--surface-border)] bg-[var(--bg)] overflow-hidden shadow-xs">
-                                                <div className={`relative ${isWide ? 'aspect-[16/9]' : 'aspect-[4/3]'} w-full overflow-hidden bg-[var(--bg)]`}>
-                                                    <ProjectArchitecturalCover
-                                                        project={proj}
-                                                        isFeatured={false}
-                                                        className="h-full w-full"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            {/* Title & Concise Summary */}
-                                            <div className="mt-5">
-                                                <div className="font-mono text-[10px] font-bold tracking-wider text-[var(--primary)] uppercase">
-                                                    {proj.role || 'FULL-STACK DEVELOPER'}
-                                                </div>
-                                                <h4 className="mt-1 font-display text-2xl font-black uppercase tracking-tight text-[var(--text)]">
-                                                    {proj.title}
-                                                </h4>
-                                                <p className="mt-2.5 font-body text-sm text-[var(--text-muted)] leading-relaxed line-clamp-3">
-                                                    {proj.summary || proj.description}
-                                                </p>
-                                            </div>
-
-                                            {/* Real Tags */}
-                                            {proj.tags && proj.tags.length > 0 && (
-                                                <div className="mt-4 flex flex-wrap gap-1.5">
-                                                    {proj.tags.slice(0, 4).map((tag) => (
-                                                        <TagChip key={tag.id} className="text-[10px] py-0.5 px-2">
-                                                            {tag.name}
-                                                        </TagChip>
-                                                    ))}
-                                                    {proj.tags.length > 4 && (
-                                                        <span className="inline-flex items-center px-1.5 py-0.5 font-mono text-[10px] text-[var(--text-muted)]">
-                                                            +{proj.tags.length - 4} more
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* Bottom Action Footer */}
-                                        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--surface-border)] pt-4">
-                                            <button
-                                                type="button"
-                                                onClick={() => openDetail(proj)}
-                                                className="inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-[var(--text)] transition-colors hover:text-[var(--primary)]"
-                                            >
-                                                <span>View Dossier</span>
-                                                <ArrowRight className="h-3.5 w-3.5 text-[var(--primary)]" />
-                                            </button>
-
-                                            {proj.live_url && (
-                                                <a
-                                                    href={proj.live_url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="inline-flex items-center gap-1 rounded-md border border-[var(--surface-border)] bg-[var(--surface)] px-2.5 py-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-[var(--text)] transition-colors hover:border-[var(--text)]"
-                                                >
-                                                    <span>Live Site</span>
-                                                    <ArrowAngularTopRight className="h-3 w-3 text-[var(--primary)]" />
-                                                </a>
-                                            )}
-                                        </div>
-
-                                        {/* Bottom Accent Highlight Bar */}
-                                        <div
-                                            className="absolute inset-x-0 bottom-0 h-0.5 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"
-                                            style={{ backgroundColor: projAccent }}
-                                        />
-                                    </article>
-                                );
-                            })}
-                        </div>
-                    </div>
-                )}
             </div>
 
-            {/* Complete Project Detail Panel Slide-Over Modal */}
+            {/* Comprehensive Project Detail Dossier Modal */}
             <ProjectDetailPanel
                 project={selectedProject}
                 projects={sorted}
@@ -502,7 +454,6 @@ export default function ProjectsSection({
                 onClose={() => setIsDetailOpen(false)}
                 onSelectProject={(proj) => {
                     setSelectedProject(proj);
-                    setActiveSlug(proj.slug);
                 }}
             />
         </section>

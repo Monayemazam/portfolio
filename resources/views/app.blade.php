@@ -40,7 +40,7 @@
             }
 
             html.dark, html[data-theme="dark"] {
-                background-color: #141712;
+                background-color: #171914;
                 color: #F2EFE6;
             }
         </style>

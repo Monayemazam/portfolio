@@ -127,7 +127,7 @@ export default function HeroSection({
                                     const target = (hero?.secondary_button_url || '#contact').replace('#', '');
                                     scrollTo(target);
                                 }}
-                                className="group flex items-center gap-3 rounded-full border border-border/80 bg-surface/70 backdrop-blur-md px-8 py-4 font-mono text-xs sm:text-sm font-bold uppercase tracking-wider text-foreground transition-all hover:border-[var(--primary)] hover:text-[var(--primary)] hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                                className="group flex items-center gap-3 rounded-full border border-[var(--surface-border)] bg-[var(--surface)] px-8 py-4 font-mono text-xs sm:text-sm font-bold uppercase tracking-wider text-[var(--text)] transition-all hover:border-[var(--primary)] hover:text-[var(--primary)] hover:-translate-y-0.5 active:translate-y-0 cursor-pointer shadow-sm"
                             >
                                 <span>{hero?.secondary_button_label || 'Contact Me'}</span>
                                 <span className="transition-transform group-hover:translate-x-0.5 font-sans">

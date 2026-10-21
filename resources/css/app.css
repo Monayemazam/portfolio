@@ -136,13 +136,13 @@
     --forest: #173C32;
     --sand: #242920;
 
-    --bg: #141712;
+    --bg: #171914;
     --bg-elevated: #1B1F18;
     --bg-secondary: #22271E;
     --bg-forest: #173C32;
 
     --surface: #1B1F18;
-    --surface-paper: #141712;
+    --surface-paper: #171914;
     --surface-sand: #22271E;
     --surface-forest: #173C32;
     --surface-border: rgba(242, 239, 230, 0.14);
@@ -289,6 +289,23 @@
 
 .nebula-gradient {
     background: radial-gradient(circle at 75% 30%, rgba(23, 60, 50, 0.55) 0%, rgba(20, 23, 18, 0.3) 50%, transparent 80%);
+}
+
+@keyframes scan-line {
+    0% {
+        top: 0%;
+        opacity: 0;
+    }
+    15% {
+        opacity: 1;
+    }
+    85% {
+        opacity: 1;
+    }
+    100% {
+        top: 100%;
+        opacity: 0;
+    }
 }
 
 .reduced-motion *,

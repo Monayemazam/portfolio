@@ -37,7 +37,7 @@ export default function CinematicCosmosCanvas({
         // 1. Scene, Camera, Renderer
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
-        camera.position.set(0, 0, 18);
+        camera.position.set(0, 0, 16);
 
         const renderer = new THREE.WebGLRenderer({
             alpha: true,
@@ -48,55 +48,33 @@ export default function CinematicCosmosCanvas({
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.15;
+        renderer.toneMappingExposure = isDark ? 1.15 : 0.95;
         container.appendChild(renderer.domElement);
-
-        // Responsive handling
-        const handleResize = () => {
-            if (!container) return;
-            width = container.clientWidth;
-            height = container.clientHeight;
-            camera.aspect = width / height;
-            camera.updateProjectionMatrix();
-            renderer.setSize(width, height);
-        };
-        window.addEventListener('resize', handleResize);
-
-        // Mouse Parallax coordinates (smooth lerping)
-        let mouseX = 0;
-        let mouseY = 0;
-        let targetMouseX = 0;
-        let targetMouseY = 0;
-
-        const handleMouseMove = (e: MouseEvent) => {
-            targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-            targetMouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-        };
-        window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
         // Palette Colors
         const orangeColor = new THREE.Color(0xF15A24);
         const forestColor = new THREE.Color(0x173C32);
         const limeColor = new THREE.Color(0xD5F34A);
-        const offWhite = new THREE.Color(0xF2EFE6);
+        const warmWhite = new THREE.Color(0xF2EFE6);
+        const coreBaseColor = isDark ? new THREE.Color(0x171914) : new THREE.Color(0xF2EFE6);
 
-        // 2. Multi-Layer Distant Starfield (Layer 1: Deep Cosmos)
-        const starCount = isReducedMotion ? 400 : 1200;
+        // 2. Multi-Layer Celestial Starfield
+        const starCount = isReducedMotion ? 250 : 650;
         const starGeometry = new THREE.BufferGeometry();
         const starPositions = new Float32Array(starCount * 3);
         const starColors = new Float32Array(starCount * 3);
 
         for (let i = 0; i < starCount; i++) {
             const i3 = i * 3;
-            // Spread stars across wide deep frustum
-            starPositions[i3] = (Math.random() - 0.5) * 140;
-            starPositions[i3 + 1] = (Math.random() - 0.5) * 90;
-            starPositions[i3 + 2] = -30 - Math.random() * 80;
+            starPositions[i3] = (Math.random() - 0.5) * 100;
+            starPositions[i3 + 1] = (Math.random() - 0.5) * 60;
+            starPositions[i3 + 2] = -15 - Math.random() * 50;
 
             const roll = Math.random();
-            let c = offWhite;
-            if (roll < 0.15) c = orangeColor;
-            else if (roll < 0.3) c = limeColor;
+            let c = warmWhite;
+            if (roll < 0.18) c = orangeColor;
+            else if (roll < 0.32) c = limeColor;
+            else if (!isDark) c = forestColor;
 
             starColors[i3] = c.r;
             starColors[i3 + 1] = c.g;
@@ -107,94 +85,61 @@ export default function CinematicCosmosCanvas({
         starGeometry.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
 
         const starMaterial = new THREE.PointsMaterial({
-            size: 0.28,
+            size: 0.22,
             vertexColors: true,
             transparent: true,
-            opacity: 0.85,
+            opacity: isDark ? 0.75 : 0.45,
         });
         const starField = new THREE.Points(starGeometry, starMaterial);
         scene.add(starField);
 
-        // 3. Floating Cosmic Stardust (Layer 2: Foreground depth)
-        const dustCount = isReducedMotion ? 100 : 350;
+        // 3. Floating Atmospheric Stardust
+        const dustCount = isReducedMotion ? 60 : 180;
         const dustGeometry = new THREE.BufferGeometry();
         const dustPositions = new Float32Array(dustCount * 3);
         for (let i = 0; i < dustCount * 3; i += 3) {
-            dustPositions[i] = (Math.random() - 0.5) * 35;
-            dustPositions[i + 1] = (Math.random() - 0.5) * 25;
-            dustPositions[i + 2] = (Math.random() - 0.5) * 20;
+            dustPositions[i] = (Math.random() - 0.5) * 28;
+            dustPositions[i + 1] = (Math.random() - 0.5) * 18;
+            dustPositions[i + 2] = (Math.random() - 0.5) * 14;
         }
         dustGeometry.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
 
         const dustMaterial = new THREE.PointsMaterial({
-            size: 0.14,
+            size: 0.12,
             color: orangeColor,
             transparent: true,
-            opacity: 0.5,
-            blending: THREE.AdditiveBlending,
+            opacity: isDark ? 0.45 : 0.25,
+            blending: isDark ? THREE.AdditiveBlending : THREE.NormalBlending,
         });
         const dustField = new THREE.Points(dustGeometry, dustMaterial);
         scene.add(dustField);
 
-        // 4. Procedural High-Detail Planet Horizon Texture
-        const canvasTex = document.createElement('canvas');
-        canvasTex.width = 1024;
-        canvasTex.height = 512;
-        const ctx = canvasTex.getContext('2d');
-        if (ctx) {
-            // Deep base tone
-            ctx.fillStyle = isDark ? '#141712' : '#232924';
-            ctx.fillRect(0, 0, 1024, 512);
+        // 4. Restrained Art-Directed Celestial Form & Astrolabe Spatial Structure
+        const celestialGroup = new THREE.Group();
 
-            // Flowing organic continental features & mountain ridges
-            for (let i = 0; i < 36; i++) {
-                const y = Math.sin(i * 0.45) * 160 + 256;
-                const h = Math.max(4, Math.abs(20 + Math.cos(i) * 25));
-                ctx.fillStyle = i % 2 === 0
-                    ? 'rgba(23, 60, 50, 0.45)' // Deep forest green
-                    : 'rgba(241, 90, 36, 0.18)'; // Muted amber vein
-                ctx.beginPath();
-                ctx.ellipse((i * 35) % 1024, y, 480, h, 0.08, 0, Math.PI * 2);
-                ctx.fill();
-            }
+        // Responsive position: On desktop, balance to right side; on mobile, center gracefully
+        const isDesktop = width >= 1024;
+        const targetX = isDesktop ? 4.8 : 0;
+        const targetY = isDesktop ? 0.4 : -1.8;
+        celestialGroup.position.set(targetX, targetY, -2);
+        celestialGroup.rotation.x = 0.25;
+        celestialGroup.rotation.z = -0.15;
 
-            // Bioluminescent night-side filaments / civilization veins
-            for (let j = 0; j < 50; j++) {
-                const px = (Math.sin(j * 1.7) * 450 + 512) % 1024;
-                const py = (Math.cos(j * 2.3) * 200 + 256) % 512;
-                ctx.fillStyle = j % 3 === 0
-                    ? 'rgba(213, 243, 74, 0.35)' // Acid lime
-                    : 'rgba(241, 90, 36, 0.4)';  // Signal orange
-                ctx.beginPath();
-                ctx.arc(px, py, Math.random() * 3 + 1, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-        const planetTexture = new THREE.CanvasTexture(canvasTex);
-
-        // 5. Massive Sweeping Planet Mesh
-        // Placed lower and offset so only the majestic curved limb sweeps across the horizon
-        const planetRadius = 14;
-        const planetGeo = new THREE.SphereGeometry(planetRadius, 64, 64);
-        const planetMat = new THREE.MeshStandardMaterial({
-            map: planetTexture,
-            roughness: 0.75,
-            metalness: 0.15,
-            color: isDark ? 0x171914 : 0x222620,
+        // Core Sphere: procedural tactile lunar/planetary sphere
+        const coreRadius = isDesktop ? 2.6 : 1.9;
+        const coreGeo = new THREE.SphereGeometry(coreRadius, 48, 48);
+        const coreMat = new THREE.MeshStandardMaterial({
+            color: coreBaseColor,
+            roughness: 0.65,
+            metalness: 0.2,
+            wireframe: false,
         });
+        const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+        celestialGroup.add(coreMesh);
 
-        const planetGroup = new THREE.Group();
-        // Position planet: lower-right curvature arches majestically across viewport
-        planetGroup.position.set(6, -15.5, -2);
-        planetGroup.rotation.z = 0.28;
-
-        const planetMesh = new THREE.Mesh(planetGeo, planetMat);
-        planetGroup.add(planetMesh);
-
-        // 6. Atmospheric Luminous Rim / Limb Arc (Custom Fresnel Shader)
-        const atmosphereRadius = planetRadius * 1.018;
-        const atmosphereGeo = new THREE.SphereGeometry(atmosphereRadius, 64, 64);
-        const atmosphereMat = new THREE.ShaderMaterial({
+        // Core Atmospheric Halo
+        const haloGeo = new THREE.SphereGeometry(coreRadius * 1.03, 36, 36);
+        const haloMat = new THREE.ShaderMaterial({
             vertexShader: `
                 varying vec3 vNormal;
                 varying vec3 vWorldPosition;
@@ -209,92 +154,131 @@ export default function CinematicCosmosCanvas({
                 varying vec3 vNormal;
                 varying vec3 vWorldPosition;
                 uniform vec3 rimColor;
-                uniform vec3 dawnColor;
-                uniform vec3 lightDirection;
+                uniform vec3 accentColor;
                 void main() {
-                    // Fresnel intensity
                     vec3 viewDir = normalize(cameraPosition - vWorldPosition);
-                    float fresnel = pow(1.0 - max(0.0, dot(viewDir, vNormal)), 3.2);
-                    
-                    // Light alignment (intense dawn highlight on light side)
-                    float lightAlignment = max(0.0, dot(vNormal, lightDirection));
-                    vec3 finalColor = mix(rimColor, dawnColor, pow(lightAlignment, 1.8));
-
-                    float alpha = fresnel * (0.35 + lightAlignment * 0.95);
-                    gl_FragColor = vec4(finalColor, alpha);
+                    float fresnel = pow(1.0 - max(0.0, dot(viewDir, vNormal)), 2.8);
+                    vec3 color = mix(rimColor, accentColor, fresnel * 0.7);
+                    gl_FragColor = vec4(color, fresnel * 0.85);
                 }
             `,
             uniforms: {
                 rimColor: { value: forestColor },
-                dawnColor: { value: orangeColor },
-                lightDirection: { value: new THREE.Vector3(0.7, 0.6, 0.4).normalize() },
+                accentColor: { value: orangeColor },
             },
             transparent: true,
-            blending: THREE.AdditiveBlending,
+            blending: isDark ? THREE.AdditiveBlending : THREE.NormalBlending,
             side: THREE.BackSide,
             depthWrite: false,
         });
+        const haloMesh = new THREE.Mesh(haloGeo, haloMat);
+        celestialGroup.add(haloMesh);
 
-        const atmosphereMesh = new THREE.Mesh(atmosphereGeo, atmosphereMat);
-        planetGroup.add(atmosphereMesh);
-        scene.add(planetGroup);
+        // Spatial Structure 1: Primary Coordinate Ring (Equatorial)
+        const ring1Geo = new THREE.TorusGeometry(coreRadius * 1.5, 0.035, 16, 100);
+        const ring1Mat = new THREE.MeshBasicMaterial({
+            color: orangeColor,
+            transparent: true,
+            opacity: 0.7,
+        });
+        const ring1 = new THREE.Mesh(ring1Geo, ring1Mat);
+        ring1.rotation.x = Math.PI / 2.3;
+        celestialGroup.add(ring1);
 
-        // 7. Lighting System
-        // Grazing directional sun light from the upper-right (cosmic dawn)
-        const sunLight = new THREE.DirectionalLight(0xF15A24, 0); // Will ramp up in entrance
-        sunLight.position.set(16, 14, 10);
-        scene.add(sunLight);
+        // Spatial Structure 2: Polar Meridian Ring
+        const ring2Geo = new THREE.TorusGeometry(coreRadius * 1.75, 0.025, 16, 100);
+        const ring2Mat = new THREE.MeshBasicMaterial({
+            color: limeColor,
+            transparent: true,
+            opacity: 0.55,
+        });
+        const ring2 = new THREE.Mesh(ring2Geo, ring2Mat);
+        ring2.rotation.y = Math.PI / 3;
+        celestialGroup.add(ring2);
 
-        const ambientLight = new THREE.AmbientLight(0x173C32, 0.25);
+        // Spatial Structure 3: Fine Technical Orbit Segment
+        const ring3Geo = new THREE.TorusGeometry(coreRadius * 2.1, 0.015, 12, 120);
+        const ring3Mat = new THREE.MeshBasicMaterial({
+            color: forestColor,
+            transparent: true,
+            opacity: 0.45,
+        });
+        const ring3 = new THREE.Mesh(ring3Geo, ring3Mat);
+        ring3.rotation.z = Math.PI / 4;
+        celestialGroup.add(ring3);
+
+        // Glowing Orbital Waypoint Node
+        const nodeGeo = new THREE.SphereGeometry(0.12, 16, 16);
+        const nodeMat = new THREE.MeshBasicMaterial({ color: orangeColor });
+        const waypointNode = new THREE.Mesh(nodeGeo, nodeMat);
+        waypointNode.position.set(coreRadius * 1.5, 0, 0);
+        ring1.add(waypointNode);
+
+        scene.add(celestialGroup);
+
+        // 5. Lighting
+        const mainLight = new THREE.DirectionalLight(0xF15A24, isDark ? 2.8 : 2.0);
+        mainLight.position.set(12, 10, 8);
+        scene.add(mainLight);
+
+        const forestLight = new THREE.DirectionalLight(0x173C32, isDark ? 1.5 : 1.0);
+        forestLight.position.set(-8, -6, 4);
+        scene.add(forestLight);
+
+        const ambientLight = new THREE.AmbientLight(isDark ? 0x173C32 : 0xDED8CB, isDark ? 0.4 : 0.8);
         scene.add(ambientLight);
 
-        // Secondary cyan/forest fill light from deep space
-        const fillLight = new THREE.DirectionalLight(0x173C32, 0.6);
-        fillLight.position.set(-10, -6, -4);
-        scene.add(fillLight);
+        // Resize handler
+        const handleResize = () => {
+            if (!container) return;
+            width = container.clientWidth;
+            height = container.clientHeight;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
 
-        // 8. Entrance Animation Timeline (~2.0 seconds)
+            const desktop = width >= 1024;
+            celestialGroup.position.set(desktop ? 4.8 : 0, desktop ? 0.4 : -1.8, -2);
+        };
+        window.addEventListener('resize', handleResize);
+
+        // Smooth Mouse Parallax
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetMouseX = 0;
+        let targetMouseY = 0;
+
+        const handleMouseMove = (e: MouseEvent) => {
+            targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+            targetMouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+        };
+        window.addEventListener('mousemove', handleMouseMove, { passive: true });
+
+        // Animation Loop
         let startTime = performance.now();
-        const entranceDuration = isReducedMotion ? 100 : 2000;
-
-        // 9. Render & Interaction Loop
         const animate = (currentTime: number) => {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(1, elapsed / entranceDuration);
-
-            // Coordinated Entrance Easing: Light & Atmosphere ignite
-            if (progress < 1) {
-                // EaseOutCubic
-                const ease = 1 - Math.pow(1 - progress, 3);
-                sunLight.intensity = ease * 3.8;
-                starMaterial.opacity = ease * 0.85;
-                dustMaterial.opacity = ease * 0.5;
-            } else {
-                sunLight.intensity = 3.8;
-                starMaterial.opacity = 0.85;
-                dustMaterial.opacity = 0.5;
-            }
-
-            // Interactive Pointer Lerp
+            // Interactive mouse lerping
             mouseX += (targetMouseX - mouseX) * 0.04;
             mouseY += (targetMouseY - mouseY) * 0.04;
 
             if (!isReducedMotion) {
-                // Subtle camera tilt / orbital movement
-                camera.position.x = mouseX * 1.8;
-                camera.position.y = mouseY * -1.2;
-                camera.lookAt(0, -1, 0);
+                // Subtle camera depth parallax
+                camera.position.x = mouseX * 1.2;
+                camera.position.y = mouseY * -0.8;
+                camera.lookAt(0, 0, 0);
 
-                // Planet slow majestic continuous rotation
-                planetMesh.rotation.y += 0.00035;
+                // Elegant celestial rotations
+                coreMesh.rotation.y += 0.0012;
+                ring1.rotation.z += 0.0025;
+                ring2.rotation.x += 0.0018;
+                ring3.rotation.y += 0.001;
 
-                // Dust field slow drift
-                dustField.rotation.y += 0.0002;
-                dustField.rotation.x = mouseY * 0.08;
+                // Ambient dust float
+                dustField.rotation.y += 0.0004;
 
-                // Starfield subtle inverse parallax
-                starField.position.x = mouseX * -0.6;
-                starField.position.y = mouseY * 0.4;
+                // Subtle astrolabe tilt
+                celestialGroup.rotation.y = mouseX * 0.2;
+                celestialGroup.rotation.x = 0.25 + mouseY * 0.15;
             }
 
             renderer.render(scene, camera);
@@ -309,16 +293,22 @@ export default function CinematicCosmosCanvas({
             window.removeEventListener('resize', handleResize);
             window.removeEventListener('mousemove', handleMouseMove);
 
-            // Dispose geometries and materials
-            planetGeo.dispose();
-            planetMat.dispose();
-            planetTexture.dispose();
-            atmosphereGeo.dispose();
-            atmosphereMat.dispose();
             starGeometry.dispose();
             starMaterial.dispose();
             dustGeometry.dispose();
             dustMaterial.dispose();
+            coreGeo.dispose();
+            coreMat.dispose();
+            haloGeo.dispose();
+            haloMat.dispose();
+            ring1Geo.dispose();
+            ring1Mat.dispose();
+            ring2Geo.dispose();
+            ring2Mat.dispose();
+            ring3Geo.dispose();
+            ring3Mat.dispose();
+            nodeGeo.dispose();
+            nodeMat.dispose();
             renderer.dispose();
 
             if (container && renderer.domElement.parentNode === container) {
@@ -328,15 +318,12 @@ export default function CinematicCosmosCanvas({
     }, [isDark, isReducedMotion]);
 
     if (!webglSupported) {
-        // High-aesthetic CSS/SVG Fallback when WebGL is unavailable
         return (
             <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-0 select-none overflow-hidden bg-[var(--bg)]"
+                className="pointer-events-none absolute inset-0 select-none overflow-hidden bg-transparent"
             >
-                {/* Curved Planetary Horizon Gradient */}
-                <div className="absolute -bottom-48 -right-40 h-[90vh] w-[90vh] rounded-full bg-gradient-to-tr from-[var(--forest)] via-[var(--primary)] to-[var(--accent)] opacity-40 blur-3xl" />
-                <div className="absolute inset-0 bg-radial from-transparent via-[var(--bg)]/70 to-[var(--bg)]" />
+                <div className="absolute top-1/4 right-1/8 h-72 w-72 rounded-full border border-[var(--primary)]/30 opacity-40 shadow-[0_0_50px_rgba(241,90,36,0.2)]" />
             </div>
         );
     }

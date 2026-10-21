@@ -73,12 +73,12 @@ export default function AboutSection({
                             )}
 
                             {/* Floating Atmospheric Badge */}
-                            <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center justify-between rounded-lg border border-white/10 bg-black/60 backdrop-blur-md px-4 py-2 font-mono text-[11px] text-white">
+                            <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center justify-between rounded-lg border border-white/15 bg-black/75 backdrop-blur-md px-4 py-2 font-mono text-[11px] text-white shadow-md">
                                 <span className="font-bold tracking-wider">
-                                    {settings?.site_title || 'MONAYEM AZAM'}
+                                    MONAYEM AZAM
                                 </span>
                                 <span className="text-[var(--accent)] font-semibold">
-                                    FULL-STACK WEB DEVELOPER
+                                    FULL-STACK DEVELOPER
                                 </span>
                             </div>
                         </div>
