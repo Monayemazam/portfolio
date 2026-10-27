@@ -79,21 +79,10 @@ export default function ContactSection({
             />
 
             <div className="mx-auto max-w-[1440px] relative z-10">
-                {/* Header Strip */}
-                <div className="flex items-center gap-3 border-b border-border/40 pb-4 font-mono text-xs tracking-widest text-muted-foreground uppercase">
-                    <span className="h-2 w-2 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
-                    <span className="font-bold text-foreground">CONTACT</span>
-                    <span className="text-border">/</span>
-                    <span>GET IN TOUCH</span>
-                </div>
-
                 {/* Headline Spread */}
-                <div className="mt-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                     <div>
-                        <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
-                            // START A CONVERSATION
-                        </span>
-                        <h2 className="mt-3 font-display text-4xl sm:text-6xl lg:text-7xl font-black tracking-tighter text-foreground uppercase leading-[0.92]">
+                        <h2 className="font-display text-4xl sm:text-6xl lg:text-7xl font-black tracking-tighter text-foreground uppercase leading-[0.92]">
                             HAVE AN IDEA?
                             <br />
                             <span className="text-[var(--primary)]">LET'S MAKE IT REAL.</span>
@@ -118,8 +107,8 @@ export default function ContactSection({
                                     "I'm always open to discussing new projects, technical consulting, and digital product opportunities. Send a message using the form, and I'll get back to you promptly."}
                             </p>
 
-                            {/* Direct Communication Channels (Render only if configured, otherwise show protocol card) */}
-                            {(emailAddress || phone || whatsapp || bookingUrl) ? (
+                            {/* Direct Communication Channels (Render only if configured) */}
+                            {(emailAddress || phone || whatsapp || bookingUrl) && (
                                 <div className="mt-8 rounded-2xl border border-border/50 bg-surface/30 backdrop-blur-md divide-y divide-border/40 font-mono text-xs overflow-hidden">
                                     {emailAddress && (
                                         <div className="p-4 flex items-center justify-between hover:bg-surface/50 transition-colors">
@@ -189,27 +178,13 @@ export default function ContactSection({
                                         </div>
                                     )}
                                 </div>
-                            ) : (
-                                <div className="mt-8 rounded-2xl border border-border/50 bg-surface/30 p-6 backdrop-blur-md font-mono text-xs space-y-4">
-                                    <div className="flex items-center gap-2 text-[var(--accent)] font-bold">
-                                        <span className="h-2 w-2 rounded-full bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]" />
-                                        <span className="tracking-widest uppercase">TRANSMISSION PROTOCOL</span>
-                                    </div>
-                                    <p className="font-body text-xs text-foreground/75 leading-relaxed">
-                                        Have a technical project, website redesign, or new digital product in mind? Fill out the inquiry console to start a conversation. Messages are routed directly to my verified inbox.
-                                    </p>
-                                    <div className="pt-3 border-t border-border/30 flex items-center justify-between text-[11px] text-muted-foreground uppercase tracking-wider">
-                                        <span>ESTIMATED RESPONSE:</span>
-                                        <span className="font-bold text-foreground">WITHIN 24 HOURS</span>
-                                    </div>
-                                </div>
                             )}
 
                             {/* Social Link List */}
                             {hasSocials && (
                                 <div className="mt-8">
-                                    <span className="font-mono text-xs font-bold tracking-widest text-muted-foreground uppercase block mb-3">
-                                        CONNECT ONLINE //
+                                    <span className="font-mono text-xs font-semibold tracking-wider text-muted-foreground uppercase block mb-3">
+                                        Connect
                                     </span>
                                     <div className="flex flex-wrap gap-2.5">
                                         {github && (
@@ -271,10 +246,6 @@ export default function ContactSection({
                                 </div>
                             )}
                         </div>
-
-                        <div className="mt-8 pt-4 border-t border-border/40 font-mono text-[11px] text-muted-foreground uppercase">
-                            DIRECT MESSAGE CONSOLE
-                        </div>
                     </div>
 
                     {/* Right Column: Form */}
@@ -285,15 +256,6 @@ export default function ContactSection({
                                 aria-hidden="true"
                                 className="pointer-events-none absolute -top-24 -right-24 w-64 h-64 rounded-full bg-[var(--primary)] opacity-15 blur-3xl"
                             />
-
-                            <div className="flex items-center justify-between border-b border-border/40 pb-4 mb-8">
-                                <div className="flex items-center gap-3">
-                                    <span className="h-2 w-2 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
-                                    <span className="font-mono text-xs font-bold text-foreground uppercase tracking-wider">
-                                        SEND A MESSAGE
-                                    </span>
-                                </div>
-                            </div>
 
                             {submittedSuccessfully ? (
                                 <div className="rounded-2xl border border-[var(--primary)] bg-surface/80 p-10 text-center">

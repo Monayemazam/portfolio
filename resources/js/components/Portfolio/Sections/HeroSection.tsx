@@ -31,16 +31,11 @@ export default function HeroSection({
         }
     };
 
-    const roles =
-        hero?.roles && hero.roles.length > 0
-            ? hero.roles.map((r) => r.text).join(' · ')
-            : 'Full-Stack Web Developer · Creative Technologist';
-
     return (
         <section
             id={section.key}
             aria-label="Hero — Full-Screen Burning Black Hole"
-            className="relative flex min-h-[100svh] w-full flex-col justify-between overflow-x-clip bg-[var(--bg)] px-6 pt-7 pb-10 select-none sm:px-10 lg:overflow-hidden lg:px-14 xl:px-16"
+            className="relative flex min-h-[100svh] w-full flex-col justify-center overflow-x-clip bg-[var(--bg)] px-6 py-20 select-none sm:px-10 lg:overflow-hidden lg:px-14 xl:px-16"
         >
             {/* Full-Screen Living Burning Black Hole WebGL Environment */}
             <div className="pointer-events-none absolute inset-0 z-0 h-full w-full overflow-hidden">
@@ -57,44 +52,9 @@ export default function HeroSection({
                 } transition-opacity duration-700`}
             />
 
-            {/* Top Telemetry Strip: Identity & Live Status */}
-            <div className="relative z-20 flex items-center justify-between border-b border-[var(--surface-border)] pb-4 font-mono text-xs tracking-wider text-[var(--text-muted)] uppercase">
-                <div className="flex items-center gap-3">
-                    <span className="relative flex h-2 w-2">
-                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--primary)] opacity-75" />
-                        <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
-                    </span>
-                    <span className="font-bold tracking-wider text-[var(--text)]">
-                        {hero?.name || 'MONAYEM AZAM'}
-                    </span>
-                    <span className="text-[var(--surface-border)]">/</span>
-                    <span className="hidden text-[var(--text-muted)] sm:inline">
-                        {hero?.eyebrow || 'FULL-STACK WEB DEVELOPER'}
-                    </span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]" />
-                    <span className="text-[11px] font-semibold tracking-wider text-[var(--text)]">
-                        AVAILABLE FOR PROJECTS
-                    </span>
-                </div>
-            </div>
-
             {/* Main Hero Composition — Uncluttered, Monumental Left-Aligned Headline */}
-            <div className="relative z-10 mx-auto my-auto w-full max-w-[1560px] py-6 sm:py-10 lg:py-14">
+            <div className="relative z-10 mx-auto w-full max-w-[1560px]">
                 <div className="max-w-2xl xl:max-w-3xl">
-                    {/* Kicker */}
-                    <motion.div
-                        initial={isOff ? false : { opacity: 0, y: 15 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.4 }}
-                        className="mb-4 flex items-center gap-2.5 font-mono text-xs font-semibold tracking-widest text-[var(--primary)] uppercase sm:mb-6"
-                    >
-                        <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
-                        <span>{roles}</span>
-                    </motion.div>
-
                     {/* Monumental Headline */}
                     <motion.h1
                         initial={isOff ? false : { opacity: 0, y: 25 }}
@@ -130,37 +90,13 @@ export default function HeroSection({
                             'Full-stack web developer passionate about creating useful, reliable, and well-crafted digital experiences with solid engineering and thoughtful design.'}
                     </motion.p>
 
-                    {/* Verified Credential Milestones */}
+                    {/* Primary Actions */}
                     <motion.div
                         initial={isOff ? false : { opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{
                             duration: 0.45,
-                            delay: isOff ? 0 : 0.22,
-                        }}
-                        className="mt-6 flex flex-wrap items-center gap-2.5 font-mono text-xs sm:mt-7"
-                    >
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--surface-border)] bg-[var(--surface)]/70 px-3.5 py-1.5 text-[var(--text)] backdrop-blur-md">
-                            <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)]" />
-                            <strong>6+ Years</strong> Experience
-                        </span>
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--surface-border)] bg-[var(--surface)]/70 px-3.5 py-1.5 text-[var(--text)] backdrop-blur-md">
-                            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
-                            <strong>50+</strong> Satisfied Clients
-                        </span>
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--surface-border)] bg-[var(--surface)]/70 px-3.5 py-1.5 text-[var(--text)] backdrop-blur-md">
-                            <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)]" />
-                            <strong>10+</strong> Live Projects
-                        </span>
-                    </motion.div>
-
-                    {/* High-Conversion Actions */}
-                    <motion.div
-                        initial={isOff ? false : { opacity: 0, y: 15 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{
-                            duration: 0.45,
-                            delay: isOff ? 0 : 0.28,
+                            delay: isOff ? 0 : 0.24,
                         }}
                         className="mt-8 flex flex-wrap items-center gap-4 sm:mt-10"
                     >
@@ -199,36 +135,6 @@ export default function HeroSection({
                         </button>
                     </motion.div>
                 </div>
-            </div>
-
-            {/* Bottom Horizon Strip: Core Engineering Stack & Navigation Prompt */}
-            <div className="relative z-20 flex flex-wrap items-center justify-between gap-6 border-t border-[var(--surface-border)] pt-4 font-mono text-xs text-[var(--text-muted)] uppercase">
-                <div className="flex flex-wrap items-center gap-3 sm:gap-5">
-                    <span className="flex items-center gap-2 font-semibold text-[var(--text)]">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
-                        CORE STACK
-                    </span>
-                    <span>LARAVEL</span>
-                    <span className="text-[var(--surface-border)]">·</span>
-                    <span>PHP</span>
-                    <span className="text-[var(--surface-border)]">·</span>
-                    <span>VUE.JS</span>
-                    <span className="text-[var(--surface-border)]">·</span>
-                    <span>TAILWIND CSS</span>
-                    <span className="text-[var(--surface-border)]">·</span>
-                    <span>WORDPRESS</span>
-                    <span className="text-[var(--surface-border)]">·</span>
-                    <span>MYSQL</span>
-                </div>
-
-                <button
-                    type="button"
-                    onClick={() => scrollTo('about')}
-                    className="flex cursor-pointer items-center gap-2 font-bold text-[var(--primary)] transition-all hover:underline"
-                >
-                    <span>BIOGRAPHY &amp; PROFILE</span>
-                    <span className="font-sans">↓</span>
-                </button>
             </div>
         </section>
     );

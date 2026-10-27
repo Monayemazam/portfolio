@@ -22,7 +22,15 @@ function resolveLineicon(iconName?: string | null) {
         .split(/[-_]/)
         .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
         .join('');
-    return iconMap[pascal] || iconMap[`Lni${pascal}`] || null;
+
+    if (iconMap[pascal]) return iconMap[pascal];
+    if (iconMap[`${pascal}1`]) return iconMap[`${pascal}1`];
+    if (pascal === 'Display') return iconMap['MonitorCode'] || iconMap['Monitor'];
+    if (pascal === 'CartFull' || pascal === 'Cart') return iconMap['Cart1'];
+    if (pascal === 'Layout') return iconMap['Layout9'];
+    if (pascal === 'Layers') return iconMap['Layers1'];
+    if (pascal === 'Wordpress') return iconMap['Wordpress'];
+    return iconMap['Code1'] || null;
 }
 
 export default function ServicesSection({
@@ -46,27 +54,11 @@ export default function ServicesSection({
             />
 
             <div className="mx-auto max-w-[1440px] relative z-10">
-                {/* 1. Technical Coordinate Breadcrumb */}
-                <div className="flex items-center justify-between border-b border-[var(--surface-border)] pb-4 font-mono text-xs tracking-widest text-[var(--text-muted)] uppercase">
-                    <div className="flex items-center gap-3">
-                        <span className="h-2 w-2 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
-                        <span className="font-bold text-[var(--text)]">SERVICES</span>
-                        <span className="text-[var(--surface-border)]">/</span>
-                        <span>STRUCTURED EDITORIAL LAYOUT</span>
-                    </div>
-                    <span className="text-[11px] hidden sm:inline">
-                        SOLUTIONS // {sortedServices.length} CORE CAPABILITIES
-                    </span>
-                </div>
-
-                {/* 2. Section Heading & Narrative */}
-                <div className="mt-12 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                {/* Section Heading & Narrative */}
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                     <div>
-                        <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
-                            // 03 · SPECIALISED CAPABILITIES
-                        </span>
-                        <h2 className="mt-3 font-display text-3xl sm:text-5xl font-black tracking-tight text-[var(--text)] uppercase leading-tight">
-                            WHAT CLIENTS HIRE ME TO BUILD.
+                        <h2 className="font-display text-3xl sm:text-5xl font-black tracking-tight text-[var(--text)] uppercase leading-tight">
+                            {section?.title || 'SERVICES.'}
                         </h2>
                     </div>
 
@@ -75,7 +67,7 @@ export default function ServicesSection({
                     </p>
                 </div>
 
-                {/* 3. Numbered Architectural Rows List (Not Cards!) */}
+                {/* Numbered Architectural Rows List */}
                 <div className="mt-14 divide-y divide-[var(--surface-border)] border-y border-[var(--surface-border)]">
                     {sortedServices.map((service, idx) => {
                         const IconComponent = resolveLineicon(service.icon);
@@ -96,9 +88,7 @@ export default function ServicesSection({
                                         {IconComponent ? (
                                             <IconComponent className="h-6 w-6" />
                                         ) : (
-                                            <span className="font-mono text-xs font-bold">
-                                                {indexStr}
-                                            </span>
+                                            <span className="h-2 w-2 rounded-full bg-[var(--primary)]" />
                                         )}
                                     </div>
 
@@ -106,9 +96,6 @@ export default function ServicesSection({
                                         <h3 className="font-display text-xl sm:text-2xl font-bold uppercase tracking-tight text-[var(--text)] group-hover:text-[var(--primary)] transition-colors">
                                             {service.title}
                                         </h3>
-                                        <span className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-wider block mt-1">
-                                            PRODUCTION SPEC // CAPABILITY {indexStr}
-                                        </span>
                                     </div>
                                 </div>
 

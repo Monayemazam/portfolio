@@ -13,7 +13,6 @@ import {
 import { useTheme } from '@/hooks/use-theme';
 import { useMotionLevel } from '@/hooks/use-motion-level';
 import StarfieldContainer from '@/components/Portfolio/Motion/StarfieldContainer';
-import ConstellationWaypoint from '@/components/Portfolio/Motion/ConstellationWaypoint';
 import TopProgressBar from '@/components/Portfolio/Motion/TopProgressBar';
 import ReduceEffectsToggle from '@/components/Portfolio/Motion/ReduceEffectsToggle';
 import KineticTypographyPreloader from '@/components/Portfolio/Motion/KineticTypographyPreloader';
@@ -191,16 +190,6 @@ export default function PortfolioIndex({
 
             {/* Top Architectural Telemetry Progress Bar */}
             <TopProgressBar />
-
-            {/* Constellation Waypoint Navigator */}
-            <ConstellationWaypoint
-                sections={sections}
-                activeSection={activeSection}
-                onSelectSection={(key) => {
-                    const el = document.getElementById(key);
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }}
-            />
 
             {/* Publication Masthead Navigation */}
             <FloatingNav

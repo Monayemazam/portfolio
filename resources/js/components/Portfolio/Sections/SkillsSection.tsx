@@ -118,26 +118,10 @@ export default function SkillsSection({
             />
 
             <div className="mx-auto max-w-[1440px] relative z-10">
-                {/* 1. Technical Coordinate Breadcrumb */}
-                <div className="flex items-center justify-between border-b border-[var(--surface-border)] pb-4 font-mono text-xs tracking-widest text-[var(--text-muted)] uppercase">
-                    <div className="flex items-center gap-3">
-                        <span className="h-2 w-2 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
-                        <span className="font-bold text-[var(--text)]">SKILLS</span>
-                        <span className="text-[var(--surface-border)]">/</span>
-                        <span>TECHNICAL INDEX</span>
-                    </div>
-                    <span className="text-[11px] hidden sm:inline">
-                        TOOLKIT // {totalSkills} VERIFIED TECHNOLOGIES
-                    </span>
-                </div>
-
-                {/* 2. Section Heading & Narrative */}
-                <div className="mt-12 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                {/* Section Heading & Narrative */}
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                     <div>
-                        <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
-                            // 02 · TECHNICAL INDEX
-                        </span>
-                        <h2 className="mt-3 font-display text-3xl sm:text-5xl font-black tracking-tight text-[var(--text)] uppercase leading-tight">
+                        <h2 className="font-display text-3xl sm:text-5xl font-black tracking-tight text-[var(--text)] uppercase leading-tight">
                             WHAT I KNOW.
                             <br />
                             <span className="text-[var(--text-muted)]">WHAT I BUILD.</span>
@@ -145,11 +129,11 @@ export default function SkillsSection({
                     </div>
 
                     <p className="max-w-md font-body text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed">
-                        A focused, practical toolkit for engineering resilient web applications, managing cloud deployments, and driving digital growth. Communicated cleanly with zero artificial scores.
+                        A focused, practical toolkit for engineering resilient web applications, managing cloud deployments, and driving digital growth.
                     </p>
                 </div>
 
-                {/* 3. Compact Category Filter Switcher */}
+                {/* Compact Category Filter Switcher */}
                 <div className="mt-10 border-y border-[var(--surface-border)] py-3">
                     <div
                         className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1"
@@ -187,26 +171,17 @@ export default function SkillsSection({
                     </div>
                 </div>
 
-                {/* 4. The 3 Structured Technical Directory Categories */}
-                <div className="mt-12 space-y-12">
+                {/* Structured Technical Categories */}
+                <div className="mt-12 space-y-8 sm:space-y-10">
                     {/* Category 1: Engineering */}
                     {showEng && engineering.length > 0 && (
                         <div className="rounded-2xl border border-[var(--surface-border)] bg-[var(--surface)] p-6 sm:p-8">
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--surface-border)] pb-4">
-                                <div className="flex items-center gap-2.5">
-                                    <span className="h-2 w-2 rounded-full bg-[var(--primary)]" />
-                                    <h3 className="font-display text-lg sm:text-xl font-bold uppercase tracking-tight text-[var(--text)]">
-                                        Engineering &amp; Core Stack
-                                    </h3>
-                                </div>
-                                <span className="font-mono text-xs text-[var(--text-muted)] uppercase">
-                                    {engineering.length} Technologies
-                                </span>
+                            <div className="flex items-center gap-2.5 pb-4 border-b border-[var(--surface-border)]">
+                                <span className="h-2 w-2 rounded-full bg-[var(--primary)]" />
+                                <h3 className="font-display text-lg sm:text-xl font-bold uppercase tracking-tight text-[var(--text)]">
+                                    Engineering &amp; Core Stack
+                                </h3>
                             </div>
-
-                            <p className="mt-3 font-body text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed max-w-2xl">
-                                Full-stack application architecture, robust backend APIs, modern component-based frontend interfaces, relational database schema design, and modular CMS development.
-                            </p>
 
                             <div className="mt-6 flex flex-wrap gap-2.5 sm:gap-3">
                                 {engineering.map((skill) => (
@@ -229,21 +204,12 @@ export default function SkillsSection({
                     {/* Category 2: Deployment & Growth */}
                     {showDep && deployment.length > 0 && (
                         <div className="rounded-2xl border border-[var(--surface-border)] bg-[var(--surface)] p-6 sm:p-8">
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--surface-border)] pb-4">
-                                <div className="flex items-center gap-2.5">
-                                    <span className="h-2 w-2 rounded-full bg-[var(--accent)]" />
-                                    <h3 className="font-display text-lg sm:text-xl font-bold uppercase tracking-tight text-[var(--text)]">
-                                        Deployment &amp; Growth
-                                    </h3>
-                                </div>
-                                <span className="font-mono text-xs text-[var(--text-muted)] uppercase">
-                                    {deployment.length} Capabilities
-                                </span>
+                            <div className="flex items-center gap-2.5 pb-4 border-b border-[var(--surface-border)]">
+                                <span className="h-2 w-2 rounded-full bg-[var(--accent)]" />
+                                <h3 className="font-display text-lg sm:text-xl font-bold uppercase tracking-tight text-[var(--text)]">
+                                    Deployment &amp; Growth
+                                </h3>
                             </div>
-
-                            <p className="mt-3 font-body text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed max-w-2xl">
-                                Production web hosting configurations, server control panels, Git version control workflows, on-page SEO architecture, and e-commerce growth strategies.
-                            </p>
 
                             <div className="mt-6 flex flex-wrap gap-2.5 sm:gap-3">
                                 {deployment.map((skill) => (
@@ -266,21 +232,12 @@ export default function SkillsSection({
                     {/* Category 3: Creative & Marketing */}
                     {showCre && creative.length > 0 && (
                         <div className="rounded-2xl border border-[var(--surface-border)] bg-[var(--surface)] p-6 sm:p-8">
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--surface-border)] pb-4">
-                                <div className="flex items-center gap-2.5">
-                                    <span className="h-2 w-2 rounded-full bg-[var(--primary)]" />
-                                    <h3 className="font-display text-lg sm:text-xl font-bold uppercase tracking-tight text-[var(--text)]">
-                                        Creative &amp; Marketing
-                                    </h3>
-                                </div>
-                                <span className="font-mono text-xs text-[var(--text-muted)] uppercase">
-                                    {creative.length} Disciplines
-                                </span>
+                            <div className="flex items-center gap-2.5 pb-4 border-b border-[var(--surface-border)]">
+                                <span className="h-2 w-2 rounded-full bg-[var(--primary)]" />
+                                <h3 className="font-display text-lg sm:text-xl font-bold uppercase tracking-tight text-[var(--text)]">
+                                    Creative &amp; Marketing
+                                </h3>
                             </div>
-
-                            <p className="mt-3 font-body text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed max-w-2xl">
-                                User experience and interface design systems, digital graphic design, social media content production, video editing, and Meta advertising analytics.
-                            </p>
 
                             <div className="mt-6 flex flex-wrap gap-2.5 sm:gap-3">
                                 {creative.map((skill) => (

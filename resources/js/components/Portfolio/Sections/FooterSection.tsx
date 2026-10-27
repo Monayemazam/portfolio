@@ -17,15 +17,15 @@ interface FooterSectionProps {
     testimonialsCount?: number;
 }
 
-const sectionLabels: Record<string, string> = {
-    about: 'DOSSIER',
-    skills: 'PLANETARY SKILLS',
-    projects: 'PROJECT UNIVERSE',
-    services: 'CAPABILITIES',
-    experience: 'FLIGHT LOG',
-    process: 'TRAJECTORY',
-    testimonials: 'TRANSMISSIONS',
-    contact: 'BEACON',
+const cleanSectionLabels: Record<string, string> = {
+    about: 'About',
+    skills: 'Skills',
+    projects: 'Projects',
+    services: 'Services',
+    experience: 'Experience',
+    process: 'Process',
+    testimonials: 'Testimonials',
+    contact: 'Contact',
 };
 
 export default function FooterSection({
@@ -80,7 +80,7 @@ export default function FooterSection({
     return (
         <footer
             id="footer"
-            aria-label="Universe Colophon"
+            aria-label="Portfolio Footer"
             className="w-full border-t border-border/40 bg-[var(--bg)] px-6 sm:px-10 lg:px-16 py-20 relative overflow-hidden"
         >
             <div className="mx-auto max-w-[1440px] relative z-10">
@@ -108,8 +108,8 @@ export default function FooterSection({
 
                     {/* Section Links */}
                     <div className="md:col-span-4">
-                        <span className="font-mono text-xs font-bold text-foreground uppercase tracking-widest block mb-4">
-                            NAVIGATION //
+                        <span className="font-mono text-xs font-semibold text-foreground uppercase tracking-wider block mb-4">
+                            Navigation
                         </span>
                         <div className="grid grid-cols-2 gap-2 font-mono text-xs">
                             {navLinks.map((item, idx) => (
@@ -121,7 +121,7 @@ export default function FooterSection({
                                     <span className="text-[10px] text-border">
                                         {(idx + 1).toString().padStart(2, '0')}.
                                     </span>
-                                    <span>{item.nav_label || item.title}</span>
+                                    <span>{cleanSectionLabels[item.key] || item.nav_label || item.title}</span>
                                 </a>
                             ))}
                         </div>
@@ -130,8 +130,8 @@ export default function FooterSection({
                     {/* Socials & Actions */}
                     <div className="md:col-span-3 flex flex-col justify-between">
                         <div>
-                            <span className="font-mono text-xs font-bold text-foreground uppercase tracking-widest block mb-4">
-                                CONNECT //
+                            <span className="font-mono text-xs font-semibold text-foreground uppercase tracking-wider block mb-4">
+                                Connect
                             </span>
                             <div className="flex flex-col gap-2 font-mono text-xs">
                                 {socialLinks.length > 0 ? (

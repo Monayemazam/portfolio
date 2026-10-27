@@ -37,19 +37,8 @@ export default function AboutSection({
             />
 
             <div className="mx-auto max-w-[1440px] relative z-10">
-                {/* 1. Technical Coordinate Breadcrumb */}
-                <div className="flex items-center justify-between border-b border-[var(--surface-border)] pb-4 font-mono text-xs tracking-widest text-[var(--text-muted)] uppercase">
-                    <div className="flex items-center gap-3">
-                        <span className="h-2 w-2 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
-                        <span className="font-bold text-[var(--text)]">ABOUT</span>
-                        <span className="text-[var(--surface-border)]">/</span>
-                        <span>EDITORIAL PROFILE</span>
-                    </div>
-                    <span className="text-[11px] hidden sm:inline">DOSSIER // MONAYEM AZAM</span>
-                </div>
-
-                {/* 2. Editorial Broadsheet Layout */}
-                <div className="mt-14 lg:mt-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                {/* Editorial Broadsheet Layout */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
                     
                     {/* Left Column: Portrait in Architectural Viewport Frame */}
                     <div className="lg:col-span-5 flex flex-col items-center lg:items-start">
@@ -60,20 +49,6 @@ export default function AboutSection({
                             transition={{ duration: 0.45 }}
                             className="group relative w-full max-w-[420px] aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl border border-[var(--surface-border)] bg-[var(--surface)]"
                         >
-                            {/* Corner Registration Crosshairs */}
-                            <span className="pointer-events-none absolute top-3 left-3 font-mono text-xs font-bold text-[var(--primary)] z-20 select-none opacity-80">
-                                +
-                            </span>
-                            <span className="pointer-events-none absolute top-3 right-3 font-mono text-xs font-bold text-[var(--primary)] z-20 select-none opacity-80">
-                                +
-                            </span>
-                            <span className="pointer-events-none absolute bottom-3 left-3 font-mono text-xs font-bold text-[var(--primary)] z-20 select-none opacity-80">
-                                +
-                            </span>
-                            <span className="pointer-events-none absolute bottom-3 right-3 font-mono text-xs font-bold text-[var(--primary)] z-20 select-none opacity-80">
-                                +
-                            </span>
-
                             {/* Actual Portrait Image */}
                             {photoUrl ? (
                                 <img
@@ -92,16 +67,6 @@ export default function AboutSection({
                                     </span>
                                 </div>
                             )}
-
-                            {/* Architectural Metadata Badge */}
-                            <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center justify-between rounded-xl border border-[var(--surface-border)] bg-[var(--bg)]/90 backdrop-blur-md px-4 py-2.5 font-mono text-[11px] shadow-lg">
-                                <span className="font-bold tracking-wider text-[var(--text)]">
-                                    MONAYEM AZAM
-                                </span>
-                                <span className="text-[var(--primary)] font-semibold uppercase">
-                                    FULL-STACK DEVELOPER
-                                </span>
-                            </div>
                         </motion.div>
 
                         {/* Resume / CV Download Action */}
@@ -123,19 +88,13 @@ export default function AboutSection({
                     {/* Right Column: Editorial Narrative & Verified Milestone Metrics */}
                     <div className="lg:col-span-7 flex flex-col justify-center space-y-8 lg:space-y-10">
                         <div>
-                            <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
-                                // 01 · PROFESSIONAL BIOGRAPHY
-                            </span>
-                            <h2 className="mt-3 font-display text-3xl sm:text-5xl font-black tracking-tight text-[var(--text)] uppercase leading-tight">
+                            <h2 className="font-display text-3xl sm:text-5xl font-black tracking-tight text-[var(--text)] uppercase leading-tight">
                                 {about?.heading || 'BUILT WITH PURPOSE.'}
                             </h2>
 
                             <div className="mt-6 font-body text-base sm:text-lg leading-relaxed text-[var(--text)]/85 space-y-4">
                                 <p>
-                                    I'm Monayem Azam, a full-stack web developer passionate about creating useful, reliable, and well-crafted digital experiences. With over six years of experience, I have worked with more than 50 clients and delivered 10+ live projects.
-                                </p>
-                                <p className="text-sm sm:text-base text-[var(--text-muted)] leading-relaxed">
-                                    I enjoy turning ideas into practical, reliable products, combining thoughtful user interfaces with solid engineering. Whether architecting full-stack web applications with Laravel, Vue.js, and MySQL or developing custom WordPress and WooCommerce platforms, I focus on clean systems that deliver real-world business results.
+                                    {about?.bio || "I'm Monayem Azam, a full-stack web developer with over six years of experience building practical, user-focused digital solutions. I enjoy turning ideas into reliable web applications and creating digital experiences that combine thoughtful design with solid engineering. I love creating things, and development is my passion."}
                                 </p>
                             </div>
                         </div>

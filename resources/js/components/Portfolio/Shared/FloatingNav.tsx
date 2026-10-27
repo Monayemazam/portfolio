@@ -51,7 +51,7 @@ export default function FloatingNav({
         { key: 'services', label: 'SERVICES' },
         { key: 'experience', label: 'EXPERIENCE' },
         { key: 'process', label: 'PROCESS' },
-        { key: 'testimonials', label: 'TRANSMISSIONS' },
+        { key: 'testimonials', label: 'TESTIMONIALS' },
         { key: 'contact', label: 'CONTACT' },
     ];
 

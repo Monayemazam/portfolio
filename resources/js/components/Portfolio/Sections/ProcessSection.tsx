@@ -31,29 +31,11 @@ export default function ProcessSection({
             />
 
             <div className="mx-auto max-w-[1440px] relative z-10">
-                {/* 1. Technical Coordinate Breadcrumb */}
-                <div className="flex items-center justify-between border-b border-[var(--surface-border)] pb-4 font-mono text-xs tracking-widest text-[var(--text-muted)] uppercase">
-                    <div className="flex items-center gap-3">
-                        <span className="h-2 w-2 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
-                        <span className="font-bold text-[var(--text)]">PROCESS</span>
-                        <span className="text-[var(--surface-border)]">/</span>
-                        <span>VISUAL JOURNEY</span>
-                    </div>
-                    <span className="text-[11px] hidden sm:inline">
-                        TRAJECTORY // 06 PRODUCTION STAGES
-                    </span>
-                </div>
-
-                {/* 2. Section Heading & Narrative */}
-                <div className="mt-12 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                {/* Section Heading & Narrative */}
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                     <div>
-                        <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
-                            // 05 · METHODOLOGY
-                        </span>
-                        <h2 className="mt-3 font-display text-3xl sm:text-5xl font-black tracking-tight text-[var(--text)] uppercase leading-tight">
-                            THE 6-STAGE
-                            <br />
-                            <span className="text-[var(--text-muted)]">LAUNCH SEQUENCE.</span>
+                        <h2 className="font-display text-3xl sm:text-5xl font-black tracking-tight text-[var(--text)] uppercase leading-tight">
+                            {section?.title || 'DEVELOPMENT PROCESS.'}
                         </h2>
                     </div>
 
@@ -62,8 +44,8 @@ export default function ProcessSection({
                     </p>
                 </div>
 
-                {/* 3. DESKTOP HORIZONTAL TIMELINE JOURNEY */}
-                <div className="mt-20 hidden lg:block relative">
+                {/* DESKTOP HORIZONTAL TIMELINE JOURNEY */}
+                <div className="mt-16 sm:mt-20 hidden lg:block relative">
                     {/* Horizontal Connecting Spine Track */}
                     <div className="absolute top-6 left-0 right-0 h-[2px] bg-[var(--surface-border)] z-0" />
                     <div className="absolute top-6 left-0 w-3/4 h-[2px] bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] z-0 opacity-70" />
@@ -104,15 +86,15 @@ export default function ProcessSection({
 
                                     {/* Milestone Card Plate */}
                                     <div
-                                        className={`w-full rounded-2xl border p-5 transition-all duration-200 flex flex-col justify-between min-h-[220px] ${
+                                        className={`w-full rounded-2xl border p-5 transition-all duration-200 flex flex-col justify-between min-h-[190px] ${
                                             isHovered
                                                 ? 'border-[var(--primary)] bg-[var(--surface)] shadow-[0_0_25px_rgba(241,90,36,0.18)] -translate-y-1'
                                                 : 'border-[var(--surface-border)] bg-[var(--surface)]/50 group-hover:border-[var(--primary)]/40'
                                         }`}
                                     >
                                         <div>
-                                            <span className="font-mono text-[10px] font-bold tracking-widest text-[var(--primary)] uppercase block">
-                                                STAGE {stepNum}
+                                            <span className="font-mono text-[11px] font-bold tracking-widest text-[var(--primary)] uppercase block">
+                                                {stepNum}
                                             </span>
 
                                             <h3 className="mt-2 font-display text-xl font-bold uppercase tracking-tight text-[var(--text)] group-hover:text-[var(--primary)] transition-colors">
@@ -122,11 +104,6 @@ export default function ProcessSection({
                                             <p className="mt-2.5 font-body text-xs text-[var(--text-muted)] leading-relaxed">
                                                 {step.description}
                                             </p>
-                                        </div>
-
-                                        <div className="pt-3 border-t border-[var(--surface-border)] flex items-center justify-between font-mono text-[9px] text-[var(--text-muted)] uppercase">
-                                            <span>MILESTONE {stepNum}</span>
-                                            <span className="text-[var(--accent)] font-bold">VERIFIED</span>
                                         </div>
                                     </div>
                                 </div>
@@ -149,8 +126,8 @@ export default function ProcessSection({
 
                                 {/* Step Card */}
                                 <div className="rounded-2xl border border-[var(--surface-border)] bg-[var(--surface)] p-5 sm:p-6 transition-all duration-200">
-                                    <span className="font-mono text-[10px] font-bold tracking-widest text-[var(--primary)] uppercase">
-                                        STAGE {stepNum}
+                                    <span className="font-mono text-[11px] font-bold tracking-widest text-[var(--primary)] uppercase">
+                                        {stepNum}
                                     </span>
 
                                     <h3 className="mt-1 font-display text-xl font-bold uppercase tracking-tight text-[var(--text)]">

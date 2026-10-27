@@ -99,9 +99,9 @@ export default function MobileMenu({
                     {/* Header */}
                     <div className="flex items-center justify-between border-b border-border/40 pb-4">
                         <div className="flex items-center gap-2">
-                            <span className="h-2 w-2 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)] animate-pulse" />
+                            <span className="h-2 w-2 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
                             <span className="font-mono text-xs font-bold tracking-wider text-foreground uppercase">
-                                MONAYEM // DEEP SPACE
+                                MONAYEM AZAM
                             </span>
                         </div>
                         <div className="flex items-center gap-4">
@@ -150,8 +150,8 @@ export default function MobileMenu({
 
                     {/* Footer inside menu */}
                     <div className="border-t border-border/40 pt-4 flex items-center justify-between font-mono text-xs text-muted-foreground uppercase">
-                        <span>CELESTIAL WAYPOINTS</span>
-                        <span>[TAP TO JUMP]</span>
+                        <span>PORTFOLIO</span>
+                        <span>MONAYEM AZAM</span>
                     </div>
                 </div>
             )}
