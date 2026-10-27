@@ -5,8 +5,8 @@ import {
     PortfolioSection,
     PortfolioSettings,
 } from '@/types/portfolio';
-import SpaceTimeWindow from '@/components/Portfolio/Motion/SpaceTimeWindow';
-import CinematicCosmosCanvas from '@/components/Portfolio/Motion/CinematicCosmosCanvas';
+import CelestialHorizonCanvas from '@/components/Portfolio/Motion/CelestialHorizonCanvas';
+import FloatingObservationWindow from '@/components/Portfolio/Motion/FloatingObservationWindow';
 import { ArrowRight } from '../Shared/Icons';
 
 interface HeroSectionProps {
@@ -43,8 +43,8 @@ export default function HeroSection({
             aria-label="Hero — Cinematic Deep Space"
             className="relative flex min-h-[100svh] w-full flex-col justify-between overflow-x-clip bg-[var(--bg)] px-6 pt-8 pb-12 select-none sm:px-10 lg:overflow-hidden lg:px-16"
         >
-            {/* Multi-Layer Celestial Canvas Background */}
-            <CinematicCosmosCanvas isDark={isDark} isReducedMotion={isOff} />
+            {/* Multi-Layer Cinematic Celestial Horizon Canvas Background */}
+            <CelestialHorizonCanvas isDark={isDark} isReducedMotion={isOff} />
 
             {/* Subtle Ambient Spatial Glow on Bottom-Left to Balance Composition */}
             <div
@@ -77,7 +77,7 @@ export default function HeroSection({
             </div>
 
             {/* Main Asymmetrical Hero Composition */}
-            <div className="relative z-10 mx-auto my-auto w-full max-w-[1440px] py-10 sm:py-14">
+            <div className="relative z-10 mx-auto my-auto w-full max-w-[1440px] py-6 sm:py-10">
                 <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-8">
                     {/* Left Column: Monumental Headline & Narrative (Col 7) */}
                     <div className="flex flex-col justify-center lg:col-span-7">
@@ -197,24 +197,24 @@ export default function HeroSection({
                         </motion.div>
                     </div>
 
-                    {/* Right Column: The Space-Time Window Dimensional Centerpiece (Col 5) */}
+                    {/* Right Column: Floating Translucent Observation Interface (Col 5) */}
                     <div className="relative mt-8 flex items-center justify-center lg:col-span-5 lg:mt-0">
                         <motion.div
                             initial={
-                                isOff ? false : { opacity: 0, scale: 0.94 }
+                                isOff ? false : { opacity: 0, y: 24, scale: 0.96 }
                             }
-                            animate={{ opacity: 1, scale: 1 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
                             transition={{
-                                duration: 0.8,
-                                delay: isOff ? 0 : 0.15,
+                                duration: 0.85,
+                                delay: isOff ? 0 : 0.2,
                                 ease: [0.16, 1, 0.3, 1],
                             }}
-                            className="relative flex aspect-square h-[290px] w-[290px] max-w-full items-center justify-center sm:h-[360px] sm:w-[360px] md:h-[420px] md:w-[420px] lg:h-[480px] lg:w-[480px] xl:h-[520px] xl:w-[520px]"
+                            className="flex w-full items-center justify-center"
                         >
-                            <SpaceTimeWindow
+                            <FloatingObservationWindow
                                 isOff={isOff}
                                 isDark={isDark}
-                                className="h-full w-full"
+                                className="w-full"
                             />
                         </motion.div>
                     </div>
