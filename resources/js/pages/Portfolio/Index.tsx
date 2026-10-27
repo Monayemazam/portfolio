@@ -12,7 +12,6 @@ import {
 } from '@/types/portfolio';
 import { useTheme } from '@/hooks/use-theme';
 import { useMotionLevel } from '@/hooks/use-motion-level';
-import { useSmoothScroll } from '@/hooks/use-smooth-scroll';
 import StarfieldContainer from '@/components/Portfolio/Motion/StarfieldContainer';
 import ConstellationWaypoint from '@/components/Portfolio/Motion/ConstellationWaypoint';
 import TopProgressBar from '@/components/Portfolio/Motion/TopProgressBar';
@@ -76,27 +75,6 @@ export default function PortfolioIndex({
         isFull,
         isOff,
     } = useMotionLevel({ adminLevel: settings.animation_level });
-
-    // Smooth Scrolling with Lenis
-    useSmoothScroll({
-        enabled: !isOff,
-        lerp: 0.1,
-    });
-
-    const [scrollProgress, setScrollProgress] = useState(0);
-
-    // Track scroll progress for TopProgressBar
-    useEffect(() => {
-        const handleScroll = () => {
-            const total = document.documentElement.scrollHeight - window.innerHeight;
-            if (total > 0) {
-                setScrollProgress(window.scrollY / total);
-            }
-        };
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll();
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
 
     const [activeSection, setActiveSection] = useState<string>(
         sections[0]?.key || 'hero',
@@ -212,7 +190,7 @@ export default function PortfolioIndex({
             />
 
             {/* Top Architectural Telemetry Progress Bar */}
-            <TopProgressBar progress={scrollProgress} />
+            <TopProgressBar />
 
             {/* Constellation Waypoint Navigator */}
             <ConstellationWaypoint

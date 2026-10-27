@@ -5,8 +5,7 @@ import {
     PortfolioSection,
     PortfolioSettings,
 } from '@/types/portfolio';
-import CelestialHorizonCanvas from '@/components/Portfolio/Motion/CelestialHorizonCanvas';
-import FloatingObservationWindow from '@/components/Portfolio/Motion/FloatingObservationWindow';
+import BurningBlackHoleCanvas from '@/components/Portfolio/Motion/BurningBlackHoleCanvas';
 import { ArrowRight } from '../Shared/Icons';
 
 interface HeroSectionProps {
@@ -40,16 +39,22 @@ export default function HeroSection({
     return (
         <section
             id={section.key}
-            aria-label="Hero — Cinematic Deep Space"
-            className="relative flex min-h-[100svh] w-full flex-col justify-between overflow-x-clip bg-[var(--bg)] px-6 pt-8 pb-12 select-none sm:px-10 lg:overflow-hidden lg:px-16"
+            aria-label="Hero — Full-Screen Burning Black Hole"
+            className="relative flex min-h-[100svh] w-full flex-col justify-between overflow-x-clip bg-[var(--bg)] px-6 pt-7 pb-10 select-none sm:px-10 lg:overflow-hidden lg:px-14 xl:px-16"
         >
-            {/* Multi-Layer Cinematic Celestial Horizon Canvas Background */}
-            <CelestialHorizonCanvas isDark={isDark} isReducedMotion={isOff} />
+            {/* Full-Screen Living Burning Black Hole WebGL Environment */}
+            <div className="pointer-events-none absolute inset-0 z-0 h-full w-full overflow-hidden">
+                <BurningBlackHoleCanvas isDark={isDark} isOff={isOff} className="h-full w-full" />
+            </div>
 
-            {/* Subtle Ambient Spatial Glow on Bottom-Left to Balance Composition */}
+            {/* Subtle Localized Space Vignette for Pristine Typography Contrast on Left */}
             <div
                 aria-hidden="true"
-                className={`pointer-events-none absolute bottom-1/4 -left-16 h-[28vw] max-h-[380px] w-[28vw] max-w-[380px] rounded-full bg-[var(--primary)] ${isDark ? 'opacity-8' : 'opacity-3'} blur-[90px] transition-opacity duration-700`}
+                className={`pointer-events-none absolute inset-y-0 left-0 z-0 w-full max-w-[960px] ${
+                    isDark
+                        ? 'bg-gradient-to-r from-[var(--bg)]/90 via-[var(--bg)]/50 to-transparent'
+                        : 'bg-gradient-to-r from-[var(--bg)]/85 via-[var(--bg)]/45 to-transparent'
+                } transition-opacity duration-700`}
             />
 
             {/* Top Telemetry Strip: Identity & Live Status */}
@@ -76,148 +81,123 @@ export default function HeroSection({
                 </div>
             </div>
 
-            {/* Main Asymmetrical Hero Composition */}
-            <div className="relative z-10 mx-auto my-auto w-full max-w-[1440px] py-6 sm:py-10">
-                <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-8">
-                    {/* Left Column: Monumental Headline & Narrative (Col 7) */}
-                    <div className="flex flex-col justify-center lg:col-span-7">
-                        {/* Kicker */}
-                        <motion.div
-                            initial={isOff ? false : { opacity: 0, y: 15 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4 }}
-                            className="mb-4 flex items-center gap-2.5 font-mono text-xs font-semibold tracking-widest text-[var(--primary)] uppercase sm:mb-6"
-                        >
-                            <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
-                            <span>{roles}</span>
-                        </motion.div>
+            {/* Main Hero Composition — Uncluttered, Monumental Left-Aligned Headline */}
+            <div className="relative z-10 mx-auto my-auto w-full max-w-[1560px] py-6 sm:py-10 lg:py-14">
+                <div className="max-w-2xl xl:max-w-3xl">
+                    {/* Kicker */}
+                    <motion.div
+                        initial={isOff ? false : { opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4 }}
+                        className="mb-4 flex items-center gap-2.5 font-mono text-xs font-semibold tracking-widest text-[var(--primary)] uppercase sm:mb-6"
+                    >
+                        <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
+                        <span>{roles}</span>
+                    </motion.div>
 
-                        {/* Monumental Headline */}
-                        <motion.h1
-                            initial={isOff ? false : { opacity: 0, y: 25 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{
-                                duration: 0.5,
-                                delay: isOff ? 0 : 0.08,
+                    {/* Monumental Headline */}
+                    <motion.h1
+                        initial={isOff ? false : { opacity: 0, y: 25 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                            duration: 0.55,
+                            delay: isOff ? 0 : 0.08,
+                        }}
+                        className="font-display text-[clamp(3.2rem,7.5vw,8.5rem)] leading-[0.88] font-black tracking-tighter text-[var(--text)] uppercase"
+                    >
+                        <span className="block drop-shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
+                            I MAKE
+                        </span>
+                        <span className="block text-[var(--primary)] drop-shadow-[0_0_40px_rgba(241,90,36,0.4)]">
+                            THE DIGITAL
+                        </span>
+                        <span className="block drop-shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
+                            FEEL REAL.
+                        </span>
+                    </motion.h1>
+
+                    {/* Narrative & Concise Tagline */}
+                    <motion.p
+                        initial={isOff ? false : { opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                            duration: 0.45,
+                            delay: isOff ? 0 : 0.16,
+                        }}
+                        className="mt-6 max-w-xl font-body text-base leading-relaxed font-normal text-[var(--text-muted)] sm:mt-8 sm:text-lg drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
+                    >
+                        {settings?.site_tagline ||
+                            'Full-stack web developer passionate about creating useful, reliable, and well-crafted digital experiences with solid engineering and thoughtful design.'}
+                    </motion.p>
+
+                    {/* Verified Credential Milestones */}
+                    <motion.div
+                        initial={isOff ? false : { opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                            duration: 0.45,
+                            delay: isOff ? 0 : 0.22,
+                        }}
+                        className="mt-6 flex flex-wrap items-center gap-2.5 font-mono text-xs sm:mt-7"
+                    >
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--surface-border)] bg-[var(--surface)]/70 px-3.5 py-1.5 text-[var(--text)] backdrop-blur-md">
+                            <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)]" />
+                            <strong>6+ Years</strong> Experience
+                        </span>
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--surface-border)] bg-[var(--surface)]/70 px-3.5 py-1.5 text-[var(--text)] backdrop-blur-md">
+                            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
+                            <strong>50+</strong> Satisfied Clients
+                        </span>
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--surface-border)] bg-[var(--surface)]/70 px-3.5 py-1.5 text-[var(--text)] backdrop-blur-md">
+                            <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)]" />
+                            <strong>10+</strong> Live Projects
+                        </span>
+                    </motion.div>
+
+                    {/* High-Conversion Actions */}
+                    <motion.div
+                        initial={isOff ? false : { opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                            duration: 0.45,
+                            delay: isOff ? 0 : 0.28,
+                        }}
+                        className="mt-8 flex flex-wrap items-center gap-4 sm:mt-10"
+                    >
+                        <button
+                            type="button"
+                            onClick={() => {
+                                const target = (
+                                    hero?.primary_button_url || '#projects'
+                                ).replace('#', '');
+                                scrollTo(target);
                             }}
-                            className="font-display text-[clamp(3.4rem,7.8vw,8.5rem)] leading-[0.88] font-black tracking-tighter text-[var(--text)] uppercase"
+                            className="group inline-flex min-h-[48px] cursor-pointer items-center gap-3 rounded-xl bg-[var(--primary)] px-7 py-3.5 font-mono text-xs font-bold tracking-wider text-white uppercase shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(241,90,36,0.5)] hover:brightness-110 active:translate-y-0 sm:text-sm"
                         >
-                            <span className="block drop-shadow-[0_10px_25px_rgba(0,0,0,0.5)]">
-                                I MAKE
+                            <span>
+                                {hero?.primary_button_label ||
+                                    'Explore Selected Work'}
                             </span>
-                            <span className="block text-[var(--primary)] drop-shadow-[0_0_35px_rgba(241,90,36,0.3)]">
-                                THE DIGITAL
-                            </span>
-                            <span className="block drop-shadow-[0_10px_25px_rgba(0,0,0,0.5)]">
-                                FEEL REAL.
-                            </span>
-                        </motion.h1>
+                            <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+                        </button>
 
-                        {/* Narrative & Concise Tagline */}
-                        <motion.p
-                            initial={isOff ? false : { opacity: 0, y: 15 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{
-                                duration: 0.4,
-                                delay: isOff ? 0 : 0.16,
+                        <button
+                            type="button"
+                            onClick={() => {
+                                const target = (
+                                    hero?.secondary_button_url || '#contact'
+                                ).replace('#', '');
+                                scrollTo(target);
                             }}
-                            className="mt-6 max-w-xl font-body text-base leading-relaxed font-normal text-[var(--text-muted)] sm:mt-8 sm:text-lg"
+                            className="group inline-flex min-h-[48px] cursor-pointer items-center gap-2.5 rounded-xl border border-[var(--surface-border)] bg-[var(--surface)]/80 px-6 py-3.5 font-mono text-xs font-bold tracking-wider text-[var(--text)] uppercase backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--primary)] hover:bg-[var(--surface)] hover:text-[var(--primary)] active:translate-y-0 sm:text-sm"
                         >
-                            {settings?.site_tagline ||
-                                'Full-stack web developer passionate about creating useful, reliable, and well-crafted digital experiences with solid engineering and thoughtful design.'}
-                        </motion.p>
-
-                        {/* Verified Credential Milestones */}
-                        <motion.div
-                            initial={isOff ? false : { opacity: 0, y: 15 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{
-                                duration: 0.4,
-                                delay: isOff ? 0 : 0.22,
-                            }}
-                            className="mt-6 flex flex-wrap items-center gap-2.5 font-mono text-xs"
-                        >
-                            <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--surface-border)] bg-[var(--surface)]/80 px-3 py-1 text-[var(--text)]">
-                                <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)]" />
-                                <strong>6+ Years</strong> Experience
+                            <span>
+                                {hero?.secondary_button_label ||
+                                    'Start a Conversation'}
                             </span>
-                            <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--surface-border)] bg-[var(--surface)]/80 px-3 py-1 text-[var(--text)]">
-                                <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
-                                <strong>50+</strong> Satisfied Clients
-                            </span>
-                            <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--surface-border)] bg-[var(--surface)]/80 px-3 py-1 text-[var(--text)]">
-                                <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)]" />
-                                <strong>10+</strong> Live Projects
-                            </span>
-                        </motion.div>
-
-                        {/* High-Conversion Actions */}
-                        <motion.div
-                            initial={isOff ? false : { opacity: 0, y: 15 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{
-                                duration: 0.4,
-                                delay: isOff ? 0 : 0.28,
-                            }}
-                            className="mt-8 flex flex-wrap items-center gap-4 sm:mt-10"
-                        >
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    const target = (
-                                        hero?.primary_button_url || '#projects'
-                                    ).replace('#', '');
-                                    scrollTo(target);
-                                }}
-                                className="group inline-flex min-h-[46px] cursor-pointer items-center gap-3 rounded-xl bg-[var(--primary)] px-7 py-3.5 font-mono text-xs font-bold tracking-wider text-white uppercase shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_25px_rgba(241,90,36,0.4)] hover:brightness-110 active:translate-y-0 sm:text-sm"
-                            >
-                                <span>
-                                    {hero?.primary_button_label ||
-                                        'Explore Selected Work'}
-                                </span>
-                                <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-                            </button>
-
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    const target = (
-                                        hero?.secondary_button_url || '#contact'
-                                    ).replace('#', '');
-                                    scrollTo(target);
-                                }}
-                                className="group inline-flex min-h-[46px] cursor-pointer items-center gap-2.5 rounded-xl border border-[var(--surface-border)] bg-[var(--surface)]/80 px-6 py-3.5 font-mono text-xs font-bold tracking-wider text-[var(--text)] uppercase backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--primary)] hover:bg-[var(--surface)] hover:text-[var(--primary)] active:translate-y-0 sm:text-sm"
-                            >
-                                <span>
-                                    {hero?.secondary_button_label ||
-                                        'Start a Conversation'}
-                                </span>
-                                <span className="font-sans text-xs">→</span>
-                            </button>
-                        </motion.div>
-                    </div>
-
-                    {/* Right Column: Floating Translucent Observation Interface (Col 5) */}
-                    <div className="relative mt-8 flex items-center justify-center lg:col-span-5 lg:mt-0">
-                        <motion.div
-                            initial={
-                                isOff ? false : { opacity: 0, y: 24, scale: 0.96 }
-                            }
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            transition={{
-                                duration: 0.85,
-                                delay: isOff ? 0 : 0.2,
-                                ease: [0.16, 1, 0.3, 1],
-                            }}
-                            className="flex w-full items-center justify-center"
-                        >
-                            <FloatingObservationWindow
-                                isOff={isOff}
-                                isDark={isDark}
-                                className="w-full"
-                            />
-                        </motion.div>
-                    </div>
+                            <span className="font-sans text-xs">→</span>
+                        </button>
+                    </motion.div>
                 </div>
             </div>
 

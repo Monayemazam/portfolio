@@ -23,8 +23,22 @@ export default function FloatingNav({
     const [mobileOpen, setMobileOpen] = useState(false);
 
     useEffect(() => {
+        let ticking = false;
+        let lastScrolled = window.scrollY > 30;
+        setScrolled(lastScrolled);
+
         const handleScroll = () => {
-            setScrolled(window.scrollY > 30);
+            if (!ticking) {
+                ticking = true;
+                requestAnimationFrame(() => {
+                    const isPassed = window.scrollY > 30;
+                    if (isPassed !== lastScrolled) {
+                        lastScrolled = isPassed;
+                        setScrolled(isPassed);
+                    }
+                    ticking = false;
+                });
+            }
         };
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
