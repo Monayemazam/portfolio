@@ -15,7 +15,7 @@ import { useMotionLevel } from '@/hooks/use-motion-level';
 import StarfieldContainer from '@/components/Portfolio/Motion/StarfieldContainer';
 import TopProgressBar from '@/components/Portfolio/Motion/TopProgressBar';
 import ReduceEffectsToggle from '@/components/Portfolio/Motion/ReduceEffectsToggle';
-import KineticTypographyPreloader from '@/components/Portfolio/Motion/KineticTypographyPreloader';
+import EventHorizonPreloader from '@/components/Portfolio/Motion/EventHorizonPreloader';
 import FloatingNav from '@/components/Portfolio/Shared/FloatingNav';
 import HeroSection from '@/components/Portfolio/Sections/HeroSection';
 import AboutSection from '@/components/Portfolio/Sections/AboutSection';
@@ -179,8 +179,8 @@ export default function PortfolioIndex({
                 />
             </Head>
 
-            {/* Kinetic Typography Cinematic Preloader */}
-            <KineticTypographyPreloader reducedMotion={isOff} />
+            {/* The Event Horizon Cinematic Preloader */}
+            <EventHorizonPreloader reducedMotion={isOff} />
 
             {/* Tactile Architectural Background Grid */}
             <StarfieldContainer
