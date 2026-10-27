@@ -1,9 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { PortfolioSection, ProjectItem } from '@/types/portfolio';
+import ProjectCard from '../Projects/ProjectCard';
 import ProjectDetailPanel from '../Projects/ProjectDetailPanel';
-import ProjectArchitecturalCover from '../Projects/ProjectArchitecturalCover';
-import TagChip from '../Shared/TagChip';
-import { ArrowAngularTopRight, ArrowRight, Layers1 } from '../Shared/Icons';
 
 interface ProjectsSectionProps {
     section: PortfolioSection;
@@ -12,12 +10,95 @@ interface ProjectsSectionProps {
     isDark?: boolean;
 }
 
+interface CategoryFilter {
+    id: string;
+    label: string;
+    matches: (project: ProjectItem) => boolean;
+}
+
+const CATEGORY_DEFINITIONS: CategoryFilter[] = [
+    {
+        id: 'all',
+        label: 'All Projects',
+        matches: () => true,
+    },
+    {
+        id: 'web-apps',
+        label: 'Web Applications',
+        matches: (p) => {
+            const tags = (p.tags || []).map((t) => t.slug.toLowerCase());
+            const text = `${p.title} ${p.summary} ${p.description || ''} ${p.business_type || ''}`.toLowerCase();
+            return (
+                tags.some((t) =>
+                    [
+                        'laravel',
+                        'vuejs',
+                        'vue-js',
+                        'react',
+                        'inertiajs',
+                        'inertia-js',
+                        'web-application',
+                    ].includes(t),
+                ) ||
+                text.includes('web application') ||
+                text.includes('platform') ||
+                text.includes('portal')
+            );
+        },
+    },
+    {
+        id: 'corporate',
+        label: 'Corporate Websites',
+        matches: (p) => {
+            const tags = (p.tags || []).map((t) => t.slug.toLowerCase());
+            const text = `${p.title} ${p.summary} ${p.description || ''} ${p.business_type || ''}`.toLowerCase();
+            return (
+                tags.some((t) => ['logistics', 'corporate'].includes(t)) ||
+                text.includes('corporate') ||
+                text.includes('shipping') ||
+                text.includes('logistics') ||
+                text.includes('freight')
+            );
+        },
+    },
+    {
+        id: 'ecommerce',
+        label: 'E-commerce',
+        matches: (p) => {
+            const tags = (p.tags || []).map((t) => t.slug.toLowerCase());
+            const text = `${p.title} ${p.summary} ${p.description || ''} ${p.business_type || ''}`.toLowerCase();
+            return (
+                tags.some((t) =>
+                    ['ecommerce', 'e-commerce', 'woocommerce', 'shopify'].includes(t),
+                ) ||
+                text.includes('ecommerce') ||
+                text.includes('e-commerce') ||
+                text.includes('store') ||
+                text.includes('retail')
+            );
+        },
+    },
+    {
+        id: 'wordpress',
+        label: 'WordPress',
+        matches: (p) => {
+            const tags = (p.tags || []).map((t) => t.slug.toLowerCase());
+            const text = `${p.title} ${p.summary} ${p.description || ''} ${p.business_type || ''}`.toLowerCase();
+            return (
+                tags.some((t) =>
+                    ['wordpress', 'elementor', 'woocommerce'].includes(t),
+                ) || text.includes('wordpress')
+            );
+        },
+    },
+];
+
 export default function ProjectsSection({
     section,
     projects,
     isOff = false,
 }: ProjectsSectionProps) {
-    // 1. Sort projects by featured first, then database sort_order
+    // 1. Sort projects: featured first, then database sort_order
     const sorted = useMemo(() => {
         return [...projects].sort((a, b) => {
             if (a.is_featured && !b.is_featured) return -1;
@@ -26,12 +107,19 @@ export default function ProjectsSection({
         });
     }, [projects]);
 
-    // 2. Currently selected active project on the stage
-    const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(() => {
-        return sorted.find((p) => p.is_featured) || sorted[0] || null;
-    });
+    // 2. Compute available categories that have at least one real matching project
+    const availableCategories = useMemo(() => {
+        return CATEGORY_DEFINITIONS.filter((cat) => {
+            if (cat.id === 'all') return true;
+            return sorted.some((p) => cat.matches(p));
+        });
+    }, [sorted]);
 
-    const [isScanning, setIsScanning] = useState(false);
+    // 3. Category filter state: default is 'all'
+    const [activeCategory, setActiveCategory] = useState<string>('all');
+
+    // 4. Detail panel state for full architectural dossier inspection
+    const [detailProject, setDetailProject] = useState<ProjectItem | null>(null);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
 
     // Deep link handling (e.g. #asn-group or #mercury-bangladesh)
@@ -43,11 +131,8 @@ export default function ProjectsSection({
             if (hash) {
                 const target = sorted.find((p) => p.slug === hash);
                 if (target) {
-                    setSelectedProject(target);
-                    const el = document.getElementById('project-stage');
-                    if (el) {
-                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
+                    setDetailProject(target);
+                    setIsDetailOpen(true);
                 }
             }
         };
@@ -57,27 +142,26 @@ export default function ProjectsSection({
         return () => window.removeEventListener('hashchange', checkHash);
     }, [sorted]);
 
-    // Handle project selection with signature scanning interaction
-    const handleSelectProject = (project: ProjectItem) => {
-        if (selectedProject?.id === project.id) return;
-
-        if (!isOff) {
-            setIsScanning(true);
-            setTimeout(() => {
-                setSelectedProject(project);
-                setTimeout(() => setIsScanning(false), 240);
-            }, 80);
-        } else {
-            setSelectedProject(project);
+    // Filter projects based on the active category
+    const filteredProjects = useMemo(() => {
+        const cat = availableCategories.find((c) => c.id === activeCategory);
+        if (!cat || cat.id === 'all') {
+            return sorted;
         }
+        return sorted.filter((p) => cat.matches(p));
+    }, [sorted, activeCategory, availableCategories]);
+
+    const handleOpenDetails = (project: ProjectItem) => {
+        setDetailProject(project);
+        setIsDetailOpen(true);
     };
 
-    // Deliberate empty state if no projects are published
-    if (!sorted || sorted.length === 0 || !selectedProject) {
+    // Deliberate empty state if no projects exist
+    if (!sorted || sorted.length === 0) {
         return (
             <section
                 id={section.key}
-                aria-label="The Work Archive"
+                aria-label="Selected Work"
                 className="relative w-full overflow-hidden px-6 sm:px-10 lg:px-16 py-24"
             >
                 <div className="mx-auto max-w-[1440px] text-center">
@@ -97,19 +181,20 @@ export default function ProjectsSection({
         );
     }
 
-    const activeAccent = selectedProject.accent_color || '#F15A24';
-
     return (
         <section
             id={section.key}
-            aria-label="Interactive Work Archive — Curated Digital Case Studies"
-            className="relative w-full overflow-hidden px-4 sm:px-8 lg:px-16 py-20 lg:py-32 select-none"
+            aria-label="Selected Work"
+            className="relative w-full overflow-hidden px-4 sm:px-8 lg:px-16 py-20 lg:py-28 select-none"
         >
-            {/* Dynamic Ambient Horizon Glow tuned to active project's accent */}
+            {/* Ambient Cosmic Horizon Glows in Site Palette */}
             <div
                 aria-hidden="true"
-                className="pointer-events-none absolute top-1/4 -right-24 w-[50vw] h-[50vw] max-w-[650px] max-h-[650px] rounded-full opacity-15 blur-[160px] transition-all duration-700"
-                style={{ backgroundColor: activeAccent }}
+                className="pointer-events-none absolute top-1/4 -right-24 w-[45vw] h-[45vw] max-w-[650px] max-h-[650px] rounded-full bg-[var(--forest)] opacity-25 blur-[150px] transition-all duration-700"
+            />
+            <div
+                aria-hidden="true"
+                className="pointer-events-none absolute bottom-12 -left-20 w-[35vw] h-[35vw] max-w-[500px] max-h-[500px] rounded-full bg-[var(--primary)] opacity-10 blur-[130px]"
             />
 
             <div className="mx-auto max-w-[1440px]">
@@ -125,335 +210,119 @@ export default function ProjectsSection({
                         />
                         <span className="font-bold text-[var(--text)]">PROJECTS</span>
                         <span className="text-[var(--surface-border)]">/</span>
-                        <span>INTERACTIVE ARCHIVE</span>
+                        <span>SELECTED WORK</span>
                         <span className="text-[var(--surface-border)]">/</span>
-                        <span className="text-[var(--primary)] font-bold">STAGE &amp; INDEX</span>
+                        <span className="text-[var(--primary)] font-bold">PROJECT GALLERY</span>
                     </div>
                     <div className="flex items-center gap-4 text-[11px]">
-                        <span className="hidden sm:inline">COORDS // RA 14h // SPEC.PROD</span>
+                        <span className="hidden sm:inline">COORDS // RA 14h // MISSION 04</span>
                         <span className="rounded-full border border-[var(--surface-border)] bg-[var(--surface)] px-2.5 py-0.5 font-bold text-[var(--text)]">
-                            {sorted.length} PUBLISHED WORK{sorted.length === 1 ? '' : 'S'}
+                            {filteredProjects.length} OF {sorted.length} WORKS
                         </span>
                     </div>
                 </div>
 
-                {/* 2. Strong Editorial Introduction */}
+                {/* 2. Prominent Section Heading & Concise Intro */}
                 <div className="mt-12 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                     <div>
                         <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
-                            // SELECTED WORK. REAL DIGITAL PRODUCTS.
+                            // SELECTED WORK.
                         </span>
                         <h2 className="mt-3 font-display text-3xl sm:text-5xl font-black tracking-tight text-[var(--text)] uppercase leading-[1.08]">
                             SELECTED WORK.
-                            <br />
-                            <span className="text-[var(--text-muted)]">REAL DIGITAL PRODUCTS.</span>
                         </h2>
+                        <p className="mt-3 font-body text-base sm:text-lg text-[var(--text-muted)] font-medium">
+                            Real projects. Thoughtfully built.
+                        </p>
                     </div>
-                    <p className="max-w-md font-body text-sm sm:text-base text-[var(--text-muted)] leading-relaxed">
-                        An interactive editorial archive of production web applications, corporate logistics portals, and custom ecommerce stores. Select any project to explore its architecture.
+
+                    <p className="max-w-md font-body text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed">
+                        A curated gallery of verified production web applications, corporate logistics portals, and custom e-commerce stores deployed for real clients.
                     </p>
                 </div>
 
-                {/* 3. Mobile / Tablet Quick-Select Tab Bar */}
-                <div className="mt-10 lg:hidden border-y border-[var(--surface-border)] py-3">
-                    <div className="flex items-center justify-between gap-4 pb-2 font-mono text-[10px] tracking-widest text-[var(--text-muted)] uppercase">
-                        <div className="flex items-center gap-2">
-                            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
-                            <span>TAP A PROJECT TO PREVIEW</span>
-                        </div>
-                        <span>{sorted.length} ENTRIES</span>
-                    </div>
+                {/* 3. Compact Functional Category Filter Bar */}
+                <div className="mt-10 border-y border-[var(--surface-border)] py-3">
                     <div
-                        className="flex items-center gap-2 overflow-x-auto pt-1 pb-1 scrollbar-none"
+                        className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1"
                         role="tablist"
-                        aria-label="Projects tab list"
+                        aria-label="Project category filters"
                     >
-                        {sorted.map((proj, idx) => {
-                            const isCurrent = selectedProject.id === proj.id;
-                            const indexNumber = (idx + 1).toString().padStart(2, '0');
+                        {availableCategories.map((cat) => {
+                            const isCurrent = activeCategory === cat.id;
+                            const count =
+                                cat.id === 'all'
+                                    ? sorted.length
+                                    : sorted.filter((p) => cat.matches(p)).length;
 
                             return (
                                 <button
-                                    key={proj.id}
+                                    key={cat.id}
                                     type="button"
                                     role="tab"
                                     aria-selected={isCurrent}
-                                    onClick={() => handleSelectProject(proj)}
-                                    className={`group flex shrink-0 items-center gap-2 rounded-lg border px-3.5 py-2 font-mono text-xs transition-all duration-200 cursor-pointer ${
+                                    tabIndex={0}
+                                    onClick={() => setActiveCategory(cat.id)}
+                                    className={`group flex shrink-0 items-center gap-2 rounded-xl border px-4 py-2.5 font-mono text-xs font-semibold uppercase tracking-wider transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--primary)] min-h-[44px] ${
                                         isCurrent
-                                            ? 'border-[var(--primary)] bg-[var(--surface)] text-[var(--text)] shadow-sm ring-1 ring-[var(--primary)]'
-                                            : 'border-[var(--surface-border)] bg-[var(--surface)]/50 text-[var(--text-muted)] hover:border-[var(--text)]/30 hover:text-[var(--text)]'
+                                            ? 'border-[var(--primary)] bg-[var(--primary)] text-white shadow-[0_0_14px_rgba(241,90,36,0.3)]'
+                                            : 'border-[var(--surface-border)] bg-[var(--surface)] text-[var(--text-muted)] hover:border-[var(--text-muted)] hover:text-[var(--text)]'
                                     }`}
                                 >
+                                    <span>{cat.label}</span>
                                     <span
-                                        className={`font-bold transition-colors ${
+                                        className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
                                             isCurrent
-                                                ? 'text-[var(--primary)]'
-                                                : 'text-[var(--text-muted)]'
+                                                ? 'bg-white/20 text-white'
+                                                : 'bg-[var(--muted)] text-[var(--text-muted)]'
                                         }`}
                                     >
-                                        {indexNumber}.
+                                        {count}
                                     </span>
-                                    <span className="font-semibold uppercase tracking-wider">
-                                        {proj.title}
-                                    </span>
-                                    {proj.is_featured && (
-                                        <span className="rounded bg-[var(--primary)]/15 px-1 py-0.5 text-[8px] font-bold text-[var(--primary)]">
-                                            FEATURED
-                                        </span>
-                                    )}
                                 </button>
                             );
                         })}
                     </div>
                 </div>
 
-                {/* 4. THE TWO COORDINATED AREAS: PROJECT INDEX (LEFT) + FEATURED STAGE (RIGHT) */}
-                <div className="mt-8 sm:mt-12 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-                    
-                    {/* ========================================================= */}
-                    {/* AREA A: PROJECT INDEX (Compact Desktop List)              */}
-                    {/* ========================================================= */}
-                    <div className="hidden lg:flex lg:col-span-5 flex-col space-y-3 sticky top-28">
-                        <div className="flex items-center justify-between border-b border-[var(--surface-border)] pb-3 font-mono text-[11px] tracking-widest text-[var(--text-muted)] uppercase">
-                            <div className="flex items-center gap-2">
-                                <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)]" />
-                                <span className="font-bold text-[var(--text)]">PROJECT INDEX</span>
-                            </div>
-                            <span>SELECT TO INSPECT STAGE</span>
-                        </div>
-
-                        <div className="flex flex-col space-y-2.5 pt-1">
-                            {sorted.map((proj, idx) => {
-                                const isCurrent = selectedProject.id === proj.id;
-                                const indexNumber = (idx + 1).toString().padStart(2, '0');
-                                const projAccent = proj.accent_color || '#F15A24';
-
-                                return (
-                                    <button
-                                        key={proj.id}
-                                        type="button"
-                                        onClick={() => handleSelectProject(proj)}
-                                        aria-label={`Select ${proj.title}`}
-                                        className={`group relative flex items-center justify-between rounded-xl border p-4 text-left transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--primary)] ${
-                                            isCurrent
-                                                ? 'border-[var(--primary)] bg-[var(--surface)] shadow-[0_0_20px_rgba(241,90,36,0.18)] ring-1 ring-[var(--primary)] translate-x-1'
-                                                : 'border-[var(--surface-border)] bg-[var(--surface)]/40 hover:border-[var(--primary)]/60 hover:bg-[var(--surface)] hover:translate-x-0.5'
-                                        }`}
-                                    >
-                                        <div className="flex items-center gap-3.5">
-                                            {/* Index number with active beacon */}
-                                            <div className="flex flex-col items-center">
-                                                <span
-                                                    className={`font-mono text-xs font-bold transition-colors ${
-                                                        isCurrent
-                                                            ? 'text-[var(--primary)]'
-                                                            : 'text-[var(--text-muted)] group-hover:text-[var(--primary)]'
-                                                    }`}
-                                                >
-                                                    {indexNumber}
-                                                </span>
-                                                <span
-                                                    className={`mt-1 h-1.5 w-1.5 rounded-full transition-all ${
-                                                        isCurrent
-                                                            ? 'bg-[var(--primary)] shadow-[0_0_8px_var(--primary)] scale-125'
-                                                            : 'bg-transparent group-hover:bg-[var(--primary)]/40'
-                                                    }`}
-                                                />
-                                            </div>
-
-                                            {/* Title and metadata */}
-                                            <div className="min-w-0">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="font-display text-base sm:text-lg font-black uppercase tracking-tight text-[var(--text)] group-hover:text-[var(--primary)] transition-colors truncate">
-                                                        {proj.title}
-                                                    </span>
-                                                    {proj.is_featured && (
-                                                        <span className="shrink-0 rounded bg-[var(--primary)]/15 px-1.5 py-0.5 font-mono text-[9px] font-bold text-[var(--primary)]">
-                                                            FEATURED
-                                                        </span>
-                                                    )}
-                                                </div>
-                                                <span className="block font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-wider truncate mt-0.5">
-                                                    {proj.business_type || 'PRODUCTION APPLICATION'} · {proj.year || '2025'}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        <span className="font-mono text-xs text-[var(--text-muted)] transition-transform group-hover:translate-x-1">
-                                            →
-                                        </span>
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
-
-                    {/* ========================================================= */}
-                    {/* AREA B: FEATURED PROJECT STAGE (Dynamic Showcase)         */}
-                    {/* ========================================================= */}
-                    <div
-                        id="project-stage"
-                        className="lg:col-span-7 rounded-3xl border border-[var(--surface-border)] bg-[var(--surface)] p-6 sm:p-8 lg:p-10 relative overflow-hidden group shadow-xl transition-all duration-300"
-                    >
-                        {/* Corner Registration Crosshairs */}
-                        <span className="pointer-events-none absolute top-3 left-3 font-mono text-xs font-bold text-[var(--primary)] z-20 select-none opacity-60">
-                            +
-                        </span>
-                        <span className="pointer-events-none absolute top-3 right-3 font-mono text-xs font-bold text-[var(--primary)] z-20 select-none opacity-60">
-                            +
-                        </span>
-                        <span className="pointer-events-none absolute bottom-3 left-3 font-mono text-xs font-bold text-[var(--primary)] z-20 select-none opacity-60">
-                            +
-                        </span>
-                        <span className="pointer-events-none absolute bottom-3 right-3 font-mono text-xs font-bold text-[var(--primary)] z-20 select-none opacity-60">
-                            +
-                        </span>
-
-                        {/* Top Telemetry & Status Strip */}
-                        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--surface-border)] pb-4 font-mono text-xs tracking-widest text-[var(--text-muted)] uppercase">
-                            <div className="flex items-center gap-2.5">
-                                <span className="h-2 w-2 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
-                                <span className="font-bold text-[var(--primary)]">
-                                    ACTIVE CASE STUDY // {selectedProject.slug}
-                                </span>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <span className="text-[11px] text-[var(--text-muted)]">
-                                    {selectedProject.year || '2025'} EDITION
-                                </span>
-                                <span className="rounded-full bg-[var(--accent)]/15 border border-[var(--accent)]/30 px-2.5 py-0.5 text-[10px] font-bold text-[var(--accent-foreground)]">
-                                    PRODUCTION LIVE
-                                </span>
-                            </div>
-                        </div>
-
-                        {/* Interactive Viewport Plate with Signature Scanning Line */}
-                        <div className="mt-6 rounded-2xl border border-[var(--surface-border)] bg-[var(--bg)] overflow-hidden shadow-md relative">
-                            {/* Browser Chrome Bar */}
-                            <div className="flex items-center justify-between border-b border-[var(--surface-border)] bg-[var(--surface)] px-4 py-2.5">
-                                <div className="flex items-center gap-1.5">
-                                    <span className="h-2.5 w-2.5 rounded-full bg-[#EF4444]/80" />
-                                    <span className="h-2.5 w-2.5 rounded-full bg-[#F59E0B]/80" />
-                                    <span className="h-2.5 w-2.5 rounded-full bg-[#10B981]/80" />
-                                </div>
-                                <div className="max-w-[240px] sm:max-w-xs truncate rounded-md border border-[var(--surface-border)] bg-[var(--bg)] px-3 py-1 font-mono text-[10px] text-[var(--text-muted)]">
-                                    {selectedProject.live_url
-                                        ? selectedProject.live_url.replace(/\/$/, '')
-                                        : `archive://${selectedProject.slug}.local`}
-                                </div>
-                                <div className="font-mono text-[9px] font-bold text-[var(--accent)] uppercase hidden sm:block">
-                                    200 OK
-                                </div>
-                            </div>
-
-                            {/* Viewport Surface */}
-                            <div className="relative aspect-[16/10] w-full overflow-hidden bg-[var(--bg)]">
-                                {/* Signature Laser Scanning Line Beam */}
-                                {isScanning && (
-                                    <div
-                                        aria-hidden="true"
-                                        className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[var(--primary)] to-transparent z-30 shadow-[0_0_14px_var(--primary)] animate-[scan-line_0.24s_linear_infinite]"
-                                    />
-                                )}
-
-                                <div
-                                    className={`h-full w-full transition-all duration-300 ${
-                                        isScanning ? 'opacity-40 scale-[0.99] filter blur-[1px]' : 'opacity-100 scale-100 filter-none'
-                                    }`}
-                                >
-                                    <ProjectArchitecturalCover
-                                        project={selectedProject}
-                                        isFeatured={true}
-                                        className="h-full w-full"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Dossier Metadata & Narrative Details */}
-                        <div className="mt-8 flex flex-col justify-between">
-                            <div>
-                                <span className="font-mono text-xs font-bold uppercase tracking-wider text-[var(--primary)]">
-                                    {selectedProject.role || 'LEAD FULL-STACK DEVELOPER'}
-                                </span>
-                                <h3 className="mt-2 font-display text-3xl sm:text-4xl font-black uppercase tracking-tight text-[var(--text)]">
-                                    {selectedProject.title}
-                                </h3>
-
-                                <p className="mt-4 font-body text-sm sm:text-base text-[var(--text-muted)] leading-relaxed">
-                                    {selectedProject.summary || selectedProject.description}
-                                </p>
-
-                                {/* Real Tag Chips */}
-                                {selectedProject.tags && selectedProject.tags.length > 0 && (
-                                    <div className="mt-6 flex flex-wrap gap-2">
-                                        {selectedProject.tags.map((tag) => (
-                                            <TagChip key={tag.id}>{tag.name}</TagChip>
-                                        ))}
-                                    </div>
-                                )}
-
-                                {/* Key Deliverables from Database */}
-                                {selectedProject.features && selectedProject.features.length > 0 && (
-                                    <div className="mt-6 space-y-2 border-t border-[var(--surface-border)] pt-4">
-                                        <span className="font-mono text-[10px] font-bold tracking-widest text-[var(--text-muted)] uppercase">
-                                            // ARCHITECTURAL DELIVERABLES:
-                                        </span>
-                                        {selectedProject.features.slice(0, 3).map((f) => (
-                                            <div
-                                                key={f.id}
-                                                className="flex items-start gap-2.5 font-body text-xs text-[var(--text-muted)]"
-                                            >
-                                                <span className="mt-0.5 text-[var(--primary)] font-mono font-bold">
-                                                    →
-                                                </span>
-                                                <span className="leading-snug">{f.text}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Direct Actions: Visit Live System & Explore Full Dossier */}
-                            <div className="mt-8 flex flex-wrap items-center gap-3 pt-5 border-t border-[var(--surface-border)]">
-                                <button
-                                    type="button"
-                                    onClick={() => setIsDetailOpen(true)}
-                                    className="inline-flex items-center gap-2 rounded-xl border border-[var(--surface-border-strong)] bg-[var(--text)] px-5 py-3 font-mono text-xs font-bold uppercase tracking-wider text-[var(--text-paper)] shadow-sm transition-all duration-200 hover:bg-[var(--primary)] hover:border-[var(--primary)] hover:text-white cursor-pointer"
-                                >
-                                    <span>Explore Full Dossier</span>
-                                    <ArrowRight className="h-4 w-4" />
-                                </button>
-
-                                {selectedProject.live_url && (
-                                    <a
-                                        href={selectedProject.live_url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--surface-border)] bg-[var(--surface)] px-4 py-3 font-mono text-xs font-bold uppercase tracking-wider text-[var(--text)] transition-all duration-200 hover:border-[var(--primary)] hover:text-[var(--primary)] hover:bg-[var(--surface)] cursor-pointer"
-                                    >
-                                        <span>Visit Live System</span>
-                                        <ArrowAngularTopRight className="h-4 w-4 text-[var(--primary)]" />
-                                    </a>
-                                )}
-                            </div>
-                        </div>
-
-                    </div>
-
+                {/* 4. Three-Column Project Gallery Grid */}
+                <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch">
+                    {filteredProjects.map((project, idx) => (
+                        <ProjectCard
+                            key={project.id}
+                            project={project}
+                            index={idx}
+                            isOff={isOff}
+                            onOpenDetails={handleOpenDetails}
+                        />
+                    ))}
                 </div>
 
+                {/* Graceful empty state when filter yields 0 projects */}
+                {filteredProjects.length === 0 && (
+                    <div className="mt-12 rounded-2xl border border-[var(--surface-border)] bg-[var(--surface)] p-12 text-center">
+                        <p className="font-mono text-xs tracking-wider text-[var(--text-muted)] uppercase">
+                            No projects currently match this filter category.
+                        </p>
+                        <button
+                            type="button"
+                            onClick={() => setActiveCategory('all')}
+                            className="mt-4 rounded-xl border border-[var(--primary)] bg-[var(--primary)] px-4 py-2 font-mono text-xs font-bold uppercase tracking-wider text-white hover:brightness-110"
+                        >
+                            Reset to All Projects
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* Comprehensive Project Detail Dossier Modal */}
             <ProjectDetailPanel
-                project={selectedProject}
+                project={detailProject}
                 projects={sorted}
                 isOpen={isDetailOpen}
                 onClose={() => setIsDetailOpen(false)}
                 onSelectProject={(proj) => {
-                    setSelectedProject(proj);
+                    setDetailProject(proj);
                 }}
             />
         </section>
