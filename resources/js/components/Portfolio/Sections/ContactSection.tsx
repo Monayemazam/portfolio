@@ -66,7 +66,7 @@ export default function ContactSection({
         <section
             id="contact"
             aria-label="Direct Deep-Space Communication Beacon"
-            className="w-full border-b border-border/40 bg-[var(--bg)] px-6 sm:px-10 lg:px-16 py-24 lg:py-32 select-none relative overflow-hidden"
+            className="w-full border-b border-border/40 bg-[var(--bg)] px-6 sm:px-10 lg:px-16 py-24 lg:py-32 relative overflow-hidden"
         >
             {/* Ambient Nebula Light & Beacon Rays */}
             <div
@@ -118,8 +118,8 @@ export default function ContactSection({
                                     "I'm always open to discussing new projects, technical consulting, and digital product opportunities. Send a message using the form, and I'll get back to you promptly."}
                             </p>
 
-                            {/* Direct Communication Channels (Render only if configured) */}
-                            {(emailAddress || phone || whatsapp || bookingUrl) && (
+                            {/* Direct Communication Channels (Render only if configured, otherwise show protocol card) */}
+                            {(emailAddress || phone || whatsapp || bookingUrl) ? (
                                 <div className="mt-8 rounded-2xl border border-border/50 bg-surface/30 backdrop-blur-md divide-y divide-border/40 font-mono text-xs overflow-hidden">
                                     {emailAddress && (
                                         <div className="p-4 flex items-center justify-between hover:bg-surface/50 transition-colors">
@@ -188,6 +188,20 @@ export default function ContactSection({
                                             </a>
                                         </div>
                                     )}
+                                </div>
+                            ) : (
+                                <div className="mt-8 rounded-2xl border border-border/50 bg-surface/30 p-6 backdrop-blur-md font-mono text-xs space-y-4">
+                                    <div className="flex items-center gap-2 text-[var(--accent)] font-bold">
+                                        <span className="h-2 w-2 rounded-full bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]" />
+                                        <span className="tracking-widest uppercase">TRANSMISSION PROTOCOL</span>
+                                    </div>
+                                    <p className="font-body text-xs text-foreground/75 leading-relaxed">
+                                        Have a technical project, website redesign, or new digital product in mind? Fill out the inquiry console to start a conversation. Messages are routed directly to my verified inbox.
+                                    </p>
+                                    <div className="pt-3 border-t border-border/30 flex items-center justify-between text-[11px] text-muted-foreground uppercase tracking-wider">
+                                        <span>ESTIMATED RESPONSE:</span>
+                                        <span className="font-bold text-foreground">WITHIN 24 HOURS</span>
+                                    </div>
                                 </div>
                             )}
 
@@ -327,10 +341,11 @@ export default function ContactSection({
                                                 id="contact_name"
                                                 type="text"
                                                 required
+                                                autoComplete="name"
                                                 placeholder="Your Name"
                                                 value={data.name}
                                                 onChange={(e) => setData('name', e.target.value)}
-                                                className={`w-full rounded-xl border bg-background/60 px-4 py-3.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 transition-all focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 focus:outline-hidden ${
+                                                className={`w-full rounded-xl border bg-background/80 px-4 py-3.5 font-sans text-sm text-foreground placeholder:text-muted-foreground/60 transition-all focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 focus:outline-hidden ${
                                                     errors.name ? 'border-red-500' : 'border-border/60'
                                                 }`}
                                             />
@@ -352,10 +367,11 @@ export default function ContactSection({
                                                 id="contact_email"
                                                 type="email"
                                                 required
+                                                autoComplete="email"
                                                 placeholder="your.email@example.com"
                                                 value={data.email}
                                                 onChange={(e) => setData('email', e.target.value)}
-                                                className={`w-full rounded-xl border bg-background/60 px-4 py-3.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 transition-all focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 focus:outline-hidden ${
+                                                className={`w-full rounded-xl border bg-background/80 px-4 py-3.5 font-sans text-sm text-foreground placeholder:text-muted-foreground/60 transition-all focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 focus:outline-hidden ${
                                                     errors.email ? 'border-red-500' : 'border-border/60'
                                                 }`}
                                             />
@@ -381,7 +397,7 @@ export default function ContactSection({
                                             placeholder="Project inquiry or discussion topic"
                                             value={data.subject}
                                             onChange={(e) => setData('subject', e.target.value)}
-                                            className="w-full rounded-xl border border-border/60 bg-background/60 px-4 py-3.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 transition-all focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 focus:outline-hidden"
+                                            className="w-full rounded-xl border border-border/60 bg-background/80 px-4 py-3.5 font-sans text-sm text-foreground placeholder:text-muted-foreground/60 transition-all focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 focus:outline-hidden"
                                         />
                                     </div>
 
@@ -400,7 +416,7 @@ export default function ContactSection({
                                             placeholder="Tell me about your project, goals, timeline, or requirements..."
                                             value={data.message}
                                             onChange={(e) => setData('message', e.target.value)}
-                                            className={`w-full rounded-xl border bg-background/60 px-4 py-3.5 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 transition-all focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 focus:outline-hidden ${
+                                            className={`w-full rounded-xl border bg-background/80 px-4 py-3.5 font-sans text-sm text-foreground placeholder:text-muted-foreground/60 transition-all focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 focus:outline-hidden resize-y ${
                                                 errors.message ? 'border-red-500' : 'border-border/60'
                                             }`}
                                         />

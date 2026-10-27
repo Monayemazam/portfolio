@@ -1,8 +1,6 @@
 import React, { useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
 import { PortfolioSection, SkillItem } from '@/types/portfolio';
-import SkillAtlasHeader from '../Skills/SkillAtlasHeader';
-import SkillAtlasNav, { SkillCategoryFilter } from '../Skills/SkillAtlasNav';
-import SkillDetailInspector from '../Skills/SkillDetailInspector';
 import SkillBrandIcon from '../Skills/SkillBrandIcon';
 
 interface SkillsSectionProps {
@@ -12,13 +10,15 @@ interface SkillsSectionProps {
     isDark?: boolean;
 }
 
+type SkillCategory = 'ALL' | 'ENGINEERING' | 'DEPLOYMENT' | 'CREATIVE';
+
 export default function SkillsSection({
     section,
     skills,
     isOff = false,
 }: SkillsSectionProps) {
-    // 1. Group skills into the 3 canonical editorial groups
-    const { engineering, deployment, creative, allPublished } = useMemo(() => {
+    // 1. Organize verified skills from database into the 3 canonical editorial groups
+    const { engineering, deployment, creative } = useMemo(() => {
         const published = skills.filter((s) => s.is_published);
 
         const eng: SkillItem[] = [];
@@ -31,21 +31,18 @@ export default function SkillsSection({
 
             if (
                 cat.includes('engineer') ||
-                cat.includes('backend') ||
-                cat.includes('frontend') ||
-                name.includes('php') ||
-                name.includes('laravel') ||
-                name.includes('script') ||
-                name.includes('vue') ||
-                name.includes('react') ||
+                name === 'php' ||
+                name === 'laravel' ||
+                name === 'javascript' ||
+                name === 'vue.js' ||
+                name === 'react' ||
+                name === 'typescript' ||
                 name.includes('html') ||
-                name.includes('css') ||
                 name.includes('tailwind') ||
-                name.includes('mysql') ||
+                name === 'mysql' ||
                 name.includes('wordpress') ||
                 name.includes('woocommerce')
             ) {
-                // If it's UI/UX, place in creative
                 if (name.includes('ui/ux')) {
                     cre.push(skill);
                 } else {
@@ -54,7 +51,6 @@ export default function SkillsSection({
             } else if (
                 cat.includes('deploy') ||
                 cat.includes('growth') ||
-                cat.includes('platform') ||
                 name.includes('cpanel') ||
                 name.includes('hpanel') ||
                 name.includes('seo') ||
@@ -66,7 +62,6 @@ export default function SkillsSection({
             } else if (
                 cat.includes('creative') ||
                 cat.includes('market') ||
-                cat.includes('design') ||
                 name.includes('pixel') ||
                 name.includes('ads') ||
                 name.includes('content') ||
@@ -80,415 +75,229 @@ export default function SkillsSection({
             }
         });
 
-        eng.sort((a, b) => a.sort_order - b.sort_order);
-        dep.sort((a, b) => a.sort_order - b.sort_order);
-        cre.sort((a, b) => a.sort_order - b.sort_order);
+        eng.sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+        dep.sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+        cre.sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
 
         return {
             engineering: eng,
             deployment: dep,
             creative: cre,
-            allPublished: published,
         };
     }, [skills]);
 
-    // 2. Interactive Navigation & Selection State
-    const [activeCategory, setActiveCategory] =
-        useState<SkillCategoryFilter>('ALL');
-    const [selectedSkill, setSelectedSkill] = useState<SkillItem | null>(null);
+    const [activeTab, setActiveTab] = useState<SkillCategory>('ALL');
 
-    const showEngineering =
-        activeCategory === 'ALL' || activeCategory === 'Engineering';
-    const showDeployment =
-        activeCategory === 'ALL' || activeCategory === 'Deployment & Growth';
-    const showCreative =
-        activeCategory === 'ALL' || activeCategory === 'Creative & Marketing';
+    const totalSkills = engineering.length + deployment.length + creative.length;
+
+    const categories = [
+        { key: 'ALL' as SkillCategory, label: 'All Capabilities', count: totalSkills },
+        { key: 'ENGINEERING' as SkillCategory, label: 'Engineering', count: engineering.length },
+        { key: 'DEPLOYMENT' as SkillCategory, label: 'Deployment & Growth', count: deployment.length },
+        { key: 'CREATIVE' as SkillCategory, label: 'Creative & Marketing', count: creative.length },
+    ];
+
+    const showEng = activeTab === 'ALL' || activeTab === 'ENGINEERING';
+    const showDep = activeTab === 'ALL' || activeTab === 'DEPLOYMENT';
+    const showCre = activeTab === 'ALL' || activeTab === 'CREATIVE';
 
     return (
         <section
             id={section.key}
-            aria-label="The Skill Atlas"
-            className="relative w-full overflow-hidden px-4 sm:px-8 lg:px-16 py-20 lg:py-32 select-none"
+            aria-label="Skills & Capabilities — Technical Index"
+            className="relative w-full overflow-hidden px-6 sm:px-10 lg:px-16 py-24 lg:py-32 select-none bg-[var(--bg)] border-t border-[var(--surface-border)]"
         >
-            {/* Subtle Celestial Ambient Tint */}
+            {/* Ambient Nebula Light in Background */}
             <div
                 aria-hidden="true"
-                className="pointer-events-none absolute top-1/3 right-0 w-[45vw] h-[45vw] max-w-[650px] max-h-[650px] rounded-full bg-[var(--forest)] opacity-15 blur-[160px]"
+                className="pointer-events-none absolute top-1/3 -right-20 w-[45vw] h-[45vw] max-w-[650px] max-h-[650px] rounded-full bg-[var(--forest)] opacity-25 blur-[150px]"
             />
             <div
                 aria-hidden="true"
-                className="pointer-events-none absolute bottom-1/4 left-0 w-[35vw] h-[35vw] max-w-[500px] max-h-[500px] rounded-full bg-[var(--signal-orange)] opacity-10 blur-[180px]"
+                className="pointer-events-none absolute bottom-10 left-10 w-[35vw] h-[35vw] max-w-[500px] max-h-[500px] rounded-full bg-[var(--primary)] opacity-10 blur-[130px]"
             />
 
-            <div className="relative mx-auto max-w-[1440px]">
-                {/* 1. Master Editorial Section Header & Capability Highlights */}
-                <SkillAtlasHeader
-                    eyebrow={section.eyebrow}
-                    title={section.title}
-                    subtitle={section.subtitle}
-                    totalSkills={allPublished.length}
-                    engineeringCount={engineering.length}
-                    deploymentCount={deployment.length}
-                    creativeCount={creative.length}
-                    isOff={isOff}
-                />
+            <div className="mx-auto max-w-[1440px] relative z-10">
+                {/* 1. Technical Coordinate Breadcrumb */}
+                <div className="flex items-center justify-between border-b border-[var(--surface-border)] pb-4 font-mono text-xs tracking-widest text-[var(--text-muted)] uppercase">
+                    <div className="flex items-center gap-3">
+                        <span className="h-2 w-2 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
+                        <span className="font-bold text-[var(--text)]">SKILLS</span>
+                        <span className="text-[var(--surface-border)]">/</span>
+                        <span>TECHNICAL INDEX</span>
+                    </div>
+                    <span className="text-[11px] hidden sm:inline">
+                        TOOLKIT // {totalSkills} VERIFIED TECHNOLOGIES
+                    </span>
+                </div>
 
-                {/* 2. Restrained Editorial Group Selector Navigation */}
-                <SkillAtlasNav
-                    activeCategory={activeCategory}
-                    onSelectCategory={(cat) => {
-                        setActiveCategory(cat);
-                        setSelectedSkill(null);
-                    }}
-                    engineeringCount={engineering.length}
-                    deploymentCount={deployment.length}
-                    creativeCount={creative.length}
-                    totalCount={allPublished.length}
-                />
+                {/* 2. Section Heading & Narrative */}
+                <div className="mt-12 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                    <div>
+                        <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
+                            // 02 · TECHNICAL INDEX
+                        </span>
+                        <h2 className="mt-3 font-display text-3xl sm:text-5xl font-black tracking-tight text-[var(--text)] uppercase leading-tight">
+                            WHAT I KNOW.
+                            <br />
+                            <span className="text-[var(--text-muted)]">WHAT I BUILD.</span>
+                        </h2>
+                    </div>
 
-                {/* 3. Compact Detail Inspector (Shown when a skill is clicked) */}
-                {selectedSkill && (
-                    <SkillDetailInspector
-                        skill={selectedSkill}
-                        onClose={() => setSelectedSkill(null)}
-                        isOff={isOff}
-                    />
-                )}
+                    <p className="max-w-md font-body text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed">
+                        A focused, practical toolkit for engineering resilient web applications, managing cloud deployments, and driving digital growth. Communicated cleanly with zero artificial scores.
+                    </p>
+                </div>
 
-                {/* 4. The Three Primary Capability Groups */}
-                <div className="flex flex-col gap-16 lg:gap-24">
-                    {/* ========================================================= */}
-                    {/* GROUP 01 — ENGINEERING                                     */}
-                    {/* ========================================================= */}
-                    {showEngineering && (
-                        <article
-                            aria-labelledby="group-01-heading"
-                            className="relative grid grid-cols-1 gap-8 border-b border-[var(--surface-border)] pb-16 lg:grid-cols-12 lg:gap-12"
-                        >
-                            {/* Left Column: Group Editorial Metadata & Index Signature */}
-                            <div className="lg:col-span-4">
-                                <div className="sticky top-28 flex flex-col">
-                                    <div className="flex items-center gap-3 font-mono text-xs font-bold uppercase tracking-widest text-[var(--accent)]">
-                                        <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
-                                        <span>GROUP 01 // ARCHITECTURE & SYSTEMS</span>
-                                    </div>
+                {/* 3. Compact Category Filter Switcher */}
+                <div className="mt-10 border-y border-[var(--surface-border)] py-3">
+                    <div
+                        className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1"
+                        role="tablist"
+                        aria-label="Skill categories"
+                    >
+                        {categories.map((cat) => {
+                            const isCurrent = activeTab === cat.key;
+                            return (
+                                <button
+                                    key={cat.key}
+                                    type="button"
+                                    role="tab"
+                                    aria-selected={isCurrent}
+                                    onClick={() => setActiveTab(cat.key)}
+                                    className={`group flex shrink-0 items-center gap-2 rounded-xl border px-4 py-2.5 font-mono text-xs font-semibold uppercase tracking-wider transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--primary)] min-h-[44px] ${
+                                        isCurrent
+                                            ? 'border-[var(--primary)] bg-[var(--primary)] text-white shadow-[0_0_12px_rgba(241,90,36,0.3)]'
+                                            : 'border-[var(--surface-border)] bg-[var(--surface)] text-[var(--text-muted)] hover:border-[var(--text-muted)] hover:text-[var(--text)]'
+                                    }`}
+                                >
+                                    <span>{cat.label}</span>
+                                    <span
+                                        className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
+                                            isCurrent
+                                                ? 'bg-white/20 text-white'
+                                                : 'bg-[var(--muted)] text-[var(--text-muted)]'
+                                        }`}
+                                    >
+                                        {cat.count}
+                                    </span>
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
 
-                                    <div className="relative mt-2">
-                                        <h3
-                                            id="group-01-heading"
-                                            className="font-display text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-[var(--text)] leading-tight"
-                                        >
-                                            ENGINEERING
-                                        </h3>
-                                        <span
-                                            aria-hidden="true"
-                                            className="pointer-events-none absolute -bottom-6 -left-2 font-display text-7xl sm:text-8xl font-black text-[var(--surface-border)] opacity-35 select-none"
-                                        >
-                                            01
-                                        </span>
-                                    </div>
-
-                                    <p className="mt-8 font-body text-sm text-[var(--text-muted)] leading-relaxed">
-                                        Technologies I use to develop web applications, interfaces, APIs, and data-driven systems.
-                                    </p>
-
-                                    <div className="mt-6 flex items-center gap-3 font-mono text-xs text-[var(--text-muted)]">
-                                        <span className="rounded-full border border-[var(--surface-border)] bg-[var(--surface)] px-2.5 py-1 text-[10px] font-bold text-[var(--text)]">
-                                            {engineering.length} VERIFIED STACKS
-                                        </span>
-                                        <span>RA 05h // SYSTEM CORE</span>
-                                    </div>
+                {/* 4. The 3 Structured Technical Directory Categories */}
+                <div className="mt-12 space-y-12">
+                    {/* Category 1: Engineering */}
+                    {showEng && engineering.length > 0 && (
+                        <div className="rounded-2xl border border-[var(--surface-border)] bg-[var(--surface)] p-6 sm:p-8">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--surface-border)] pb-4">
+                                <div className="flex items-center gap-2.5">
+                                    <span className="h-2 w-2 rounded-full bg-[var(--primary)]" />
+                                    <h3 className="font-display text-lg sm:text-xl font-bold uppercase tracking-tight text-[var(--text)]">
+                                        Engineering &amp; Core Stack
+                                    </h3>
                                 </div>
+                                <span className="font-mono text-xs text-[var(--text-muted)] uppercase">
+                                    {engineering.length} Technologies
+                                </span>
                             </div>
 
-                            {/* Right Column: Refined Typographic Index Grid */}
-                            <div className="lg:col-span-8">
-                                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                    {engineering.map((skill, idx) => {
-                                        const isSelected =
-                                            selectedSkill?.id === skill.id;
-                                        const itemCode = `01.${(idx + 1)
-                                            .toString()
-                                            .padStart(2, '0')}`;
+                            <p className="mt-3 font-body text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed max-w-2xl">
+                                Full-stack application architecture, robust backend APIs, modern component-based frontend interfaces, relational database schema design, and modular CMS development.
+                            </p>
 
-                                        return (
-                                            <button
-                                                key={skill.id}
-                                                type="button"
-                                                onClick={() =>
-                                                    setSelectedSkill(
-                                                        isSelected ? null : skill,
-                                                    )
-                                                }
-                                                className={`group flex items-center justify-between rounded-xl border p-4 text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] ${
-                                                    isSelected
-                                                        ? 'border-[var(--primary)] bg-[var(--surface)] shadow-[0_0_20px_rgba(241,90,36,0.2)] ring-1 ring-[var(--primary)]'
-                                                        : 'border-[var(--surface-border)] bg-[var(--surface)]/40 hover:border-[var(--primary)] hover:bg-[var(--surface)]'
-                                                }`}
-                                                aria-label={`Inspect ${skill.name}`}
-                                            >
-                                                <div className="flex items-center gap-3.5">
-                                                    {/* Authentic Colourful Brand Icon Box */}
-                                                    <div
-                                                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border p-1.5 transition-colors ${
-                                                            isSelected
-                                                                ? 'border-[var(--primary)] bg-[var(--primary)]/10 ring-1 ring-[var(--primary)]'
-                                                                : 'border-[var(--surface-border)] bg-[var(--surface)]/90 group-hover:border-[var(--primary)]/50'
-                                                        }`}
-                                                    >
-                                                        <SkillBrandIcon
-                                                            name={skill.name}
-                                                            icon={skill.icon}
-                                                            className="h-6 w-6 transition-transform duration-200 group-hover:scale-110"
-                                                        />
-                                                    </div>
-
-                                                    <div>
-                                                        <span className="block font-display text-base sm:text-lg font-black tracking-tight text-[var(--text)] uppercase group-hover:text-[var(--primary)] transition-colors">
-                                                            {skill.name}
-                                                        </span>
-                                                        <span className="block font-mono text-[10px] text-[var(--text-muted)] tracking-wider">
-                                                            {itemCode} · PRODUCTION STACK
-                                                        </span>
-                                                    </div>
-                                                </div>
-
-                                                <span
-                                                    className={`h-1.5 w-1.5 rounded-full transition-all ${
-                                                        isSelected
-                                                            ? 'bg-[var(--primary)] scale-150'
-                                                            : 'bg-transparent group-hover:bg-[var(--primary)]'
-                                                    }`}
-                                                />
-                                            </button>
-                                        );
-                                    })}
-                                </div>
+                            <div className="mt-6 flex flex-wrap gap-2.5 sm:gap-3">
+                                {engineering.map((skill) => (
+                                    <div
+                                        key={skill.id}
+                                        className="group inline-flex items-center gap-2.5 rounded-xl border border-[var(--surface-border)] bg-[var(--bg)] px-3.5 py-2.5 font-mono text-xs font-semibold text-[var(--text)] transition-all duration-200 hover:border-[var(--primary)] hover:bg-[var(--surface)] hover:-translate-y-0.5 shadow-xs"
+                                    >
+                                        <SkillBrandIcon
+                                            name={skill.name}
+                                            icon={skill.icon}
+                                            className="h-4.5 w-4.5 shrink-0"
+                                        />
+                                        <span>{skill.name}</span>
+                                    </div>
+                                ))}
                             </div>
-                        </article>
+                        </div>
                     )}
 
-                    {/* ========================================================= */}
-                    {/* GROUP 02 — DEPLOYMENT & GROWTH                             */}
-                    {/* ========================================================= */}
-                    {showDeployment && (
-                        <article
-                            aria-labelledby="group-02-heading"
-                            className="relative grid grid-cols-1 gap-8 border-b border-[var(--surface-border)] pb-16 lg:grid-cols-12 lg:gap-12"
-                        >
-                            {/* Left Column: Group Metadata & Index */}
-                            <div className="lg:col-span-4">
-                                <div className="sticky top-28 flex flex-col">
-                                    <div className="flex items-center gap-3 font-mono text-xs font-bold uppercase tracking-widest text-[var(--primary)]">
-                                        <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)]" />
-                                        <span>GROUP 02 // LAUNCH & SCALE</span>
-                                    </div>
-
-                                    <div className="relative mt-2">
-                                        <h3
-                                            id="group-02-heading"
-                                            className="font-display text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-[var(--text)] leading-tight"
-                                        >
-                                            DEPLOYMENT
-                                            <br />
-                                            & GROWTH
-                                        </h3>
-                                        <span
-                                            aria-hidden="true"
-                                            className="pointer-events-none absolute -bottom-6 -left-2 font-display text-7xl sm:text-8xl font-black text-[var(--surface-border)] opacity-35 select-none"
-                                        >
-                                            02
-                                        </span>
-                                    </div>
-
-                                    <p className="mt-8 font-body text-sm text-[var(--text-muted)] leading-relaxed">
-                                        Tools and practices I use to deploy, launch, optimise, and grow digital products.
-                                    </p>
-
-                                    <div className="mt-6 flex items-center gap-3 font-mono text-xs text-[var(--text-muted)]">
-                                        <span className="rounded-full border border-[var(--surface-border)] bg-[var(--surface)] px-2.5 py-1 text-[10px] font-bold text-[var(--text)]">
-                                            {deployment.length} PLATFORMS & TOOLS
-                                        </span>
-                                        <span>HOSTING & VISIBILITY</span>
-                                    </div>
+                    {/* Category 2: Deployment & Growth */}
+                    {showDep && deployment.length > 0 && (
+                        <div className="rounded-2xl border border-[var(--surface-border)] bg-[var(--surface)] p-6 sm:p-8">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--surface-border)] pb-4">
+                                <div className="flex items-center gap-2.5">
+                                    <span className="h-2 w-2 rounded-full bg-[var(--accent)]" />
+                                    <h3 className="font-display text-lg sm:text-xl font-bold uppercase tracking-tight text-[var(--text)]">
+                                        Deployment &amp; Growth
+                                    </h3>
                                 </div>
+                                <span className="font-mono text-xs text-[var(--text-muted)] uppercase">
+                                    {deployment.length} Capabilities
+                                </span>
                             </div>
 
-                            {/* Right Column: Distinct Two-Column Split (Hosting vs SEO/Growth) */}
-                            <div className="lg:col-span-8">
-                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                    {deployment.map((skill, idx) => {
-                                        const isSelected =
-                                            selectedSkill?.id === skill.id;
-                                        const isHosting =
-                                            skill.name.toLowerCase().includes('panel') ||
-                                            skill.name.toLowerCase().includes('hosting') ||
-                                            skill.name.toLowerCase().includes('git');
-                                        const roleTag = isHosting
-                                            ? 'INFRASTRUCTURE'
-                                            : 'GROWTH & COMMERCE';
+                            <p className="mt-3 font-body text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed max-w-2xl">
+                                Production web hosting configurations, server control panels, Git version control workflows, on-page SEO architecture, and e-commerce growth strategies.
+                            </p>
 
-                                        return (
-                                            <button
-                                                key={skill.id}
-                                                type="button"
-                                                onClick={() =>
-                                                    setSelectedSkill(
-                                                        isSelected ? null : skill,
-                                                    )
-                                                }
-                                                className={`group flex items-center justify-between rounded-xl border p-4 text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] ${
-                                                    isSelected
-                                                        ? 'border-[var(--primary)] bg-[var(--surface)] shadow-[0_0_20px_rgba(241,90,36,0.2)] ring-1 ring-[var(--primary)]'
-                                                        : 'border-[var(--surface-border)] bg-[var(--surface)]/40 hover:border-[var(--primary)] hover:bg-[var(--surface)]'
-                                                }`}
-                                                aria-label={`Inspect ${skill.name}`}
-                                            >
-                                                <div className="flex items-center gap-3.5">
-                                                    <div
-                                                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border p-1.5 transition-colors ${
-                                                            isSelected
-                                                                ? 'border-[var(--primary)] bg-[var(--primary)]/10 ring-1 ring-[var(--primary)]'
-                                                                : 'border-[var(--surface-border)] bg-[var(--surface)]/90 group-hover:border-[var(--primary)]/50'
-                                                        }`}
-                                                    >
-                                                        <SkillBrandIcon
-                                                            name={skill.name}
-                                                            icon={skill.icon}
-                                                            className="h-6 w-6 transition-transform duration-200 group-hover:scale-110"
-                                                        />
-                                                    </div>
-
-                                                    <div>
-                                                        <span className="block font-display text-base font-black tracking-tight text-[var(--text)] uppercase group-hover:text-[var(--primary)] transition-colors">
-                                                            {skill.name}
-                                                        </span>
-                                                        <span className="block font-mono text-[10px] text-[var(--accent)] tracking-wider">
-                                                            {roleTag}
-                                                        </span>
-                                                    </div>
-                                                </div>
-
-                                                <span className="rounded-full bg-[var(--bg)] px-2 py-0.5 font-mono text-[9px] font-bold text-[var(--text-muted)] border border-[var(--surface-border)]">
-                                                    02.0{idx + 1}
-                                                </span>
-                                            </button>
-                                        );
-                                    })}
-                                </div>
+                            <div className="mt-6 flex flex-wrap gap-2.5 sm:gap-3">
+                                {deployment.map((skill) => (
+                                    <div
+                                        key={skill.id}
+                                        className="group inline-flex items-center gap-2.5 rounded-xl border border-[var(--surface-border)] bg-[var(--bg)] px-3.5 py-2.5 font-mono text-xs font-semibold text-[var(--text)] transition-all duration-200 hover:border-[var(--accent)] hover:bg-[var(--surface)] hover:-translate-y-0.5 shadow-xs"
+                                    >
+                                        <SkillBrandIcon
+                                            name={skill.name}
+                                            icon={skill.icon}
+                                            className="h-4.5 w-4.5 shrink-0"
+                                        />
+                                        <span>{skill.name}</span>
+                                    </div>
+                                ))}
                             </div>
-                        </article>
+                        </div>
                     )}
 
-                    {/* ========================================================= */}
-                    {/* GROUP 03 — CREATIVE & MARKETING                           */}
-                    {/* ========================================================= */}
-                    {showCreative && (
-                        <article
-                            aria-labelledby="group-03-heading"
-                            className="relative grid grid-cols-1 gap-8 pb-8 lg:grid-cols-12 lg:gap-12"
-                        >
-                            {/* Left Column: Group Metadata & Index */}
-                            <div className="lg:col-span-4">
-                                <div className="sticky top-28 flex flex-col">
-                                    <div className="flex items-center gap-3 font-mono text-xs font-bold uppercase tracking-widest text-[var(--sand)]">
-                                        <span className="h-1.5 w-1.5 rounded-full bg-[var(--sand)]" />
-                                        <span>GROUP 03 // PRODUCTION & PERFORMANCE</span>
-                                    </div>
-
-                                    <div className="relative mt-2">
-                                        <h3
-                                            id="group-03-heading"
-                                            className="font-display text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-[var(--text)] leading-tight"
-                                        >
-                                            CREATIVE
-                                            <br />
-                                            & MARKETING
-                                        </h3>
-                                        <span
-                                            aria-hidden="true"
-                                            className="pointer-events-none absolute -bottom-6 -left-2 font-display text-7xl sm:text-8xl font-black text-[var(--surface-border)] opacity-35 select-none"
-                                        >
-                                            03
-                                        </span>
-                                    </div>
-
-                                    <p className="mt-8 font-body text-sm text-[var(--text-muted)] leading-relaxed">
-                                        Creative production and digital marketing capabilities that complement my engineering work.
-                                    </p>
-
-                                    <div className="mt-6 flex items-center gap-3 font-mono text-xs text-[var(--text-muted)]">
-                                        <span className="rounded-full border border-[var(--surface-border)] bg-[var(--surface)] px-2.5 py-1 text-[10px] font-bold text-[var(--text)]">
-                                            {creative.length} CREATIVE CAPABILITIES
-                                        </span>
-                                        <span>DESIGN & ACQUISITION</span>
-                                    </div>
+                    {/* Category 3: Creative & Marketing */}
+                    {showCre && creative.length > 0 && (
+                        <div className="rounded-2xl border border-[var(--surface-border)] bg-[var(--surface)] p-6 sm:p-8">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--surface-border)] pb-4">
+                                <div className="flex items-center gap-2.5">
+                                    <span className="h-2 w-2 rounded-full bg-[var(--primary)]" />
+                                    <h3 className="font-display text-lg sm:text-xl font-bold uppercase tracking-tight text-[var(--text)]">
+                                        Creative &amp; Marketing
+                                    </h3>
                                 </div>
+                                <span className="font-mono text-xs text-[var(--text-muted)] uppercase">
+                                    {creative.length} Disciplines
+                                </span>
                             </div>
 
-                            {/* Right Column: Creative & Marketing Cards */}
-                            <div className="lg:col-span-8">
-                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                    {creative.map((skill, idx) => {
-                                        const isSelected =
-                                            selectedSkill?.id === skill.id;
-                                        const isAd =
-                                            skill.name.toLowerCase().includes('pixel') ||
-                                            skill.name.toLowerCase().includes('ads');
-                                        const creativeTag = isAd
-                                            ? 'PERFORMANCE MARKETING'
-                                            : 'CREATIVE PRODUCTION';
+                            <p className="mt-3 font-body text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed max-w-2xl">
+                                User experience and interface design systems, digital graphic design, social media content production, video editing, and Meta advertising analytics.
+                            </p>
 
-                                        return (
-                                            <button
-                                                key={skill.id}
-                                                type="button"
-                                                onClick={() =>
-                                                    setSelectedSkill(
-                                                        isSelected ? null : skill,
-                                                    )
-                                                }
-                                                className={`group flex items-center justify-between rounded-xl border p-4 text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] ${
-                                                    isSelected
-                                                        ? 'border-[var(--primary)] bg-[var(--surface)] shadow-[0_0_20px_rgba(241,90,36,0.2)] ring-1 ring-[var(--primary)]'
-                                                        : 'border-[var(--surface-border)] bg-[var(--surface)]/40 hover:border-[var(--primary)] hover:bg-[var(--surface)]'
-                                                }`}
-                                                aria-label={`Inspect ${skill.name}`}
-                                            >
-                                                <div className="flex items-center gap-3.5">
-                                                    <div
-                                                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border p-1.5 transition-colors ${
-                                                            isSelected
-                                                                ? 'border-[var(--primary)] bg-[var(--primary)]/10 ring-1 ring-[var(--primary)]'
-                                                                : 'border-[var(--surface-border)] bg-[var(--surface)]/90 group-hover:border-[var(--primary)]/50'
-                                                        }`}
-                                                    >
-                                                        <SkillBrandIcon
-                                                            name={skill.name}
-                                                            icon={skill.icon}
-                                                            className="h-6 w-6 transition-transform duration-200 group-hover:scale-110"
-                                                        />
-                                                    </div>
-
-                                                    <div>
-                                                        <span className="block font-display text-base font-black tracking-tight text-[var(--text)] uppercase group-hover:text-[var(--primary)] transition-colors">
-                                                            {skill.name}
-                                                        </span>
-                                                        <span className="block font-mono text-[10px] text-[var(--sand)] tracking-wider">
-                                                            {creativeTag}
-                                                        </span>
-                                                    </div>
-                                                </div>
-
-                                                <span className="rounded-full bg-[var(--bg)] px-2 py-0.5 font-mono text-[9px] font-bold text-[var(--text-muted)] border border-[var(--surface-border)]">
-                                                    03.0{idx + 1}
-                                                </span>
-                                            </button>
-                                        );
-                                    })}
-                                </div>
+                            <div className="mt-6 flex flex-wrap gap-2.5 sm:gap-3">
+                                {creative.map((skill) => (
+                                    <div
+                                        key={skill.id}
+                                        className="group inline-flex items-center gap-2.5 rounded-xl border border-[var(--surface-border)] bg-[var(--bg)] px-3.5 py-2.5 font-mono text-xs font-semibold text-[var(--text)] transition-all duration-200 hover:border-[var(--primary)] hover:bg-[var(--surface)] hover:-translate-y-0.5 shadow-xs"
+                                    >
+                                        <SkillBrandIcon
+                                            name={skill.name}
+                                            icon={skill.icon}
+                                            className="h-4.5 w-4.5 shrink-0"
+                                        />
+                                        <span>{skill.name}</span>
+                                    </div>
+                                ))}
                             </div>
-                        </article>
+                        </div>
                     )}
                 </div>
             </div>

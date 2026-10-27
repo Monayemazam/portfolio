@@ -165,7 +165,7 @@ export default function KineticTypographyPreloader({
                 if (containerRef.current) {
                     exitTl.to(containerRef.current, {
                         opacity: 0,
-                        duration: reducedMotion ? 0.2 : 0.45,
+                        duration: reducedMotion ? 0.15 : 0.25,
                         ease: 'power2.inOut',
                     });
                 } else {
@@ -178,11 +178,11 @@ export default function KineticTypographyPreloader({
                 // Accessible immediate fade for reduced motion
                 const tl = gsap.timeline({ onComplete: finishLoader });
                 timelineRef.current = tl;
-                tl.to({}, { duration: 0.35 });
+                tl.to({}, { duration: 0.1 });
                 return;
             }
 
-            // Normal cinematic telemetry sequence (Total ~1.5s)
+            // Fast, smooth cinematic telemetry sequence (Total ~0.8s)
             const masterTl = gsap.timeline({ onComplete: finishLoader });
             timelineRef.current = masterTl;
 
@@ -197,10 +197,10 @@ export default function KineticTypographyPreloader({
             }
 
             masterTl
-                // Count up telemetry from 0 to 100%
+                // Count up telemetry smoothly from 0 to 100%
                 .to(progressObj, {
                     value: 100,
-                    duration: 1.15,
+                    duration: 0.65,
                     ease: 'power2.inOut',
                     onUpdate: () => {
                         const val = Math.round(progressObj.value);
@@ -220,8 +220,8 @@ export default function KineticTypographyPreloader({
                         statusTextRef.current.textContent = 'SYSTEMS ONLINE · ENTERING WORKSPACE';
                     }
                 })
-                // Short steady hold for perception
-                .to({}, { duration: 0.25 });
+                // Short hold for crisp finish
+                .to({}, { duration: 0.12 });
         }, containerRef);
 
         // Failsafe timer (2.8s max) so the preloader can never hang indefinitely

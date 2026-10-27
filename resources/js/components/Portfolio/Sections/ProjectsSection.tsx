@@ -1,7 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { PortfolioSection, ProjectItem } from '@/types/portfolio';
 import ProjectCard from '../Projects/ProjectCard';
+import ProjectArchitecturalCover from '../Projects/ProjectArchitecturalCover';
 import ProjectDetailPanel from '../Projects/ProjectDetailPanel';
+import { ArrowAngularTopRight, ArrowRight, Github } from '../Shared/Icons';
 
 interface ProjectsSectionProps {
     section: PortfolioSection;
@@ -107,7 +109,7 @@ export default function ProjectsSection({
         });
     }, [projects]);
 
-    // 2. Compute available categories that have at least one real matching project
+    // 2. Only show categories that have real matching projects
     const availableCategories = useMemo(() => {
         return CATEGORY_DEFINITIONS.filter((cat) => {
             if (cat.id === 'all') return true;
@@ -151,18 +153,21 @@ export default function ProjectsSection({
         return sorted.filter((p) => cat.matches(p));
     }, [sorted, activeCategory, availableCategories]);
 
+    // Curated digital exhibition: spotlight the first/featured project, followed by the remaining gallery
+    const spotlightProject = filteredProjects[0] || null;
+    const galleryProjects = filteredProjects.slice(1);
+
     const handleOpenDetails = (project: ProjectItem) => {
         setDetailProject(project);
         setIsDetailOpen(true);
     };
 
-    // Deliberate empty state if no projects exist
     if (!sorted || sorted.length === 0) {
         return (
             <section
                 id={section.key}
                 aria-label="Selected Work"
-                className="relative w-full overflow-hidden px-6 sm:px-10 lg:px-16 py-24"
+                className="relative w-full overflow-hidden px-6 sm:px-10 lg:px-16 py-24 bg-[var(--bg)]"
             >
                 <div className="mx-auto max-w-[1440px] text-center">
                     <div className="rounded-3xl border border-[var(--surface-border)] bg-[var(--surface)] p-12">
@@ -181,11 +186,17 @@ export default function ProjectsSection({
         );
     }
 
+    const spotlightRepoUrl =
+        (spotlightProject as { repo_url?: string | null } | null)?.repo_url ||
+        (spotlightProject as { repository_url?: string | null } | null)?.repository_url ||
+        (spotlightProject as { github_url?: string | null } | null)?.github_url ||
+        null;
+
     return (
         <section
             id={section.key}
-            aria-label="Selected Work"
-            className="relative w-full overflow-hidden px-4 sm:px-8 lg:px-16 py-20 lg:py-28 select-none"
+            aria-label="Selected Work — Curated Digital Exhibition"
+            className="relative w-full overflow-hidden px-4 sm:px-8 lg:px-16 py-20 lg:py-28 select-none bg-[var(--bg)] border-t border-[var(--surface-border)]"
         >
             {/* Ambient Cosmic Horizon Glows in Site Palette */}
             <div
@@ -197,7 +208,7 @@ export default function ProjectsSection({
                 className="pointer-events-none absolute bottom-12 -left-20 w-[35vw] h-[35vw] max-w-[500px] max-h-[500px] rounded-full bg-[var(--primary)] opacity-10 blur-[130px]"
             />
 
-            <div className="mx-auto max-w-[1440px]">
+            <div className="mx-auto max-w-[1440px] relative z-10">
                 {/* 1. Technical Coordinate Breadcrumb */}
                 <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--surface-border)] pb-4 font-mono text-xs tracking-widest text-[var(--text-muted)] uppercase">
                     <div className="flex items-center gap-3">
@@ -212,10 +223,10 @@ export default function ProjectsSection({
                         <span className="text-[var(--surface-border)]">/</span>
                         <span>SELECTED WORK</span>
                         <span className="text-[var(--surface-border)]">/</span>
-                        <span className="text-[var(--primary)] font-bold">PROJECT GALLERY</span>
+                        <span className="text-[var(--primary)] font-bold">DIGITAL EXHIBITION</span>
                     </div>
                     <div className="flex items-center gap-4 text-[11px]">
-                        <span className="hidden sm:inline">COORDS // RA 14h // MISSION 04</span>
+                        <span className="hidden sm:inline">EXHIBITION // MISSION 04</span>
                         <span className="rounded-full border border-[var(--surface-border)] bg-[var(--surface)] px-2.5 py-0.5 font-bold text-[var(--text)]">
                             {filteredProjects.length} OF {sorted.length} WORKS
                         </span>
@@ -226,7 +237,7 @@ export default function ProjectsSection({
                 <div className="mt-12 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                     <div>
                         <span className="font-mono text-xs font-bold tracking-widest text-[var(--primary)] uppercase">
-                            // SELECTED WORK.
+                            // 04 · SELECTED WORK
                         </span>
                         <h2 className="mt-3 font-display text-3xl sm:text-5xl font-black tracking-tight text-[var(--text)] uppercase leading-[1.08]">
                             SELECTED WORK.
@@ -237,7 +248,7 @@ export default function ProjectsSection({
                     </div>
 
                     <p className="max-w-md font-body text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed">
-                        A curated gallery of verified production web applications, corporate logistics portals, and custom e-commerce stores deployed for real clients.
+                        A curated exhibition of verified production web applications, corporate logistics portals, and custom e-commerce stores deployed for real clients.
                     </p>
                 </div>
 
@@ -285,18 +296,142 @@ export default function ProjectsSection({
                     </div>
                 </div>
 
-                {/* 4. Three-Column Project Gallery Grid */}
-                <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch">
-                    {filteredProjects.map((project, idx) => (
-                        <ProjectCard
-                            key={project.id}
-                            project={project}
-                            index={idx}
-                            isOff={isOff}
-                            onOpenDetails={handleOpenDetails}
-                        />
-                    ))}
-                </div>
+                {/* 4. PREMIER EXHIBITION SPOTLIGHT: Featured Showcase */}
+                {spotlightProject && (
+                    <div className="mt-10 rounded-2xl sm:rounded-3xl border border-[var(--surface-border)] bg-[var(--surface)] overflow-hidden shadow-2xl transition-all duration-300">
+                        <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                            
+                            {/* Spotlight Large Preview (Col 7) */}
+                            <div className="lg:col-span-7 relative aspect-[16/10] lg:aspect-auto overflow-hidden bg-[var(--bg)] border-b lg:border-b-0 lg:border-r border-[var(--surface-border)] group">
+                                <ProjectArchitecturalCover
+                                    project={spotlightProject}
+                                    isFeatured={true}
+                                    className="h-full w-full"
+                                />
+
+                                {spotlightProject.is_featured && (
+                                    <span className="pointer-events-none absolute top-4 right-4 rounded-full bg-[var(--primary)] px-3 py-1 font-mono text-[10px] font-bold text-white uppercase shadow-md z-20">
+                                        FEATURED SPOTLIGHT
+                                    </span>
+                                )}
+                            </div>
+
+                            {/* Spotlight Content Dossier (Col 5) */}
+                            <div className="lg:col-span-5 p-6 sm:p-8 lg:p-10 flex flex-col justify-between gap-6">
+                                <div>
+                                    <div className="flex items-center justify-between gap-2 border-b border-[var(--surface-border)] pb-3">
+                                        <span className="font-mono text-xs font-bold uppercase tracking-wider text-[var(--primary)]">
+                                            {spotlightProject.business_type || 'PRODUCTION PLATFORM'}
+                                        </span>
+                                        {spotlightProject.year && (
+                                            <span className="font-mono text-xs text-[var(--text-muted)]">
+                                                {spotlightProject.year} EDITION
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    <h3 className="mt-4 font-display text-2xl sm:text-4xl font-black uppercase tracking-tight text-[var(--text)]">
+                                        {spotlightProject.title}
+                                    </h3>
+
+                                    <p className="mt-3 font-body text-sm sm:text-base text-[var(--text-muted)] leading-relaxed">
+                                        {spotlightProject.summary || spotlightProject.description}
+                                    </p>
+
+                                    {/* Technology Tags */}
+                                    {spotlightProject.tags && spotlightProject.tags.length > 0 && (
+                                        <div className="mt-6 flex flex-wrap gap-2">
+                                            {spotlightProject.tags.map((tag) => (
+                                                <span
+                                                    key={tag.id}
+                                                    className="inline-flex items-center rounded-md border border-[var(--surface-border)] bg-[var(--muted)]/50 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]"
+                                                >
+                                                    {tag.name}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    {/* Verified Deliverables (if present) */}
+                                    {spotlightProject.features && spotlightProject.features.length > 0 && (
+                                        <div className="mt-6 pt-4 border-t border-[var(--surface-border)] space-y-2">
+                                            <span className="font-mono text-[10px] font-bold tracking-widest text-[var(--text-muted)] uppercase block">
+                                                // ARCHITECTURAL DELIVERABLES:
+                                            </span>
+                                            {spotlightProject.features.slice(0, 3).map((f) => (
+                                                <div
+                                                    key={f.id}
+                                                    className="flex items-start gap-2 text-xs font-body text-[var(--text-muted)]"
+                                                >
+                                                    <span className="text-[var(--primary)] font-mono font-bold">→</span>
+                                                    <span className="leading-snug">{f.text}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Spotlight Action Deck */}
+                                <div className="pt-6 border-t border-[var(--surface-border)] flex flex-wrap items-center gap-3">
+                                    {spotlightRepoUrl && (
+                                        <a
+                                            href={spotlightRepoUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--surface-border)] bg-transparent px-4 py-3 font-mono text-xs font-bold uppercase tracking-wider text-[var(--text)] hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all min-h-[44px]"
+                                        >
+                                            <Github className="h-4 w-4" />
+                                            <span>Repository</span>
+                                        </a>
+                                    )}
+
+                                    {spotlightProject.live_url && (
+                                        <a
+                                            href={spotlightProject.live_url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--primary)] bg-[var(--primary)] px-5 py-3 font-mono text-xs font-bold uppercase tracking-wider text-white hover:brightness-110 shadow-sm transition-all min-h-[44px]"
+                                        >
+                                            <span>Live Demo</span>
+                                            <ArrowAngularTopRight className="h-4 w-4" />
+                                        </a>
+                                    )}
+
+                                    <button
+                                        type="button"
+                                        onClick={() => handleOpenDetails(spotlightProject)}
+                                        className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--surface-border)] bg-[var(--bg)] px-4 py-3 font-mono text-xs font-bold uppercase tracking-wider text-[var(--text)] hover:border-[var(--text-muted)] hover:text-[var(--primary)] transition-all min-h-[44px] cursor-pointer"
+                                    >
+                                        <span>Inspect Full Dossier</span>
+                                        <ArrowRight className="h-4 w-4" />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* 5. BALANCED RESPONSIVE GALLERY: Remaining Curated Projects */}
+                {galleryProjects.length > 0 && (
+                    <div className="mt-10">
+                        <div className="flex items-center justify-between pb-4 border-b border-[var(--surface-border)] font-mono text-xs text-[var(--text-muted)] uppercase">
+                            <span>ADDITIONAL CURATED EXHIBITS</span>
+                            <span>{galleryProjects.length} PROJECTS</span>
+                        </div>
+
+                        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch">
+                            {galleryProjects.map((project, idx) => (
+                                <ProjectCard
+                                    key={project.id}
+                                    project={project}
+                                    index={idx}
+                                    isOff={isOff}
+                                    onOpenDetails={handleOpenDetails}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 {/* Graceful empty state when filter yields 0 projects */}
                 {filteredProjects.length === 0 && (
