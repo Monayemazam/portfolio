@@ -1,10 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { PortfolioSection, ProjectItem } from '@/types/portfolio';
-import ProjectCard from '../Projects/ProjectCard';
-import ProjectArchitecturalCover from '../Projects/ProjectArchitecturalCover';
+import ProjectShowcaseCard from '../Projects/ProjectShowcaseCard';
 import ProjectDetailPanel from '../Projects/ProjectDetailPanel';
 import GravityItem from '../Motion/GravityItem';
-import { ArrowAngularTopRight, ArrowRight, Github } from '../Shared/Icons';
 
 interface ProjectsSectionProps {
     section: PortfolioSection;
@@ -96,6 +95,60 @@ const CATEGORY_DEFINITIONS: CategoryFilter[] = [
     },
 ];
 
+/**
+ * Desktop Sticky Showcase Item
+ * Glides into a sticky spotlight position and gracefully scales/recedes
+ * as the subsequent card stacks over it during continuous natural scrolling.
+ */
+function StickyShowcaseItem({
+    project,
+    index,
+    total,
+    isOff,
+    onOpenDetails,
+}: {
+    project: ProjectItem;
+    index: number;
+    total: number;
+    isOff: boolean;
+    onOpenDetails?: (project: ProjectItem) => void;
+}) {
+    const trackRef = useRef<HTMLDivElement>(null);
+    const { scrollYProgress } = useScroll({
+        target: trackRef,
+        offset: ['start start', 'end start'],
+    });
+
+    const isLast = index === total - 1;
+
+    // Subtle scale and depth diminution as the next card ascends and covers this card
+    const scale = useTransform(scrollYProgress, [0, 1], [1, isLast ? 1 : 0.96]);
+    const opacity = useTransform(scrollYProgress, [0, 1], [1, isLast ? 1 : 0.82]);
+
+    return (
+        <div
+            ref={trackRef}
+            className={`showcase-card-track relative flex flex-col justify-start ${
+                isLast ? 'min-h-[60vh] pb-12 lg:pb-16' : 'min-h-[75vh] lg:min-h-[82vh] xl:min-h-[86vh]'
+            }`}
+            style={{ zIndex: index + 10 }}
+        >
+            <motion.div
+                style={isOff ? undefined : { scale, opacity }}
+                className="sticky top-24 lg:top-28 xl:top-32 w-full origin-top"
+            >
+                <ProjectShowcaseCard
+                    project={project}
+                    index={index}
+                    isOff={isOff}
+                    onOpenDetails={onOpenDetails}
+                    isMobileLayout={false}
+                />
+            </motion.div>
+        </div>
+    );
+}
+
 export default function ProjectsSection({
     section,
     projects,
@@ -154,10 +207,6 @@ export default function ProjectsSection({
         return sorted.filter((p) => cat.matches(p));
     }, [sorted, activeCategory, availableCategories]);
 
-    // Curated digital exhibition: spotlight the first/featured project, followed by the remaining gallery
-    const spotlightProject = filteredProjects[0] || null;
-    const galleryProjects = filteredProjects.slice(1);
-
     const handleOpenDetails = (project: ProjectItem) => {
         setDetailProject(project);
         setIsDetailOpen(true);
@@ -168,7 +217,7 @@ export default function ProjectsSection({
             <section
                 id={section.key}
                 aria-label="Selected Work"
-                className="relative w-full overflow-hidden px-6 sm:px-10 lg:px-16 py-24 bg-[var(--bg)]"
+                className="relative w-full overflow-x-clip px-6 sm:px-10 lg:px-16 py-24 bg-[var(--bg)]"
             >
                 <div className="mx-auto max-w-[1440px] text-center">
                     <div className="rounded-3xl border border-[var(--surface-border)] bg-[var(--surface)] p-12">
@@ -187,17 +236,11 @@ export default function ProjectsSection({
         );
     }
 
-    const spotlightRepoUrl =
-        (spotlightProject as { repo_url?: string | null } | null)?.repo_url ||
-        (spotlightProject as { repository_url?: string | null } | null)?.repository_url ||
-        (spotlightProject as { github_url?: string | null } | null)?.github_url ||
-        null;
-
     return (
         <section
             id={section.key}
-            aria-label="Selected Work — Curated Digital Exhibition"
-            className="relative w-full overflow-hidden px-4 sm:px-8 lg:px-16 py-20 lg:py-28 select-none bg-[var(--bg)] border-t border-[var(--surface-border)]"
+            aria-label="Selected Work — Cinematic Project Showcase"
+            className="relative w-full overflow-x-clip px-4 sm:px-8 lg:px-16 py-20 lg:py-28 select-none bg-[var(--bg)] border-t border-[var(--surface-border)]"
         >
             {/* Ambient Cosmic Horizon Glows in Site Palette */}
             <div
@@ -211,7 +254,7 @@ export default function ProjectsSection({
 
             <div className="mx-auto max-w-[1440px] relative z-10">
                 {/* Prominent Section Heading & Concise Intro */}
-                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10 lg:mb-14">
                     <div>
                         <h2 className="font-display text-3xl sm:text-5xl font-black tracking-tight text-[var(--text)] uppercase leading-[1.08]">
                             SELECTED WORK.
@@ -227,7 +270,7 @@ export default function ProjectsSection({
                 </div>
 
                 {/* Compact Functional Category Filter Bar */}
-                <div className="mt-10 border-y border-[var(--surface-border)] py-3">
+                <div className="border-y border-[var(--surface-border)] py-3 mb-10 lg:mb-14">
                     <div
                         className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1"
                         role="tablist"
@@ -271,125 +314,41 @@ export default function ProjectsSection({
                     </div>
                 </div>
 
-                {/* PREMIER EXHIBITION SPOTLIGHT: Featured Showcase */}
-                {spotlightProject && (
-                    <GravityItem radius={280} maxPull={6} strength={0.12} pushForce={5} disabled={isOff} className="mt-10">
-                        <div className="rounded-2xl sm:rounded-3xl border border-[var(--surface-border)] bg-[var(--surface)] overflow-hidden shadow-2xl transition-all duration-300">
-                            <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
-                            
-                            {/* Spotlight Large Preview (Col 7) */}
-                            <div className="lg:col-span-7 relative aspect-[16/10] lg:aspect-auto overflow-hidden bg-[var(--bg)] border-b lg:border-b-0 lg:border-r border-[var(--surface-border)] group">
-                                <ProjectArchitecturalCover
-                                    project={spotlightProject}
-                                    isFeatured={true}
-                                    className="h-full w-full"
-                                />
+                {/* ==================================================================== */}
+                {/* DESKTOP SHOWCASE: Sticky Layered Scroll-Driven Project Deck          */}
+                {/* ==================================================================== */}
+                <div className="hidden lg:block relative">
+                    {filteredProjects.map((project, idx) => (
+                        <StickyShowcaseItem
+                            key={project.id}
+                            project={project}
+                            index={idx}
+                            total={filteredProjects.length}
+                            isOff={isOff}
+                            onOpenDetails={handleOpenDetails}
+                        />
+                    ))}
+                </div>
 
-                                {spotlightProject.is_featured && (
-                                    <span className="pointer-events-none absolute top-4 right-4 rounded-full bg-[var(--primary)] px-3 py-1 font-mono text-[10px] font-bold text-white uppercase shadow-md z-20">
-                                        Featured
-                                    </span>
-                                )}
-                            </div>
-
-                            {/* Spotlight Content Dossier (Col 5) */}
-                            <div className="lg:col-span-5 p-6 sm:p-8 lg:p-10 flex flex-col justify-between gap-6">
-                                <div>
-                                    <div className="flex items-center justify-between gap-2 border-b border-[var(--surface-border)] pb-3">
-                                        <span className="font-mono text-xs font-bold uppercase tracking-wider text-[var(--primary)]">
-                                            {spotlightProject.business_type || 'Production Platform'}
-                                        </span>
-                                        {spotlightProject.year && (
-                                            <span className="font-mono text-xs text-[var(--text-muted)]">
-                                                {spotlightProject.year}
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    <h3 className="mt-4 font-display text-2xl sm:text-4xl font-black uppercase tracking-tight text-[var(--text)]">
-                                        {spotlightProject.title}
-                                    </h3>
-
-                                    <p className="mt-3 font-body text-sm sm:text-base text-[var(--text-muted)] leading-relaxed">
-                                        {spotlightProject.summary || spotlightProject.description}
-                                    </p>
-
-                                    {/* Technology Tags */}
-                                    {spotlightProject.tags && spotlightProject.tags.length > 0 && (
-                                        <div className="mt-6 flex flex-wrap gap-2">
-                                            {spotlightProject.tags.map((tag) => (
-                                                <span
-                                                    key={tag.id}
-                                                    className="inline-flex items-center rounded-md border border-[var(--surface-border)] bg-[var(--muted)]/50 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]"
-                                                >
-                                                    {tag.name}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Spotlight Action Deck */}
-                                <div className="pt-6 border-t border-[var(--surface-border)] flex flex-wrap items-center gap-3">
-                                    {spotlightRepoUrl && (
-                                        <a
-                                            href={spotlightRepoUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--surface-border)] bg-transparent px-4 py-3 font-mono text-xs font-bold uppercase tracking-wider text-[var(--text)] hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all min-h-[44px]"
-                                        >
-                                            <Github className="h-4 w-4" />
-                                            <span>Repository</span>
-                                        </a>
-                                    )}
-
-                                    {spotlightProject.live_url && (
-                                        <a
-                                            href={spotlightProject.live_url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--primary)] bg-[var(--primary)] px-5 py-3 font-mono text-xs font-bold uppercase tracking-wider text-white hover:brightness-110 shadow-sm transition-all min-h-[44px]"
-                                        >
-                                            <span>Live Demo</span>
-                                            <ArrowAngularTopRight className="h-4 w-4" />
-                                        </a>
-                                    )}
-
-                                    <button
-                                        type="button"
-                                        onClick={() => handleOpenDetails(spotlightProject)}
-                                        className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--surface-border)] bg-[var(--bg)] px-4 py-3 font-mono text-xs font-bold uppercase tracking-wider text-[var(--text)] hover:border-[var(--text-muted)] hover:text-[var(--primary)] transition-all min-h-[44px] cursor-pointer"
-                                    >
-                                        <span>Case Study</span>
-                                        <ArrowRight className="h-4 w-4" />
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </GravityItem>
-            )}
-
-                {/* BALANCED RESPONSIVE GALLERY: Remaining Curated Projects */}
-                {galleryProjects.length > 0 && (
-                    <div className="mt-12 sm:mt-14">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch">
-                            {galleryProjects.map((project, idx) => (
-                                <ProjectCard
-                                    key={project.id}
-                                    project={project}
-                                    index={idx}
-                                    isOff={isOff}
-                                    onOpenDetails={handleOpenDetails}
-                                />
-                            ))}
-                        </div>
-                    </div>
-                )}
+                {/* ==================================================================== */}
+                {/* MOBILE & TABLET SHOWCASE: Fluid Vertical Presentation Cards          */}
+                {/* ==================================================================== */}
+                <div className="lg:hidden flex flex-col gap-8 sm:gap-10">
+                    {filteredProjects.map((project, idx) => (
+                        <ProjectShowcaseCard
+                            key={project.id}
+                            project={project}
+                            index={idx}
+                            isOff={isOff}
+                            onOpenDetails={handleOpenDetails}
+                            isMobileLayout={true}
+                        />
+                    ))}
+                </div>
 
                 {/* Graceful empty state when filter yields 0 projects */}
                 {filteredProjects.length === 0 && (
-                    <div className="mt-12 rounded-2xl border border-[var(--surface-border)] bg-[var(--surface)] p-12 text-center">
+                    <div className="rounded-2xl border border-[var(--surface-border)] bg-[var(--surface)] p-12 text-center">
                         <p className="font-mono text-xs tracking-wider text-[var(--text-muted)] uppercase">
                             No projects currently match this filter category.
                         </p>
