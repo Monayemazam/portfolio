@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { MotionValue, motion, useScroll, useTransform } from 'framer-motion';
 import { PortfolioSection, ProjectItem } from '@/types/portfolio';
 import ProjectShowcaseCard from '../Projects/ProjectShowcaseCard';
 import ProjectDetailPanel from '../Projects/ProjectDetailPanel';
@@ -94,6 +95,91 @@ const CATEGORY_DEFINITIONS: CategoryFilter[] = [
     },
 ];
 
+/**
+ * Individual Stacking Card in the Shared Sticky Frame.
+ * Transitions precisely between its designated scroll progress slice.
+ */
+function StackingShowcaseCard({
+    project,
+    index,
+    total,
+    scrollYProgress,
+    isOff,
+    onOpenDetails,
+}: {
+    project: ProjectItem;
+    index: number;
+    total: number;
+    scrollYProgress: MotionValue<number>;
+    isOff: boolean;
+    onOpenDetails?: (project: ProjectItem) => void;
+}) {
+    const isFirst = index === 0;
+    const isLast = index === total - 1;
+
+    // Reserve 92% of the scroll track for stacking transitions, with 8% settling at the end
+    const numTransitions = Math.max(1, total - 1);
+    const activeRange = 0.92;
+    const stepDuration = activeRange / numTransitions;
+
+    const start = isFirst ? 0 : (index - 1) * stepDuration;
+    const end = isFirst ? 0 : index * stepDuration;
+    const nextEnd = Math.min(1, end + stepDuration);
+
+    // Translation: enters smoothly from 100vh below and locks at 0vh
+    const y = useTransform(
+        scrollYProgress,
+        isFirst
+            ? [0, 1]
+            : [0, Math.max(0, start - 0.0001), end, 1],
+        isFirst
+            ? ['0vh', '0vh']
+            : ['100vh', '100vh', '0vh', '0vh']
+    );
+
+    // Scale: subtly recedes to 0.97 when covered by subsequent card
+    const scale = useTransform(
+        scrollYProgress,
+        isLast
+            ? [0, 1]
+            : [0, end, nextEnd, 1],
+        isLast
+            ? [1, 1]
+            : [1, 1, 0.97, 0.97]
+    );
+
+    // Opacity: subtle depth dimming when covered
+    const opacity = useTransform(
+        scrollYProgress,
+        isLast
+            ? [0, 1]
+            : [0, end, nextEnd, 1],
+        isLast
+            ? [1, 1]
+            : [1, 1, 0.88, 0.88]
+    );
+
+    return (
+        <motion.div
+            className={`w-full origin-top ${
+                isFirst ? 'relative' : 'absolute inset-x-0'
+            }`}
+            style={{
+                top: `calc(${index} * 1.25rem)`,
+                zIndex: index + 10,
+                ...(isOff ? {} : { y, scale, opacity }),
+            }}
+        >
+            <ProjectShowcaseCard
+                project={project}
+                index={index}
+                isOff={isOff}
+                onOpenDetails={onOpenDetails}
+            />
+        </motion.div>
+    );
+}
+
 export default function ProjectsSection({
     section,
     projects,
@@ -157,12 +243,21 @@ export default function ProjectsSection({
         setIsDetailOpen(true);
     };
 
+    // Scroll progress measurement on the dynamically sized stacking track
+    const trackRef = useRef<HTMLDivElement>(null);
+    const { scrollYProgress } = useScroll({
+        target: trackRef,
+        offset: ['start start', 'end end'],
+    });
+
+    const totalProjects = filteredProjects.length;
+
     if (!sorted || sorted.length === 0) {
         return (
             <section
                 id={section.key}
                 aria-label="Selected Work"
-                className="relative w-full overflow-x-clip px-6 sm:px-10 lg:px-16 py-24 bg-[var(--bg)]"
+                className="relative w-full overflow-x-clip px-4 sm:px-8 lg:px-16 py-20 lg:py-24 bg-[var(--bg)]"
             >
                 <div className="mx-auto max-w-[1440px] text-center">
                     <div className="rounded-3xl border border-[var(--surface-border)] bg-[var(--surface)] p-12">
@@ -185,7 +280,7 @@ export default function ProjectsSection({
         <section
             id={section.key}
             aria-label="Selected Work — Cinematic Stacking Project Showcase"
-            className="relative w-full overflow-x-clip px-4 sm:px-8 lg:px-16 pt-20 lg:pt-28 pb-8 lg:pb-12 select-none bg-[var(--bg)] border-t border-[var(--surface-border)]"
+            className="relative w-full overflow-x-clip px-4 sm:px-8 lg:px-16 pt-16 sm:pt-20 lg:pt-24 pb-8 lg:pb-12 select-none bg-[var(--bg)] border-t border-[var(--surface-border)]"
         >
             {/* Ambient Cosmic Horizon Glows in Site Palette */}
             <div
@@ -199,7 +294,7 @@ export default function ProjectsSection({
 
             <div className="mx-auto max-w-[1440px] relative z-10">
                 {/* Prominent Section Heading & Concise Intro */}
-                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10 lg:mb-14">
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8 sm:mb-10 lg:mb-12">
                     <div>
                         <h2 className="font-display text-3xl sm:text-5xl font-black tracking-tight text-[var(--text)] uppercase leading-[1.08]">
                             SELECTED WORK.
@@ -215,7 +310,7 @@ export default function ProjectsSection({
                 </div>
 
                 {/* Compact Functional Category Filter Bar */}
-                <div className="border-y border-[var(--surface-border)] py-3 mb-12 lg:mb-16">
+                <div className="border-y border-[var(--surface-border)] py-3 mb-8 sm:mb-10 lg:mb-12">
                     <div
                         className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1"
                         role="tablist"
@@ -260,54 +355,48 @@ export default function ProjectsSection({
                 </div>
 
                 {/* ==================================================================== */}
-                {/* DESKTOP SHOWCASE: Direct Sticky Card Stacking Deck (Deck of Cards)  */}
-                {/* Each card becomes sticky in position. As the user continues         */}
-                {/* scrolling, the next card ascends and covers the previous one,       */}
-                {/* accumulating into a stacked deck in the shared container.          */}
-                {/* When the final card (AYRA ESPAÑA) finishes stacking, the showcase   */}
-                {/* releases immediately, transitioning naturally to the Contact section */}
-                {/* with no excessive blank gap.                                       */}
+                {/* UNIFIED RESPONSIVE SCROLL-DRIVEN STACKING SHOWCASE DECK              */}
+                {/* When motion is on, cards stack directly in the sticky frame as       */}
+                {/* visitor scrolls. The track height is dynamically computed so the     */}
+                {/* final card (AYRA ESPAÑA) completes 100% of its stacking animation,   */}
+                {/* settles, and releases immediately into Contact with NO excess gap.    */}
                 {/* ==================================================================== */}
-                <div className="hidden lg:block relative w-full">
-                    {filteredProjects.map((project, idx) => {
-                        const isLast = idx === filteredProjects.length - 1;
-                        return (
-                            <div
-                                key={project.id}
-                                className="sticky w-full transition-all duration-300 origin-top"
-                                style={{
-                                    top: `calc(5rem + ${idx * 1.25}rem)`,
-                                    zIndex: idx + 10,
-                                    marginBottom: isLast ? '6vh' : '36vh',
-                                }}
-                            >
-                                <ProjectShowcaseCard
+                {!isOff && totalProjects > 1 ? (
+                    <div
+                        ref={trackRef}
+                        className="relative w-full"
+                        style={{
+                            height: `calc(100vh + ${(totalProjects - 1) * 60}vh)`,
+                        }}
+                    >
+                        <div className="sticky top-16 sm:top-20 lg:top-24 w-full">
+                            {filteredProjects.map((project, idx) => (
+                                <StackingShowcaseCard
+                                    key={project.id}
                                     project={project}
                                     index={idx}
+                                    total={totalProjects}
+                                    scrollYProgress={scrollYProgress}
                                     isOff={isOff}
                                     onOpenDetails={handleOpenDetails}
-                                    isMobileLayout={false}
                                 />
-                            </div>
-                        );
-                    })}
-                </div>
-
-                {/* ==================================================================== */}
-                {/* MOBILE & TABLET SHOWCASE: Fluid Vertical Presentation Cards          */}
-                {/* ==================================================================== */}
-                <div className="lg:hidden flex flex-col gap-8 sm:gap-10">
-                    {filteredProjects.map((project, idx) => (
-                        <ProjectShowcaseCard
-                            key={project.id}
-                            project={project}
-                            index={idx}
-                            isOff={isOff}
-                            onOpenDetails={handleOpenDetails}
-                            isMobileLayout={true}
-                        />
-                    ))}
-                </div>
+                            ))}
+                        </div>
+                    </div>
+                ) : (
+                    /* Reduced Motion or Single Project accessible flow */
+                    <div className="flex flex-col gap-8 sm:gap-10">
+                        {filteredProjects.map((project, idx) => (
+                            <ProjectShowcaseCard
+                                key={project.id}
+                                project={project}
+                                index={idx}
+                                isOff={isOff}
+                                onOpenDetails={handleOpenDetails}
+                            />
+                        ))}
+                    </div>
+                )}
 
                 {/* Graceful empty state when filter yields 0 projects */}
                 {filteredProjects.length === 0 && (

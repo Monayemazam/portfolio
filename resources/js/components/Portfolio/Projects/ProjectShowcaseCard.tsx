@@ -9,7 +9,6 @@ interface ProjectShowcaseCardProps {
     index?: number;
     isOff?: boolean;
     onOpenDetails?: (project: ProjectItem) => void;
-    isMobileLayout?: boolean;
 }
 
 // Extract display domain cleanly for the browser mockup address bar
@@ -28,7 +27,6 @@ export default function ProjectShowcaseCard({
     index = 0,
     isOff = false,
     onOpenDetails,
-    isMobileLayout = false,
 }: ProjectShowcaseCardProps) {
     // Resolve optional repository link if present on project model
     const repoUrl =
@@ -45,9 +43,7 @@ export default function ProjectShowcaseCard({
         <article
             aria-label={`${project.title} showcase presentation`}
             style={{ backgroundColor: 'var(--surface)' }}
-            className={`group relative w-full overflow-hidden rounded-2xl sm:rounded-3xl border border-[var(--surface-border)] shadow-[0_-12px_30px_rgba(0,0,0,0.45),0_25px_60px_-15px_rgba(0,0,0,0.7)] transition-all duration-300 hover:border-[var(--primary)]/60 ${
-                isMobileLayout ? 'flex flex-col' : 'grid grid-cols-1 lg:grid-cols-12 items-stretch'
-            }`}
+            className="group relative w-full overflow-hidden rounded-2xl sm:rounded-3xl border border-[var(--surface-border)] shadow-[0_-12px_30px_rgba(0,0,0,0.5),0_25px_60px_-15px_rgba(0,0,0,0.7)] transition-all duration-300 hover:border-[var(--primary)]/60 flex flex-col lg:grid lg:grid-cols-12 items-stretch"
         >
             {/* Ambient subtle corner glow on the card */}
             <div
@@ -58,15 +54,11 @@ export default function ProjectShowcaseCard({
             {/* ======================================================== */}
             {/* LEFT SIDE — PROJECT INFORMATION (~50% width on Desktop) */}
             {/* ======================================================== */}
-            <div
-                className={`flex flex-col justify-between p-6 sm:p-8 lg:p-10 xl:p-12 z-10 ${
-                    isMobileLayout ? 'order-2 border-t border-[var(--surface-border)]' : 'lg:col-span-5 xl:col-span-5'
-                }`}
-            >
+            <div className="order-2 lg:order-1 lg:col-span-5 xl:col-span-5 flex flex-col justify-between p-5 sm:p-7 lg:p-8 xl:p-10 z-10 border-t lg:border-t-0 border-[var(--surface-border)]">
                 <div>
                     {/* Category Label and Project Year */}
-                    <div className="flex items-center justify-between gap-3 border-b border-[var(--surface-border)] pb-3">
-                        <span className="font-mono text-xs font-bold uppercase tracking-wider text-[var(--primary)]">
+                    <div className="flex items-center justify-between gap-3 border-b border-[var(--surface-border)] pb-2.5 sm:pb-3">
+                        <span className="font-mono text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[var(--primary)] truncate">
                             {categoryLabel}
                             {project.year && (
                                 <span className="text-[var(--text-muted)] font-normal ml-2">
@@ -76,14 +68,14 @@ export default function ProjectShowcaseCard({
                         </span>
 
                         {project.is_featured && (
-                            <span className="rounded-full bg-[var(--primary)]/15 border border-[var(--primary)]/30 px-2.5 py-0.5 font-mono text-[9px] font-bold text-[var(--primary)] uppercase">
+                            <span className="shrink-0 rounded-full bg-[var(--primary)]/15 border border-[var(--primary)]/30 px-2.5 py-0.5 font-mono text-[9px] font-bold text-[var(--primary)] uppercase">
                                 Spotlight
                             </span>
                         )}
                     </div>
 
                     {/* Project Name */}
-                    <h3 className="mt-4 font-display text-2xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight text-[var(--text)] leading-[1.1] group-hover:text-[var(--primary)] transition-colors">
+                    <h3 className="mt-3 sm:mt-4 font-display text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-black uppercase tracking-tight text-[var(--text)] leading-[1.15] group-hover:text-[var(--primary)] transition-colors">
                         {onOpenDetails ? (
                             <button
                                 type="button"
@@ -100,11 +92,11 @@ export default function ProjectShowcaseCard({
 
                     {/* Technology Stack Badges */}
                     {project.tags && project.tags.length > 0 && (
-                        <div className="mt-4 sm:mt-5 flex flex-wrap gap-2">
+                        <div className="mt-3 sm:mt-4 flex flex-wrap gap-1.5 sm:gap-2">
                             {project.tags.map((tag) => (
                                 <span
                                     key={tag.id}
-                                    className="inline-flex items-center rounded-lg border border-[var(--surface-border)] bg-[var(--muted)]/40 px-2.5 py-1 font-mono text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider"
+                                    className="inline-flex items-center rounded-lg border border-[var(--surface-border)] bg-[var(--muted)]/40 px-2 sm:px-2.5 py-0.5 sm:py-1 font-mono text-[10px] sm:text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider"
                                 >
                                     {tag.name}
                                 </span>
@@ -113,13 +105,13 @@ export default function ProjectShowcaseCard({
                     )}
 
                     {/* Short Project Description */}
-                    <p className="mt-4 sm:mt-5 font-body text-sm sm:text-base text-[var(--text-muted)] leading-relaxed line-clamp-3 sm:line-clamp-4">
+                    <p className="mt-3 sm:mt-4 font-body text-xs sm:text-sm lg:text-base text-[var(--text-muted)] leading-relaxed line-clamp-2 sm:line-clamp-3 lg:line-clamp-4">
                         {project.summary || project.description}
                     </p>
                 </div>
 
                 {/* Action Buttons Deck */}
-                <div className="mt-8 pt-6 border-t border-[var(--surface-border)] flex flex-wrap items-center gap-3">
+                <div className="mt-5 sm:mt-6 lg:mt-8 pt-4 sm:pt-5 border-t border-[var(--surface-border)] flex flex-wrap items-center gap-2.5 sm:gap-3">
                     {/* Live Preview Button */}
                     {liveUrl && (
                         <GravityItem radius={110} maxPull={4} strength={0.2} pushForce={5} disabled={isOff}>
@@ -127,10 +119,10 @@ export default function ProjectShowcaseCard({
                                 href={liveUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--primary)] bg-[var(--primary)] px-5 py-3 font-mono text-xs font-bold uppercase tracking-wider text-white hover:brightness-110 shadow-sm transition-all min-h-[44px]"
+                                className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--primary)] bg-[var(--primary)] px-4 sm:px-5 py-2.5 sm:py-3 font-mono text-[11px] sm:text-xs font-bold uppercase tracking-wider text-white hover:brightness-110 shadow-sm transition-all min-h-[40px] sm:min-h-[44px]"
                             >
                                 <span>View Live</span>
-                                <ArrowAngularTopRight className="h-4 w-4" />
+                                <ArrowAngularTopRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             </a>
                         </GravityItem>
                     )}
@@ -142,9 +134,9 @@ export default function ProjectShowcaseCard({
                                 href={repoUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--surface-border)] bg-[var(--bg)] px-4 py-3 font-mono text-xs font-bold uppercase tracking-wider text-[var(--text)] hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all min-h-[44px]"
+                                className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--surface-border)] bg-[var(--bg)] px-3.5 sm:px-4 py-2.5 sm:py-3 font-mono text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[var(--text)] hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all min-h-[40px] sm:min-h-[44px]"
                             >
-                                <Github className="h-4 w-4" />
+                                <Github className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                                 <span>Github</span>
                             </a>
                         </GravityItem>
@@ -156,11 +148,11 @@ export default function ProjectShowcaseCard({
                             <button
                                 type="button"
                                 onClick={() => onOpenDetails(project)}
-                                className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--surface-border)] bg-[var(--surface)] px-4 py-3 font-mono text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] hover:border-[var(--text-muted)] hover:text-[var(--text)] transition-all min-h-[44px] cursor-pointer"
+                                className="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--surface-border)] bg-[var(--surface)] px-3.5 sm:px-4 py-2.5 sm:py-3 font-mono text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] hover:border-[var(--text-muted)] hover:text-[var(--text)] transition-all min-h-[40px] sm:min-h-[44px] cursor-pointer"
                                 aria-label={`View dossier for ${project.title}`}
                             >
                                 <span>Details</span>
-                                <ArrowRight className="h-4 w-4" />
+                                <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             </button>
                         </GravityItem>
                     )}
@@ -170,31 +162,27 @@ export default function ProjectShowcaseCard({
             {/* ======================================================== */}
             {/* RIGHT SIDE — WEBSITE PREVIEW (~50% width on Desktop)    */}
             {/* ======================================================== */}
-            <div
-                className={`relative flex items-center justify-center p-4 sm:p-6 lg:p-8 xl:p-10 ${
-                    isMobileLayout ? 'order-1' : 'lg:col-span-7 xl:col-span-7'
-                }`}
-            >
+            <div className="order-1 lg:order-2 lg:col-span-7 xl:col-span-7 relative flex items-center justify-center p-3 sm:p-5 lg:p-6 xl:p-8">
                 {/* Premium Browser-Style Presentation Frame */}
                 <div className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl border border-[var(--surface-border)] bg-[var(--bg)] shadow-xl flex flex-col">
                     
                     {/* Browser Chrome Header Bar */}
-                    <div className="flex h-9 items-center justify-between border-b border-[var(--surface-border)] bg-[var(--surface)] px-4 shrink-0">
+                    <div className="flex h-8 sm:h-9 items-center justify-between border-b border-[var(--surface-border)] bg-[var(--surface)] px-3 sm:px-4 shrink-0">
                         {/* macOS Window Controls */}
                         <div className="flex items-center gap-1.5" aria-hidden="true">
-                            <span className="h-2.5 w-2.5 rounded-full bg-[#FF5F56]/80" />
-                            <span className="h-2.5 w-2.5 rounded-full bg-[#FFBD2E]/80" />
-                            <span className="h-2.5 w-2.5 rounded-full bg-[#27C93F]/80" />
+                            <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-[#FF5F56]/80" />
+                            <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-[#FFBD2E]/80" />
+                            <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-[#27C93F]/80" />
                         </div>
 
                         {/* Centered Domain Address Pill */}
-                        <div className="flex items-center gap-1.5 rounded-md border border-[var(--surface-border)] bg-[var(--bg)] px-3 py-0.5 text-[10px] font-mono text-[var(--text-muted)] truncate max-w-[220px]">
-                            <span className="text-[9px] text-[var(--primary)] select-none">https://</span>
+                        <div className="flex items-center gap-1.5 rounded-md border border-[var(--surface-border)] bg-[var(--bg)] px-2.5 py-0.5 text-[9px] sm:text-[10px] font-mono text-[var(--text-muted)] truncate max-w-[180px] sm:max-w-[220px]">
+                            <span className="text-[8px] sm:text-[9px] text-[var(--primary)] select-none">https://</span>
                             <span className="truncate">{domain}</span>
                         </div>
 
                         {/* Balanced Spacer */}
-                        <div className="w-10" aria-hidden="true" />
+                        <div className="w-8 sm:w-10" aria-hidden="true" />
                     </div>
 
                     {/* Screenshot Display Frame */}
