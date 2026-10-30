@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { PortfolioSection, SkillItem } from '@/types/portfolio';
 import SkillBrandIcon from '../Skills/SkillBrandIcon';
+import SkillMarqueeRow from '../Skills/SkillMarqueeRow';
 import GravityItem from '@/components/Portfolio/Motion/GravityItem';
 
 interface SkillsSectionProps {
@@ -185,29 +186,14 @@ export default function SkillsSection({
                                 </h3>
                             </div>
 
-                            <div className="mt-6 flex flex-wrap gap-2.5 sm:gap-3">
-                                {engineering.map((skill) => (
-                                    <GravityItem
-                                        key={skill.id}
-                                        radius={110}
-                                        maxPull={8}
-                                        strength={0.25}
-                                        pushForce={8}
-                                        disabled={isOff}
-                                    >
-                                        <div
-                                            className="group inline-flex items-center gap-2.5 rounded-xl border border-[var(--surface-border)] bg-[var(--bg)] px-3.5 py-2.5 font-mono text-xs font-semibold text-[var(--text)] transition-all duration-200 hover:border-[var(--primary)] hover:bg-[var(--surface)] hover:-translate-y-0.5 shadow-xs cursor-pointer"
-                                        >
-                                            <SkillBrandIcon
-                                                name={skill.name}
-                                                icon={skill.icon}
-                                                className="h-4.5 w-4.5 shrink-0"
-                                            />
-                                            <span>{skill.name}</span>
-                                        </div>
-                                    </GravityItem>
-                                ))}
-                            </div>
+                            <SkillMarqueeRow
+                                skills={engineering}
+                                direction="left"
+                                duration={36}
+                                isOff={isOff}
+                                hoverBorderClass="hover:border-[var(--primary)]"
+                                className="mt-6 -mx-6 sm:-mx-8"
+                            />
                         </div>
                     )}
 
@@ -221,29 +207,14 @@ export default function SkillsSection({
                                 </h3>
                             </div>
 
-                            <div className="mt-6 flex flex-wrap gap-2.5 sm:gap-3">
-                                {deployment.map((skill) => (
-                                    <GravityItem
-                                        key={skill.id}
-                                        radius={110}
-                                        maxPull={8}
-                                        strength={0.25}
-                                        pushForce={8}
-                                        disabled={isOff}
-                                    >
-                                        <div
-                                            className="group inline-flex items-center gap-2.5 rounded-xl border border-[var(--surface-border)] bg-[var(--bg)] px-3.5 py-2.5 font-mono text-xs font-semibold text-[var(--text)] transition-all duration-200 hover:border-[var(--accent)] hover:bg-[var(--surface)] hover:-translate-y-0.5 shadow-xs cursor-pointer"
-                                        >
-                                            <SkillBrandIcon
-                                                name={skill.name}
-                                                icon={skill.icon}
-                                                className="h-4.5 w-4.5 shrink-0"
-                                            />
-                                            <span>{skill.name}</span>
-                                        </div>
-                                    </GravityItem>
-                                ))}
-                            </div>
+                            <SkillMarqueeRow
+                                skills={deployment}
+                                direction="right"
+                                duration={32}
+                                isOff={isOff}
+                                hoverBorderClass="hover:border-[var(--accent)]"
+                                className="mt-6 -mx-6 sm:-mx-8"
+                            />
                         </div>
                     )}
 
@@ -257,29 +228,14 @@ export default function SkillsSection({
                                 </h3>
                             </div>
 
-                            <div className="mt-6 flex flex-wrap gap-2.5 sm:gap-3">
-                                {creative.map((skill) => (
-                                    <GravityItem
-                                        key={skill.id}
-                                        radius={110}
-                                        maxPull={8}
-                                        strength={0.25}
-                                        pushForce={8}
-                                        disabled={isOff}
-                                    >
-                                        <div
-                                            className="group inline-flex items-center gap-2.5 rounded-xl border border-[var(--surface-border)] bg-[var(--bg)] px-3.5 py-2.5 font-mono text-xs font-semibold text-[var(--text)] transition-all duration-200 hover:border-[var(--primary)] hover:bg-[var(--surface)] hover:-translate-y-0.5 shadow-xs cursor-pointer"
-                                        >
-                                            <SkillBrandIcon
-                                                name={skill.name}
-                                                icon={skill.icon}
-                                                className="h-4.5 w-4.5 shrink-0"
-                                            />
-                                            <span>{skill.name}</span>
-                                        </div>
-                                    </GravityItem>
-                                ))}
-                            </div>
+                            <SkillMarqueeRow
+                                skills={creative}
+                                direction="left"
+                                duration={32}
+                                isOff={isOff}
+                                hoverBorderClass="hover:border-[var(--primary)]"
+                                className="mt-6 -mx-6 sm:-mx-8"
+                            />
                         </div>
                     )}
                 </div>
