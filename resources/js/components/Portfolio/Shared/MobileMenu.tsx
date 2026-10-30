@@ -18,10 +18,12 @@ export default function MobileMenu({
     activeSection,
     isOpen: controlledOpen,
     onClose,
+    settings,
 }: MobileMenuProps) {
     const [internalOpen, setInternalOpen] = useState(false);
     const isControlled = controlledOpen !== undefined;
     const open = isControlled ? controlledOpen : internalOpen;
+    const logoSrc = settings?.logo_media?.webp_url || settings?.logo_media?.url || '/logo.webp';
 
     const setOpen = (val: boolean) => {
         if (isControlled) {
@@ -98,8 +100,14 @@ export default function MobileMenu({
                 >
                     {/* Header */}
                     <div className="flex items-center justify-between border-b border-border/40 pb-4">
-                        <div className="flex items-center gap-2">
-                            <span className="h-2 w-2 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
+                        <div className="flex items-center gap-2.5">
+                            <div className="relative flex h-7 w-7 shrink-0 items-center justify-center">
+                                <img
+                                    src={logoSrc}
+                                    alt="Monayem Azam Logo"
+                                    className="h-full w-full object-contain drop-shadow-[0_0_8px_rgba(241,90,36,0.3)]"
+                                />
+                            </div>
                             <span className="font-mono text-xs font-bold tracking-wider text-foreground uppercase">
                                 MONAYEM AZAM
                             </span>

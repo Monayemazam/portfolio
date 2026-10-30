@@ -22,6 +22,7 @@ export default function FloatingNav({
     const { isDark, toggleTheme } = useTheme(settings.default_theme);
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const logoSrc = settings?.logo_media?.webp_url || settings?.logo_media?.url || '/logo.webp';
 
     useEffect(() => {
         let ticking = false;
@@ -91,7 +92,13 @@ export default function FloatingNav({
                         }}
                         className="group flex items-center gap-3 focus:outline-hidden"
                     >
-                        <span className="h-2.5 w-2.5 rounded-full bg-[var(--primary)] shadow-[0_0_12px_var(--primary)] transition-transform group-hover:scale-125" />
+                        <div className="relative flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                            <img
+                                src={logoSrc}
+                                alt="Monayem Azam Logo"
+                                className="h-full w-full object-contain drop-shadow-[0_0_12px_rgba(241,90,36,0.35)]"
+                            />
+                        </div>
                         <div className="flex flex-col">
                             <span className="font-display text-lg sm:text-xl font-black tracking-tight text-foreground transition-colors group-hover:text-[var(--primary)]">
                                 MONAYEM AZAM

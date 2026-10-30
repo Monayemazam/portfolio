@@ -133,10 +133,8 @@ export default function AdminLayout({
                 {/* Brand Logo */}
                 <div className="flex h-16 shrink-0 items-center justify-between border-b border-[var(--surface-border)] px-6">
                     <Link href="/admin" className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-[var(--primary)] to-[var(--secondary)] text-white shadow-[var(--primary)]/20 shadow-md">
-                            <span className="font-['Orbitron',sans-serif] text-sm font-black">
-                                MA
-                            </span>
+                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--surface)] border border-[var(--surface-border)] p-1 shadow-sm">
+                            <img src="/logo-icon.png" alt="Monayem Azam Logo" className="h-full w-full object-contain" />
                         </div>
                         <div>
                             <p className="font-['Orbitron',sans-serif] text-xs font-bold tracking-wider text-[var(--text)]">

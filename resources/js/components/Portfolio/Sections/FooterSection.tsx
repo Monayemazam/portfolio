@@ -36,6 +36,7 @@ export default function FooterSection({
 }: FooterSectionProps) {
     const currentYear = new Date().getFullYear();
     const siteTitle = settings.site_title || 'MONAYEM AZAM';
+    const logoSrc = settings?.logo_media?.webp_url || settings?.logo_media?.url || '/logo.webp';
 
     const socialLinks = [
         {
@@ -89,8 +90,14 @@ export default function FooterSection({
                     {/* Brand Wordmark & Descriptor */}
                     <div className="md:col-span-5 flex flex-col justify-between">
                         <div>
-                            <div className="flex items-center gap-3">
-                                <span className="h-2.5 w-2.5 rounded-full bg-[var(--primary)] shadow-[0_0_10px_var(--primary)]" />
+                            <div className="flex items-center gap-3 sm:gap-4">
+                                <div className="relative flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center">
+                                    <img
+                                        src={logoSrc}
+                                        alt="Monayem Azam Logo"
+                                        className="h-full w-full object-contain drop-shadow-[0_0_14px_rgba(241,90,36,0.35)]"
+                                    />
+                                </div>
                                 <div>
                                     <span className="font-display text-2xl sm:text-3xl font-black tracking-tight text-foreground uppercase block">
                                         MONAYEM AZAM
