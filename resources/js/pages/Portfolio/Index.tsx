@@ -141,6 +141,8 @@ export default function PortfolioIndex({
             ].filter(Boolean),
     };
 
+    const logoSrc = settings?.logo_media?.webp_url || settings?.logo_media?.url || '/logo.webp';
+
     return (
         <div
             className={`relative min-h-screen w-full bg-[var(--bg)] text-[var(--text)] transition-colors duration-200 selection:bg-[var(--primary)] selection:text-white ${
@@ -180,7 +182,7 @@ export default function PortfolioIndex({
             </Head>
 
             {/* The Event Horizon Cinematic Preloader */}
-            <EventHorizonPreloader reducedMotion={isOff} />
+            <EventHorizonPreloader reducedMotion={isOff} logoSrc={logoSrc} />
 
             {/* Tactile Architectural Background Grid */}
             <StarfieldContainer

@@ -4,6 +4,7 @@ import { gsap } from 'gsap';
 interface EventHorizonPreloaderProps {
     onComplete?: () => void;
     reducedMotion?: boolean;
+    logoSrc?: string;
 }
 
 // Module-level guard: do not show preloader again during internal SPA navigation in the same session
@@ -12,6 +13,7 @@ let hasLoadedOnceInSession = false;
 export default function EventHorizonPreloader({
     onComplete,
     reducedMotion = false,
+    logoSrc = '/logo.webp',
 }: EventHorizonPreloaderProps) {
     const [isComplete, setIsComplete] = useState<boolean>(() => hasLoadedOnceInSession);
 
@@ -20,8 +22,8 @@ export default function EventHorizonPreloader({
     const coronaAuraRef = useRef<SVGCircleElement | null>(null);
     const orbitalRingRef = useRef<SVGCircleElement | null>(null);
     const eclipseDiscRef = useRef<SVGCircleElement | null>(null);
-    const maTextRef = useRef<SVGTextElement | null>(null);
-    const maSweepRef = useRef<SVGRectElement | null>(null);
+    const logoGroupRef = useRef<SVGGElement | null>(null);
+    const sweepRef = useRef<SVGRectElement | null>(null);
     const focalLightRef = useRef<SVGGElement | null>(null);
 
     const nameRef = useRef<HTMLHeadingElement | null>(null);
@@ -130,7 +132,7 @@ export default function EventHorizonPreloader({
                 if (eclipseGroupRef.current) gsap.set(eclipseGroupRef.current, { opacity: 1, scale: 1 });
                 if (orbitalRingRef.current) gsap.set(orbitalRingRef.current, { strokeDashoffset: 0 });
                 if (focalLightRef.current) gsap.set(focalLightRef.current, { opacity: 1, scale: 1 });
-                if (maTextRef.current) gsap.set(maTextRef.current, { opacity: 1 });
+                if (logoGroupRef.current) gsap.set(logoGroupRef.current, { opacity: 1, scale: 1 });
                 if (nameRef.current) gsap.set(nameRef.current, { y: 0, opacity: 1 });
                 if (roleRef.current) gsap.set(roleRef.current, { y: 0, opacity: 1 });
                 if (progressBarRef.current) gsap.set(progressBarRef.current, { width: '100%' });
@@ -156,8 +158,8 @@ export default function EventHorizonPreloader({
             if (orbitalRingRef.current) gsap.set(orbitalRingRef.current, { strokeDashoffset: 553, transformOrigin: '120px 120px' });
             if (eclipseDiscRef.current) gsap.set(eclipseDiscRef.current, { opacity: 0, scale: 0.92, transformOrigin: '120px 120px' });
             if (focalLightRef.current) gsap.set(focalLightRef.current, { opacity: 0, scale: 0.2, transformOrigin: '182.2px 57.8px' });
-            if (maTextRef.current) gsap.set(maTextRef.current, { opacity: 0, scale: 0.92, transformOrigin: '120px 129px' });
-            if (maSweepRef.current) gsap.set(maSweepRef.current, { x: -160 });
+            if (logoGroupRef.current) gsap.set(logoGroupRef.current, { opacity: 0, scale: 0.88, transformOrigin: '120px 120px' });
+            if (sweepRef.current) gsap.set(sweepRef.current, { x: -160 });
 
             if (nameRef.current) gsap.set(nameRef.current, { y: 18, opacity: 0 });
             if (roleRef.current) gsap.set(roleRef.current, { y: 10, opacity: 0 });
@@ -199,17 +201,17 @@ export default function EventHorizonPreloader({
                 // ==========================================
                 // PHASE 02 — IDENTITY REVEAL (0.45s -> 1.05s)
                 // ==========================================
-                // Initials MA reveal with gold-orange light
-                .to(maTextRef.current, {
+                // Brand logo reveals with smooth easing and celestial warmth
+                .to(logoGroupRef.current, {
                     opacity: 1,
                     scale: 1,
-                    duration: 0.38,
+                    duration: 0.42,
                     ease: 'power3.out',
                 }, 0.44)
-                // Specular light sweep passes across the initials
-                .to(maSweepRef.current, {
+                // Specular light sweep passes across the logo
+                .to(sweepRef.current, {
                     x: 160,
-                    duration: 0.52,
+                    duration: 0.54,
                     ease: 'power2.inOut',
                 }, 0.46)
                 // Full name: MONAYEM AZAM
@@ -373,14 +375,6 @@ export default function EventHorizonPreloader({
                                 <stop offset="100%" stopColor="rgba(241, 90, 36, 0.12)" />
                             </linearGradient>
 
-                            {/* Initials Monogram Gradient */}
-                            <linearGradient id="maGrad" x1="0%" y1="100%" x2="100%" y2="0%">
-                                <stop offset="0%" stopColor="#E6E2D8" />
-                                <stop offset="38%" stopColor="#FFFFFF" />
-                                <stop offset="70%" stopColor="#FFAA20" />
-                                <stop offset="100%" stopColor="#F15A24" />
-                            </linearGradient>
-
                             {/* Focal Light Blur Filter */}
                             <filter id="focalGlow" x="-100%" y="-100%" width="300%" height="300%">
                                 <feGaussianBlur stdDeviation="3.2" result="blur" />
@@ -395,20 +389,18 @@ export default function EventHorizonPreloader({
                                 <feGaussianBlur stdDeviation="8" />
                             </filter>
 
-                            {/* Monogram Mask with Light-Sweep */}
-                            <mask id="maLightMask">
-                                <rect x="0" y="0" width="240" height="240" fill="white" />
-                                <rect
-                                    ref={maSweepRef}
-                                    x="40"
-                                    y="70"
-                                    width="45"
-                                    height="100"
-                                    fill="white"
-                                    transform="rotate(25 120 120)"
-                                    opacity="0.95"
-                                />
-                            </mask>
+                            {/* Disc Clipping Path to keep specular sweep strictly inside the central orb */}
+                            <clipPath id="eclipseDiscClip">
+                                <circle cx="120" cy="120" r="73" />
+                            </clipPath>
+
+                            {/* Specular Sheen Sweep Gradient */}
+                            <linearGradient id="specularSheenGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stopColor="#FFAA20" stopOpacity="0" />
+                                <stop offset="45%" stopColor="#FFFFFF" stopOpacity="0.75" />
+                                <stop offset="65%" stopColor="#FFAA20" stopOpacity="0.4" />
+                                <stop offset="100%" stopColor="#F15A24" stopOpacity="0" />
+                            </linearGradient>
                         </defs>
 
                         {/* Whole Eclipse Group (for Phase 4 expansion) */}
@@ -460,19 +452,29 @@ export default function EventHorizonPreloader({
                                 opacity="0"
                             />
 
-                            {/* Layer 5: Bold Initial Monogram MA (Dominant & Centered) */}
-                            <text
-                                ref={maTextRef}
-                                x="120"
-                                y="132"
-                                textAnchor="middle"
-                                dominantBaseline="middle"
-                                mask="url(#maLightMask)"
-                                style={{ fontFamily: 'var(--font-display), Orbitron, Inter, sans-serif' }}
-                                className="font-display font-black text-[42px] tracking-[0.04em] fill-[url(#maGrad)] select-none drop-shadow-[0_0_12px_rgba(241,90,36,0.45)]"
-                            >
-                                MA
-                            </text>
+                            {/* Layer 5: Official Brand Logo Emblem (Centered within Celestial Eclipse Disc) */}
+                            <g ref={logoGroupRef} className="origin-[120px_120px]" clipPath="url(#eclipseDiscClip)">
+                                <image
+                                    href={logoSrc}
+                                    x="62"
+                                    y="82"
+                                    width="116"
+                                    height="76"
+                                    preserveAspectRatio="xMidYMid meet"
+                                    className="select-none pointer-events-none drop-shadow-[0_0_14px_rgba(241,90,36,0.45)]"
+                                />
+                                {/* Specular sheen beam sweeping across the emblem */}
+                                <rect
+                                    ref={sweepRef}
+                                    x="30"
+                                    y="50"
+                                    width="38"
+                                    height="140"
+                                    fill="url(#specularSheenGrad)"
+                                    transform="rotate(25 120 120)"
+                                    className="pointer-events-none opacity-50 mix-blend-screen"
+                                />
+                            </g>
 
                             {/* Layer 6: Small, Intense Golden-Orange Light Source (Diamond Ring Corona Flare) */}
                             {/* Positioned on the orbital perimeter at 45 degrees: (182.2, 57.8) */}
