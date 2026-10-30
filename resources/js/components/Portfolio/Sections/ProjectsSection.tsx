@@ -3,6 +3,7 @@ import { PortfolioSection, ProjectItem } from '@/types/portfolio';
 import ProjectCard from '../Projects/ProjectCard';
 import ProjectArchitecturalCover from '../Projects/ProjectArchitecturalCover';
 import ProjectDetailPanel from '../Projects/ProjectDetailPanel';
+import GravityItem from '../Motion/GravityItem';
 import { ArrowAngularTopRight, ArrowRight, Github } from '../Shared/Icons';
 
 interface ProjectsSectionProps {
@@ -240,30 +241,31 @@ export default function ProjectsSection({
                                     : sorted.filter((p) => cat.matches(p)).length;
 
                             return (
-                                <button
-                                    key={cat.id}
-                                    type="button"
-                                    role="tab"
-                                    aria-selected={isCurrent}
-                                    tabIndex={0}
-                                    onClick={() => setActiveCategory(cat.id)}
-                                    className={`group flex shrink-0 items-center gap-2 rounded-xl border px-4 py-2.5 font-mono text-xs font-semibold uppercase tracking-wider transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--primary)] min-h-[44px] ${
-                                        isCurrent
-                                            ? 'border-[var(--primary)] bg-[var(--primary)] text-white shadow-[0_0_14px_rgba(241,90,36,0.3)]'
-                                            : 'border-[var(--surface-border)] bg-[var(--surface)] text-[var(--text-muted)] hover:border-[var(--text-muted)] hover:text-[var(--text)]'
-                                    }`}
-                                >
-                                    <span>{cat.label}</span>
-                                    <span
-                                        className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
+                                <GravityItem key={cat.id} radius={90} maxPull={5} strength={0.2} pushForce={6} disabled={isOff}>
+                                    <button
+                                        type="button"
+                                        role="tab"
+                                        aria-selected={isCurrent}
+                                        tabIndex={0}
+                                        onClick={() => setActiveCategory(cat.id)}
+                                        className={`group flex shrink-0 items-center gap-2 rounded-xl border px-4 py-2.5 font-mono text-xs font-semibold uppercase tracking-wider transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--primary)] min-h-[44px] ${
                                             isCurrent
-                                                ? 'bg-white/20 text-white'
-                                                : 'bg-[var(--muted)] text-[var(--text-muted)]'
+                                                ? 'border-[var(--primary)] bg-[var(--primary)] text-white shadow-[0_0_14px_rgba(241,90,36,0.3)]'
+                                                : 'border-[var(--surface-border)] bg-[var(--surface)] text-[var(--text-muted)] hover:border-[var(--text-muted)] hover:text-[var(--text)]'
                                         }`}
                                     >
-                                        {count}
-                                    </span>
-                                </button>
+                                        <span>{cat.label}</span>
+                                        <span
+                                            className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
+                                                isCurrent
+                                                    ? 'bg-white/20 text-white'
+                                                    : 'bg-[var(--muted)] text-[var(--text-muted)]'
+                                            }`}
+                                        >
+                                            {count}
+                                        </span>
+                                    </button>
+                                </GravityItem>
                             );
                         })}
                     </div>
@@ -271,8 +273,9 @@ export default function ProjectsSection({
 
                 {/* PREMIER EXHIBITION SPOTLIGHT: Featured Showcase */}
                 {spotlightProject && (
-                    <div className="mt-10 rounded-2xl sm:rounded-3xl border border-[var(--surface-border)] bg-[var(--surface)] overflow-hidden shadow-2xl transition-all duration-300">
-                        <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                    <GravityItem radius={280} maxPull={6} strength={0.12} pushForce={5} disabled={isOff} className="mt-10">
+                        <div className="rounded-2xl sm:rounded-3xl border border-[var(--surface-border)] bg-[var(--surface)] overflow-hidden shadow-2xl transition-all duration-300">
+                            <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
                             
                             {/* Spotlight Large Preview (Col 7) */}
                             <div className="lg:col-span-7 relative aspect-[16/10] lg:aspect-auto overflow-hidden bg-[var(--bg)] border-b lg:border-b-0 lg:border-r border-[var(--surface-border)] group">
@@ -364,7 +367,8 @@ export default function ProjectsSection({
                             </div>
                         </div>
                     </div>
-                )}
+                </GravityItem>
+            )}
 
                 {/* BALANCED RESPONSIVE GALLERY: Remaining Curated Projects */}
                 {galleryProjects.length > 0 && (

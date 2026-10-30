@@ -6,6 +6,7 @@ import {
     PortfolioSettings,
 } from '@/types/portfolio';
 import BurningBlackHoleCanvas from '@/components/Portfolio/Motion/BurningBlackHoleCanvas';
+import GravityItem from '@/components/Portfolio/Motion/GravityItem';
 import { ArrowRight } from '../Shared/Icons';
 
 interface HeroSectionProps {
@@ -100,39 +101,43 @@ export default function HeroSection({
                         }}
                         className="mt-8 flex flex-wrap items-center gap-4 sm:mt-10"
                     >
-                        <button
-                            type="button"
-                            onClick={() => {
-                                const target = (
-                                    hero?.primary_button_url || '#projects'
-                                ).replace('#', '');
-                                scrollTo(target);
-                            }}
-                            className="group inline-flex min-h-[48px] cursor-pointer items-center gap-3 rounded-xl bg-[var(--primary)] px-7 py-3.5 font-mono text-xs font-bold tracking-wider text-white uppercase shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(241,90,36,0.5)] hover:brightness-110 active:translate-y-0 sm:text-sm"
-                        >
-                            <span>
-                                {hero?.primary_button_label ||
-                                    'Explore Selected Work'}
-                            </span>
-                            <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-                        </button>
+                        <GravityItem radius={180} maxPull={10} strength={0.28} pushForce={10} disabled={isOff}>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const target = (
+                                        hero?.primary_button_url || '#projects'
+                                    ).replace('#', '');
+                                    scrollTo(target);
+                                }}
+                                className="group inline-flex min-h-[48px] cursor-pointer items-center gap-3 rounded-xl bg-[var(--primary)] px-7 py-3.5 font-mono text-xs font-bold tracking-wider text-white uppercase shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(241,90,36,0.5)] hover:brightness-110 active:translate-y-0 sm:text-sm"
+                            >
+                                <span>
+                                    {hero?.primary_button_label ||
+                                        'Explore Selected Work'}
+                                </span>
+                                <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+                            </button>
+                        </GravityItem>
 
-                        <button
-                            type="button"
-                            onClick={() => {
-                                const target = (
-                                    hero?.secondary_button_url || '#contact'
-                                ).replace('#', '');
-                                scrollTo(target);
-                            }}
-                            className="group inline-flex min-h-[48px] cursor-pointer items-center gap-2.5 rounded-xl border border-[var(--surface-border)] bg-[var(--surface)]/80 px-6 py-3.5 font-mono text-xs font-bold tracking-wider text-[var(--text)] uppercase backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--primary)] hover:bg-[var(--surface)] hover:text-[var(--primary)] active:translate-y-0 sm:text-sm"
-                        >
-                            <span>
-                                {hero?.secondary_button_label ||
-                                    'Start a Conversation'}
-                            </span>
-                            <span className="font-sans text-xs">→</span>
-                        </button>
+                        <GravityItem radius={180} maxPull={10} strength={0.28} pushForce={10} disabled={isOff}>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const target = (
+                                        hero?.secondary_button_url || '#contact'
+                                    ).replace('#', '');
+                                    scrollTo(target);
+                                }}
+                                className="group inline-flex min-h-[48px] cursor-pointer items-center gap-2.5 rounded-xl border border-[var(--surface-border)] bg-[var(--surface)]/80 px-6 py-3.5 font-mono text-xs font-bold tracking-wider text-[var(--text)] uppercase backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--primary)] hover:bg-[var(--surface)] hover:text-[var(--primary)] active:translate-y-0 sm:text-sm"
+                            >
+                                <span>
+                                    {hero?.secondary_button_label ||
+                                        'Start a Conversation'}
+                                </span>
+                                <span className="font-sans text-xs">→</span>
+                            </button>
+                        </GravityItem>
                     </motion.div>
                 </div>
             </div>

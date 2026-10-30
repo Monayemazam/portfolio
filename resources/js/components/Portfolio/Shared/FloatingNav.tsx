@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { PortfolioSection, PortfolioSettings } from '@/types/portfolio';
 import { useTheme } from '@/hooks/use-theme';
 import MobileMenu from './MobileMenu';
+import GravityItem from '@/components/Portfolio/Motion/GravityItem';
 
 interface FloatingNavProps {
     sections: PortfolioSection[];
@@ -81,24 +82,26 @@ export default function FloatingNav({
         >
             <div className="mx-auto flex h-18 sm:h-20 max-w-[1440px] items-center justify-between px-6 sm:px-10 lg:px-16">
                 {/* Brand Wordmark with Celestial Star Point */}
-                <a
-                    href="#hero"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        scrollTo('hero');
-                    }}
-                    className="group flex items-center gap-3 focus:outline-hidden"
-                >
-                    <span className="h-2.5 w-2.5 rounded-full bg-[var(--primary)] shadow-[0_0_12px_var(--primary)] transition-transform group-hover:scale-125" />
-                    <div className="flex flex-col">
-                        <span className="font-display text-lg sm:text-xl font-black tracking-tight text-foreground transition-colors group-hover:text-[var(--primary)]">
-                            MONAYEM AZAM
-                        </span>
-                        <span className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase -mt-0.5">
-                            FULL-STACK WEB DEVELOPER
-                        </span>
-                    </div>
-                </a>
+                <GravityItem radius={90} maxPull={4} strength={0.16} pushForce={4}>
+                    <a
+                        href="#hero"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            scrollTo('hero');
+                        }}
+                        className="group flex items-center gap-3 focus:outline-hidden"
+                    >
+                        <span className="h-2.5 w-2.5 rounded-full bg-[var(--primary)] shadow-[0_0_12px_var(--primary)] transition-transform group-hover:scale-125" />
+                        <div className="flex flex-col">
+                            <span className="font-display text-lg sm:text-xl font-black tracking-tight text-foreground transition-colors group-hover:text-[var(--primary)]">
+                                MONAYEM AZAM
+                            </span>
+                            <span className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase -mt-0.5">
+                                FULL-STACK WEB DEVELOPER
+                            </span>
+                        </div>
+                    </a>
+                </GravityItem>
 
                 {/* Desktop Celestial Navigation */}
                 <nav
@@ -109,21 +112,22 @@ export default function FloatingNav({
                     {navItems.map((item) => {
                         const isActive = activeSection === item.key;
                         return (
-                            <button
-                                key={item.key}
-                                type="button"
-                                onClick={() => scrollTo(item.key)}
-                                className={`group relative py-2 transition-colors focus:outline-hidden ${
-                                    isActive
-                                        ? 'text-foreground font-bold'
-                                        : 'text-muted-foreground hover:text-foreground'
-                                }`}
-                            >
-                                <span>{item.label}</span>
-                                {isActive && (
-                                    <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
-                                )}
-                            </button>
+                            <GravityItem key={item.key} radius={70} maxPull={3.5} strength={0.16} pushForce={4}>
+                                <button
+                                    type="button"
+                                    onClick={() => scrollTo(item.key)}
+                                    className={`group relative py-2 transition-colors focus:outline-hidden cursor-pointer ${
+                                        isActive
+                                            ? 'text-foreground font-bold'
+                                            : 'text-muted-foreground hover:text-foreground'
+                                    }`}
+                                >
+                                    <span>{item.label}</span>
+                                    {isActive && (
+                                        <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-[var(--primary)] shadow-[0_0_8px_var(--primary)]" />
+                                    )}
+                                </button>
+                            </GravityItem>
                         );
                     })}
                 </nav>
@@ -131,28 +135,32 @@ export default function FloatingNav({
                 {/* Right Controls: Theme Toggle + Contact Action */}
                 <div className="flex items-center gap-3 sm:gap-4">
                     {/* Theme Switcher */}
-                    <button
-                        type="button"
-                        onClick={toggleTheme}
-                        suppressHydrationWarning
-                        aria-label={`Switch to ${isDark ? 'Solar' : 'Deep Space'} theme`}
-                        className="flex items-center gap-2 rounded-full border border-border/80 bg-surface/60 backdrop-blur-sm px-3.5 py-1.5 font-mono text-[11px] tracking-wider uppercase transition-all hover:border-[var(--primary)] hover:bg-surface cursor-pointer"
-                    >
-                        <span className="h-2 w-2 rounded-full bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]" />
-                        <span className="hidden sm:inline font-semibold" suppressHydrationWarning>
-                            {isDark ? 'DEEP SPACE' : 'SOLAR'}
-                        </span>
-                    </button>
+                    <GravityItem radius={80} maxPull={4} strength={0.18} pushForce={5}>
+                        <button
+                            type="button"
+                            onClick={toggleTheme}
+                            suppressHydrationWarning
+                            aria-label={`Switch to ${isDark ? 'Solar' : 'Deep Space'} theme`}
+                            className="flex items-center gap-2 rounded-full border border-border/80 bg-surface/60 backdrop-blur-sm px-3.5 py-1.5 font-mono text-[11px] tracking-wider uppercase transition-all hover:border-[var(--primary)] hover:bg-surface cursor-pointer"
+                        >
+                            <span className="h-2 w-2 rounded-full bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]" />
+                            <span className="hidden sm:inline font-semibold" suppressHydrationWarning>
+                                {isDark ? 'DEEP SPACE' : 'SOLAR'}
+                            </span>
+                        </button>
+                    </GravityItem>
 
                     {/* Contact Action */}
-                    <button
-                        type="button"
-                        onClick={() => scrollTo('contact')}
-                        className="hidden sm:flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2 font-mono text-xs font-bold uppercase tracking-wider text-white transition-all hover:shadow-[0_0_20px_rgba(241,90,36,0.4)] hover:bg-[var(--primary)]/90"
-                    >
-                        <span>GET IN TOUCH</span>
-                        <span className="font-sans">→</span>
-                    </button>
+                    <GravityItem radius={100} maxPull={5} strength={0.20} pushForce={6}>
+                        <button
+                            type="button"
+                            onClick={() => scrollTo('contact')}
+                            className="hidden sm:flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2 font-mono text-xs font-bold uppercase tracking-wider text-white transition-all hover:shadow-[0_0_20px_rgba(241,90,36,0.4)] hover:bg-[var(--primary)]/90 cursor-pointer"
+                        >
+                            <span>GET IN TOUCH</span>
+                            <span className="font-sans">→</span>
+                        </button>
+                    </GravityItem>
 
                     {/* Mobile Navigation Trigger */}
                     <button

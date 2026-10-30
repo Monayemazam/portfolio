@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ProjectItem } from '@/types/portfolio';
 import ProjectArchitecturalCover from './ProjectArchitecturalCover';
+import GravityItem from '../Motion/GravityItem';
 import { ArrowAngularTopRight, Github } from '../Shared/Icons';
 
 interface ProjectCardProps {
@@ -27,21 +28,22 @@ export default function ProjectCard({
     const liveUrl = project.live_url || null;
 
     return (
-        <motion.article
-            initial={isOff ? false : { opacity: 0, y: 20 }}
-            whileInView={isOff ? undefined : { opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-40px' }}
-            transition={
-                isOff
-                    ? { duration: 0 }
-                    : {
-                          duration: 0.35,
-                          delay: Math.min(index * 0.08, 0.4),
-                          ease: [0.22, 1, 0.36, 1],
-                      }
-            }
-            className="group relative flex flex-col justify-between rounded-2xl border border-[var(--surface-border)] bg-[var(--surface)] overflow-hidden transition-all duration-200 hover:border-[var(--primary)]/60 hover:-translate-y-1 hover:shadow-[0_20px_45px_rgba(0,0,0,0.32)]"
-        >
+        <GravityItem radius={220} maxPull={7} strength={0.14} pushForce={6} disabled={isOff} className="h-full">
+            <motion.article
+                initial={isOff ? false : { opacity: 0, y: 20 }}
+                whileInView={isOff ? undefined : { opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={
+                    isOff
+                        ? { duration: 0 }
+                        : {
+                              duration: 0.35,
+                              delay: Math.min(index * 0.08, 0.4),
+                              ease: [0.22, 1, 0.36, 1],
+                          }
+                }
+                className="group relative flex flex-col justify-between rounded-2xl border border-[var(--surface-border)] bg-[var(--surface)] overflow-hidden transition-all duration-200 hover:border-[var(--primary)]/60 hover:-translate-y-1 hover:shadow-[0_20px_45px_rgba(0,0,0,0.32)] h-full"
+            >
             {/* Top Screenshot / Cover Area (16:9 Aspect Ratio) */}
             <div className="relative aspect-[16/9] w-full overflow-hidden bg-[var(--bg)] border-b border-[var(--surface-border)]">
                 {/* Visual Cover: displays verified screenshot or tasteful architectural fallback */}
@@ -159,5 +161,6 @@ export default function ProjectCard({
                 )}
             </div>
         </motion.article>
+        </GravityItem>
     );
 }

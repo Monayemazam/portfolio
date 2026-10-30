@@ -294,6 +294,7 @@ export default function PortfolioIndex({
                                     key={section.key}
                                     section={section}
                                     settings={settings}
+                                    isOff={isOff}
                                 />
                             );
                         case 'footer':

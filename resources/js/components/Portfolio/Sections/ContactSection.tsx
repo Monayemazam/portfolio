@@ -13,15 +13,18 @@ import {
     Youtube,
 } from '../Shared/Icons';
 import { PortfolioSection, PortfolioSettings } from '@/types/portfolio';
+import GravityItem from '../Motion/GravityItem';
 
 interface ContactSectionProps {
     section: PortfolioSection;
     settings: PortfolioSettings;
+    isOff?: boolean;
 }
 
 export default function ContactSection({
     section,
     settings,
+    isOff = false,
 }: ContactSectionProps) {
     const [submittedSuccessfully, setSubmittedSuccessfully] = useState(false);
 
@@ -143,39 +146,43 @@ export default function ContactSection({
                                     )}
 
                                     {whatsapp && (
-                                        <div className="p-4 flex items-center justify-between hover:bg-surface/50 transition-colors">
-                                            <div className="flex items-center gap-3">
-                                                <Whatsapp className="h-4 w-4 text-[var(--primary)]" />
-                                                <span className="text-muted-foreground uppercase">WHATSAPP:</span>
+                                        <GravityItem radius={130} maxPull={4} strength={0.16} pushForce={5} disabled={isOff}>
+                                            <div className="p-4 flex items-center justify-between hover:bg-surface/50 transition-colors">
+                                                <div className="flex items-center gap-3">
+                                                    <Whatsapp className="h-4 w-4 text-[var(--primary)]" />
+                                                    <span className="text-muted-foreground uppercase">WHATSAPP:</span>
+                                                </div>
+                                                <a
+                                                    href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="font-bold text-foreground hover:text-[var(--primary)] transition-colors"
+                                                    data-field-tag="WHATSAPP"
+                                                >
+                                                    CHAT ON WHATSAPP [↗]
+                                                </a>
                                             </div>
-                                            <a
-                                                href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="font-bold text-foreground hover:text-[var(--primary)] transition-colors"
-                                                data-field-tag="WHATSAPP"
-                                            >
-                                                CHAT ON WHATSAPP [↗]
-                                            </a>
-                                        </div>
+                                        </GravityItem>
                                     )}
 
                                     {bookingUrl && (
-                                        <div className="p-4 flex items-center justify-between hover:bg-surface/50 transition-colors">
-                                            <div className="flex items-center gap-3">
-                                                <CalendarDays className="h-4 w-4 text-[var(--primary)]" />
-                                                <span className="text-muted-foreground uppercase">SCHEDULE:</span>
+                                        <GravityItem radius={130} maxPull={4} strength={0.16} pushForce={5} disabled={isOff}>
+                                            <div className="p-4 flex items-center justify-between hover:bg-surface/50 transition-colors">
+                                                <div className="flex items-center gap-3">
+                                                    <CalendarDays className="h-4 w-4 text-[var(--primary)]" />
+                                                    <span className="text-muted-foreground uppercase">SCHEDULE:</span>
+                                                </div>
+                                                <a
+                                                    href={bookingUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="font-bold text-[var(--primary)] hover:underline"
+                                                    data-field-tag="CALENDAR"
+                                                >
+                                                    BOOK A CALL [↗]
+                                                </a>
                                             </div>
-                                            <a
-                                                href={bookingUrl}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="font-bold text-[var(--primary)] hover:underline"
-                                                data-field-tag="CALENDAR"
-                                            >
-                                                BOOK A CALL [↗]
-                                            </a>
-                                        </div>
+                                        </GravityItem>
                                     )}
                                 </div>
                             )}
@@ -188,59 +195,69 @@ export default function ContactSection({
                                     </span>
                                     <div className="flex flex-wrap gap-2.5">
                                         {github && (
-                                            <a
-                                                href={github}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="rounded-full border border-border/60 bg-surface/50 px-4 py-2 font-mono text-xs uppercase hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all flex items-center gap-2"
-                                            >
-                                                <Github className="h-3.5 w-3.5" />
-                                                <span>GITHUB</span>
-                                            </a>
+                                            <GravityItem radius={90} maxPull={5} strength={0.2} pushForce={5} disabled={isOff}>
+                                                <a
+                                                    href={github}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="rounded-full border border-border/60 bg-surface/50 px-4 py-2 font-mono text-xs uppercase hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all flex items-center gap-2"
+                                                >
+                                                    <Github className="h-3.5 w-3.5" />
+                                                    <span>GITHUB</span>
+                                                </a>
+                                            </GravityItem>
                                         )}
                                         {linkedin && (
-                                            <a
-                                                href={linkedin}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="rounded-full border border-border/60 bg-surface/50 px-4 py-2 font-mono text-xs uppercase hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all flex items-center gap-2"
-                                            >
-                                                <Linkedin className="h-3.5 w-3.5" />
-                                                <span>LINKEDIN</span>
-                                            </a>
+                                            <GravityItem radius={90} maxPull={5} strength={0.2} pushForce={5} disabled={isOff}>
+                                                <a
+                                                    href={linkedin}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="rounded-full border border-border/60 bg-surface/50 px-4 py-2 font-mono text-xs uppercase hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all flex items-center gap-2"
+                                                >
+                                                    <Linkedin className="h-3.5 w-3.5" />
+                                                    <span>LINKEDIN</span>
+                                                </a>
+                                            </GravityItem>
                                         )}
                                         {twitter && (
-                                            <a
-                                                href={twitter}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="rounded-full border border-border/60 bg-surface/50 px-4 py-2 font-mono text-xs uppercase hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all flex items-center gap-2"
-                                            >
-                                                <X className="h-3.5 w-3.5" />
-                                                <span>X.COM</span>
-                                            </a>
+                                            <GravityItem radius={90} maxPull={5} strength={0.2} pushForce={5} disabled={isOff}>
+                                                <a
+                                                    href={twitter}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="rounded-full border border-border/60 bg-surface/50 px-4 py-2 font-mono text-xs uppercase hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all flex items-center gap-2"
+                                                >
+                                                    <X className="h-3.5 w-3.5" />
+                                                    <span>X.COM</span>
+                                                </a>
+                                            </GravityItem>
                                         )}
                                         {facebook && (
-                                            <a
-                                                href={facebook}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="rounded-full border border-border/60 bg-surface/50 px-4 py-2 font-mono text-xs uppercase hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all flex items-center gap-2"
-                                            >
-                                                <Facebook className="h-3.5 w-3.5" />
-                                                <span>FACEBOOK</span>
-                                            </a>
+                                            <GravityItem radius={90} maxPull={5} strength={0.2} pushForce={5} disabled={isOff}>
+                                                <a
+                                                    href={facebook}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="rounded-full border border-border/60 bg-surface/50 px-4 py-2 font-mono text-xs uppercase hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all flex items-center gap-2"
+                                                >
+                                                    <Facebook className="h-3.5 w-3.5" />
+                                                    <span>FACEBOOK</span>
+                                                </a>
+                                            </GravityItem>
                                         )}
                                         {youtube && (
-                                            <a
-                                                href={youtube}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="rounded-full border border-border/60 bg-surface/50 px-4 py-2 font-mono text-xs uppercase hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all flex items-center gap-2"
-                                            >
-                                                <Youtube className="h-3.5 w-3.5" />
-                                                <span>YOUTUBE</span>
-                                            </a>
+                                            <GravityItem radius={90} maxPull={5} strength={0.2} pushForce={5} disabled={isOff}>
+                                                <a
+                                                    href={youtube}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="rounded-full border border-border/60 bg-surface/50 px-4 py-2 font-mono text-xs uppercase hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all flex items-center gap-2"
+                                                >
+                                                    <Youtube className="h-3.5 w-3.5" />
+                                                    <span>YOUTUBE</span>
+                                                </a>
+                                            </GravityItem>
                                         )}
                                     </div>
                                 </div>
@@ -397,21 +414,23 @@ export default function ContactSection({
                                     )}
 
                                     {/* Submit Button */}
-                                    <button
-                                        type="submit"
-                                        disabled={processing}
-                                        className="w-full rounded-full bg-[var(--primary)] py-4 font-mono text-sm font-bold uppercase tracking-wider text-white transition-all hover:bg-[var(--primary)]/90 hover:shadow-[0_0_25px_rgba(241,90,36,0.4)] disabled:opacity-50 flex items-center justify-center gap-3 cursor-pointer"
-                                        data-field-tag="SUBMIT"
-                                    >
-                                        {processing ? (
-                                            <span>SENDING MESSAGE...</span>
-                                        ) : (
-                                            <>
-                                                <span>SEND MESSAGE</span>
-                                                <span className="font-sans">→</span>
-                                            </>
-                                        )}
-                                    </button>
+                                    <GravityItem radius={160} maxPull={8} strength={0.22} pushForce={8} disabled={isOff || processing}>
+                                        <button
+                                            type="submit"
+                                            disabled={processing}
+                                            className="w-full rounded-full bg-[var(--primary)] py-4 font-mono text-sm font-bold uppercase tracking-wider text-white transition-all hover:bg-[var(--primary)]/90 hover:shadow-[0_0_25px_rgba(241,90,36,0.4)] disabled:opacity-50 flex items-center justify-center gap-3 cursor-pointer"
+                                            data-field-tag="SUBMIT"
+                                        >
+                                            {processing ? (
+                                                <span>SENDING MESSAGE...</span>
+                                            ) : (
+                                                <>
+                                                    <span>SEND MESSAGE</span>
+                                                    <span className="font-sans">→</span>
+                                                </>
+                                            )}
+                                        </button>
+                                    </GravityItem>
                                 </form>
                             )}
                         </div>

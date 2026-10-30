@@ -71,7 +71,7 @@ export default function BurningBlackHoleCanvas({
 
         // Highly Refined Fragment Shader:
         // Anchored Singularity Core, Seamless Differential Keplerian Accretion Flow,
-        // Continuous Directional Plasma Filaments, and Subtle Micro-Shimmering Photon Sphere.
+        // Relativistic Infalling Matter Streams, Gravitational Slingshot Particles, and Subtle Pulse Waves.
         const fragmentShader = `
             precision highp float;
             varying vec2 vUv;
@@ -81,6 +81,7 @@ export default function BurningBlackHoleCanvas({
             uniform float uProgress;
             uniform float uIsDark;
             uniform vec2 uMouse;
+            uniform float uPulseTime;
 
             // --- Fast Simplex Noise Hashing ---
             vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
@@ -121,7 +122,6 @@ export default function BurningBlackHoleCanvas({
 
                 // --- 1. Visually Anchored Central Event Horizon ---
                 // The central black hole origin remains rock-solid in screen coordinates.
-                // It never wobbles, jumps, or drifts.
                 vec2 center = mix(vec2(0.66, 0.50), vec2(0.50, 0.40), isMobile);
 
                 vec2 p = uv - center;
@@ -139,7 +139,6 @@ export default function BurningBlackHoleCanvas({
 
                 // --- 2. Subtle Depth Parallax (Anchored Core Guarantee) ---
                 // Parallax is smoothly 0 at the event horizon (r <= rSingularity)
-                // so the singularity never shifts, while the outer disk and stars have 3D depth.
                 float parallaxFactor = smoothstep(rSingularity * 0.98, rSingularity + 0.42, r);
                 vec2 pDisk = p - uMouse * (0.016 * parallaxFactor);
 
@@ -238,7 +237,87 @@ export default function BurningBlackHoleCanvas({
                 float spaceGlow2 = exp(-spaceGlowDist2 * 0.65) * 0.35 * uProgress;
                 float eventHorizonVoid = smoothstep(rSingularity - 0.02, rSingularity + 0.005, r);
 
-                // --- 7. Color Synthesis (Preserving Exact Brand Palette) ---
+                // --- 7. Relativistic Particle Field (Infalling Streams & Slingshots) ---
+                vec3 particleLight = vec3(0.0);
+                vec3 colParticleWhite = (uIsDark > 0.5) ? vec3(1.0, 0.98, 0.94) : vec3(1.0, 0.98, 0.95);
+                vec3 colParticleAmber = (uIsDark > 0.5) ? vec3(1.0, 0.58, 0.18) : vec3(0.96, 0.58, 0.20);
+                vec3 colParticleEmber = vec3(0.945, 0.353, 0.141);
+
+                for (int i = 0; i < 18; i++) {
+                    float fi = float(i);
+                    float seedAngle = fi * 1.9634954;
+                    float seedSpeed = 0.065 + fract(sin(fi * 45.23) * 43758.5453) * 0.075;
+
+                    float pR = 0.0;
+                    float pAngle = 0.0;
+                    float pAlpha = 0.0;
+                    vec2 pVelocity = vec2(0.0);
+
+                    if (i < 11) {
+                        // Infalling Accreting Streamers (accelerating toward event horizon)
+                        float tCycle = fract(uTime * seedSpeed + fi * 0.0909);
+                        pR = mix(rOuterDisk * 1.28, rSingularity * 1.012, pow(tCycle, 2.2));
+                        float spinOmega = 3.6 / (pow(pR / rSingularity, 1.35) + 0.12);
+                        pAngle = seedAngle + spinOmega * tCycle * 6.28318;
+
+                        float fadeIn = smoothstep(0.0, 0.12, tCycle);
+                        float tidalFlash = 1.0 + 1.8 * smoothstep(0.72, 0.95, tCycle);
+                        float eventHorizonAbsorption = smoothstep(0.992, 0.94, tCycle);
+                        pAlpha = fadeIn * tidalFlash * eventHorizonAbsorption * uProgress;
+                        pVelocity = vec2(-sin(pAngle), cos(pAngle)) * (0.012 + 0.03 * pow(tCycle, 2.0));
+                    } else if (i < 15) {
+                        // Gravitational Slingshot & Push-Back Particles (hyperbolic flybys)
+                        float tFlyby = fract(uTime * (seedSpeed * 1.35) + fi * 0.23);
+                        float s = (tFlyby - 0.5) * 2.0; // -1 to +1
+                        pR = (rSingularity * 1.07) + pow(abs(s), 1.85) * (rOuterDisk * 0.88);
+                        pAngle = seedAngle + atan(s * 4.5) * 1.85;
+
+                        float flybyAlpha = smoothstep(1.0, 0.75, abs(s));
+                        pAlpha = flybyAlpha * (1.1 + 0.5 * (1.0 - abs(s))) * uProgress;
+                        pVelocity = vec2(-sin(pAngle), cos(pAngle)) * 0.035;
+                    } else {
+                        // Resonant Orbital Particles
+                        pR = mix(rInnerDisk * 1.35, rOuterDisk * 0.85, 0.5 + 0.5 * sin(fi * 2.7));
+                        float orbOmega = 1.85 / (pow(pR / rSingularity, 1.25) + 0.14);
+                        pAngle = seedAngle + uTime * orbOmega * 0.42;
+                        pAlpha = (0.75 + 0.25 * sin(uTime * 2.0 + fi)) * uProgress;
+                        pVelocity = vec2(-sin(pAngle), cos(pAngle)) * 0.016;
+                    }
+
+                    // Projected 3D tilted orbit
+                    vec2 pOrb = vec2(cos(pAngle) * pR, sin(pAngle) * pR * 0.44);
+                    vec2 pScreen = vec2(pOrb.x * cosAngle + pOrb.y * sinAngle, -pOrb.x * sinAngle + pOrb.y * cosAngle);
+
+                    // Subtle mouse gravitational influence
+                    vec2 toMouse = (uMouse * 0.18) - pScreen;
+                    float dMouse = length(toMouse);
+                    if (dMouse < 0.45) {
+                        pScreen += normalize(toMouse) * (0.015 * (1.0 - dMouse / 0.45));
+                    }
+
+                    float dPart = length(p - pScreen);
+                    float core = exp(-dPart * 120.0);
+                    float aura = exp(-dPart * 26.0) * 0.35;
+                    float dTrail = length(p - (pScreen - pVelocity * 0.55));
+                    float trail = exp(-dTrail * 65.0) * 0.25;
+
+                    float pIntensity = (core + aura + trail) * pAlpha;
+                    float pDoppler = 1.0 + 0.48 * cos(pAngle + 0.35);
+                    vec3 colCurrent = mix(colParticleEmber, colParticleWhite, clamp(pDoppler * 0.55 + pAlpha * 0.45, 0.0, 1.0));
+
+                    particleLight += colCurrent * pIntensity * pDoppler;
+                }
+
+                // --- 8. Gravitational Wave Expansion from Singularity on Click ---
+                float timeSincePulse = uTime - uPulseTime;
+                float pulseWave = 0.0;
+                if (timeSincePulse > 0.0 && timeSincePulse < 1.8) {
+                    float rWave = timeSincePulse * 0.65;
+                    float waveDist = abs(r - rWave);
+                    pulseWave = exp(-waveDist * waveDist * 160.0) * exp(-timeSincePulse * 1.6) * 0.20 * uProgress;
+                }
+
+                // --- 9. Color Synthesis (Preserving Exact Brand Palette) ---
                 vec3 finalColor = vec3(0.0);
                 float finalAlpha = 0.0;
 
@@ -264,6 +343,13 @@ export default function BurningBlackHoleCanvas({
                     finalColor += colInnerRim * pow(plasmaDensity, 1.5) * 0.9;
                     finalColor += colWhiteHot * pow(plasmaDensity, 2.6) * 1.3;
 
+                    // Relativistic Particles & Tracer Streams
+                    finalColor += particleLight;
+
+                    // Gravitational Wave Pulse
+                    finalColor += colInnerRim * pulseWave * 0.85;
+                    finalColor += colWhiteHot * pulseWave * 0.45;
+
                     // Photon Sphere Rim
                     finalColor += colInnerRim * photonCorona * 0.85;
                     finalColor += colWhiteHot * photonRim * 1.45;
@@ -273,7 +359,8 @@ export default function BurningBlackHoleCanvas({
 
                     finalAlpha = clamp(
                         plasmaDensity * 1.1 + photonRim * 1.2 + photonCorona * 0.8 +
-                        lensArc * 0.7 + spaceGlow1 * 0.85 + spaceGlow2 * 0.45 + starField * 0.6,
+                        lensArc * 0.7 + spaceGlow1 * 0.85 + spaceGlow2 * 0.45 + starField * 0.6 +
+                        length(particleLight) * 0.55 + pulseWave * 0.8,
                         0.0, 1.0
                     );
                 } else {
@@ -289,8 +376,12 @@ export default function BurningBlackHoleCanvas({
                     finalColor += colSolarGold * pow(plasmaDensity, 1.6) * 0.7;
                     finalColor += colSolarWhite * photonRim * 1.2;
 
+                    // Particles & Wave Pulse in Light Theme
+                    finalColor += particleLight * 0.85;
+                    finalColor += colSolarGold * pulseWave * 0.65;
+
                     finalColor *= (0.12 + 0.88 * eventHorizonVoid);
-                    finalAlpha = clamp(plasmaDensity * 0.85 + photonRim * 0.9 + spaceGlow1 * 0.5, 0.0, 0.88);
+                    finalAlpha = clamp(plasmaDensity * 0.85 + photonRim * 0.9 + spaceGlow1 * 0.5 + length(particleLight) * 0.4, 0.0, 0.88);
                 }
 
                 gl_FragColor = vec4(finalColor, finalAlpha);
@@ -308,6 +399,7 @@ export default function BurningBlackHoleCanvas({
                 uProgress: { value: shouldReduce ? 1.0 : 0.0 },
                 uIsDark: { value: isDark ? 1.0 : 0.0 },
                 uMouse: { value: new THREE.Vector2(0, 0) },
+                uPulseTime: { value: -999.0 },
             },
         });
 
@@ -337,9 +429,16 @@ export default function BurningBlackHoleCanvas({
             targetMouseY = 0;
         };
 
+        // Click / Pointerdown triggers spacetime gravitational ripple wave from singularity
+        const handlePointerDown = () => {
+            if (shouldReduce) return;
+            material.uniforms.uPulseTime.value = clock.getElapsedTime();
+        };
+
         window.addEventListener('mousemove', handleMouseMove, { passive: true });
         window.addEventListener('mouseleave', handleMouseLeave, { passive: true });
         window.addEventListener('blur', handleMouseLeave, { passive: true });
+        window.addEventListener('pointerdown', handlePointerDown, { passive: true });
 
         // Coordinated Animation Loop: Fully halted when off-screen or tab hidden
         let animId: number | null = null;
@@ -370,6 +469,7 @@ export default function BurningBlackHoleCanvas({
                 material.uniforms.uProgress.value = 1.0;
                 material.uniforms.uTime.value = 10.0;
                 material.uniforms.uMouse.value.set(0, 0);
+                material.uniforms.uPulseTime.value = -999.0;
             }
 
             material.uniforms.uIsDark.value = isDark ? 1.0 : 0.0;
@@ -430,6 +530,7 @@ export default function BurningBlackHoleCanvas({
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseleave', handleMouseLeave);
             window.removeEventListener('blur', handleMouseLeave);
+            window.removeEventListener('pointerdown', handlePointerDown);
             document.removeEventListener('visibilitychange', handleVisibilityChange);
             observer.disconnect();
             planeGeometry.dispose();

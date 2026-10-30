@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { PortfolioSection, SkillItem } from '@/types/portfolio';
 import SkillBrandIcon from '../Skills/SkillBrandIcon';
+import GravityItem from '@/components/Portfolio/Motion/GravityItem';
 
 interface SkillsSectionProps {
     section: PortfolioSection;
@@ -143,29 +144,30 @@ export default function SkillsSection({
                         {categories.map((cat) => {
                             const isCurrent = activeTab === cat.key;
                             return (
-                                <button
-                                    key={cat.key}
-                                    type="button"
-                                    role="tab"
-                                    aria-selected={isCurrent}
-                                    onClick={() => setActiveTab(cat.key)}
-                                    className={`group flex shrink-0 items-center gap-2 rounded-xl border px-4 py-2.5 font-mono text-xs font-semibold uppercase tracking-wider transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--primary)] min-h-[44px] ${
-                                        isCurrent
-                                            ? 'border-[var(--primary)] bg-[var(--primary)] text-white shadow-[0_0_12px_rgba(241,90,36,0.3)]'
-                                            : 'border-[var(--surface-border)] bg-[var(--surface)] text-[var(--text-muted)] hover:border-[var(--text-muted)] hover:text-[var(--text)]'
-                                    }`}
-                                >
-                                    <span>{cat.label}</span>
-                                    <span
-                                        className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
+                                <GravityItem key={cat.key} radius={90} maxPull={5} strength={0.2} pushForce={6} disabled={isOff}>
+                                    <button
+                                        type="button"
+                                        role="tab"
+                                        aria-selected={isCurrent}
+                                        onClick={() => setActiveTab(cat.key)}
+                                        className={`group flex shrink-0 items-center gap-2 rounded-xl border px-4 py-2.5 font-mono text-xs font-semibold uppercase tracking-wider transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--primary)] min-h-[44px] ${
                                             isCurrent
-                                                ? 'bg-white/20 text-white'
-                                                : 'bg-[var(--muted)] text-[var(--text-muted)]'
+                                                ? 'border-[var(--primary)] bg-[var(--primary)] text-white shadow-[0_0_12px_rgba(241,90,36,0.3)]'
+                                                : 'border-[var(--surface-border)] bg-[var(--surface)] text-[var(--text-muted)] hover:border-[var(--text-muted)] hover:text-[var(--text)]'
                                         }`}
                                     >
-                                        {cat.count}
-                                    </span>
-                                </button>
+                                        <span>{cat.label}</span>
+                                        <span
+                                            className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
+                                                isCurrent
+                                                    ? 'bg-white/20 text-white'
+                                                    : 'bg-[var(--muted)] text-[var(--text-muted)]'
+                                            }`}
+                                        >
+                                            {cat.count}
+                                        </span>
+                                    </button>
+                                </GravityItem>
                             );
                         })}
                     </div>
@@ -185,17 +187,25 @@ export default function SkillsSection({
 
                             <div className="mt-6 flex flex-wrap gap-2.5 sm:gap-3">
                                 {engineering.map((skill) => (
-                                    <div
+                                    <GravityItem
                                         key={skill.id}
-                                        className="group inline-flex items-center gap-2.5 rounded-xl border border-[var(--surface-border)] bg-[var(--bg)] px-3.5 py-2.5 font-mono text-xs font-semibold text-[var(--text)] transition-all duration-200 hover:border-[var(--primary)] hover:bg-[var(--surface)] hover:-translate-y-0.5 shadow-xs"
+                                        radius={110}
+                                        maxPull={8}
+                                        strength={0.25}
+                                        pushForce={8}
+                                        disabled={isOff}
                                     >
-                                        <SkillBrandIcon
-                                            name={skill.name}
-                                            icon={skill.icon}
-                                            className="h-4.5 w-4.5 shrink-0"
-                                        />
-                                        <span>{skill.name}</span>
-                                    </div>
+                                        <div
+                                            className="group inline-flex items-center gap-2.5 rounded-xl border border-[var(--surface-border)] bg-[var(--bg)] px-3.5 py-2.5 font-mono text-xs font-semibold text-[var(--text)] transition-all duration-200 hover:border-[var(--primary)] hover:bg-[var(--surface)] hover:-translate-y-0.5 shadow-xs cursor-pointer"
+                                        >
+                                            <SkillBrandIcon
+                                                name={skill.name}
+                                                icon={skill.icon}
+                                                className="h-4.5 w-4.5 shrink-0"
+                                            />
+                                            <span>{skill.name}</span>
+                                        </div>
+                                    </GravityItem>
                                 ))}
                             </div>
                         </div>
@@ -213,17 +223,25 @@ export default function SkillsSection({
 
                             <div className="mt-6 flex flex-wrap gap-2.5 sm:gap-3">
                                 {deployment.map((skill) => (
-                                    <div
+                                    <GravityItem
                                         key={skill.id}
-                                        className="group inline-flex items-center gap-2.5 rounded-xl border border-[var(--surface-border)] bg-[var(--bg)] px-3.5 py-2.5 font-mono text-xs font-semibold text-[var(--text)] transition-all duration-200 hover:border-[var(--accent)] hover:bg-[var(--surface)] hover:-translate-y-0.5 shadow-xs"
+                                        radius={110}
+                                        maxPull={8}
+                                        strength={0.25}
+                                        pushForce={8}
+                                        disabled={isOff}
                                     >
-                                        <SkillBrandIcon
-                                            name={skill.name}
-                                            icon={skill.icon}
-                                            className="h-4.5 w-4.5 shrink-0"
-                                        />
-                                        <span>{skill.name}</span>
-                                    </div>
+                                        <div
+                                            className="group inline-flex items-center gap-2.5 rounded-xl border border-[var(--surface-border)] bg-[var(--bg)] px-3.5 py-2.5 font-mono text-xs font-semibold text-[var(--text)] transition-all duration-200 hover:border-[var(--accent)] hover:bg-[var(--surface)] hover:-translate-y-0.5 shadow-xs cursor-pointer"
+                                        >
+                                            <SkillBrandIcon
+                                                name={skill.name}
+                                                icon={skill.icon}
+                                                className="h-4.5 w-4.5 shrink-0"
+                                            />
+                                            <span>{skill.name}</span>
+                                        </div>
+                                    </GravityItem>
                                 ))}
                             </div>
                         </div>
@@ -241,17 +259,25 @@ export default function SkillsSection({
 
                             <div className="mt-6 flex flex-wrap gap-2.5 sm:gap-3">
                                 {creative.map((skill) => (
-                                    <div
+                                    <GravityItem
                                         key={skill.id}
-                                        className="group inline-flex items-center gap-2.5 rounded-xl border border-[var(--surface-border)] bg-[var(--bg)] px-3.5 py-2.5 font-mono text-xs font-semibold text-[var(--text)] transition-all duration-200 hover:border-[var(--primary)] hover:bg-[var(--surface)] hover:-translate-y-0.5 shadow-xs"
+                                        radius={110}
+                                        maxPull={8}
+                                        strength={0.25}
+                                        pushForce={8}
+                                        disabled={isOff}
                                     >
-                                        <SkillBrandIcon
-                                            name={skill.name}
-                                            icon={skill.icon}
-                                            className="h-4.5 w-4.5 shrink-0"
-                                        />
-                                        <span>{skill.name}</span>
-                                    </div>
+                                        <div
+                                            className="group inline-flex items-center gap-2.5 rounded-xl border border-[var(--surface-border)] bg-[var(--bg)] px-3.5 py-2.5 font-mono text-xs font-semibold text-[var(--text)] transition-all duration-200 hover:border-[var(--primary)] hover:bg-[var(--surface)] hover:-translate-y-0.5 shadow-xs cursor-pointer"
+                                        >
+                                            <SkillBrandIcon
+                                                name={skill.name}
+                                                icon={skill.icon}
+                                                className="h-4.5 w-4.5 shrink-0"
+                                            />
+                                            <span>{skill.name}</span>
+                                        </div>
+                                    </GravityItem>
                                 ))}
                             </div>
                         </div>
