@@ -1,5 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useEffect, useMemo, useState } from 'react';
 import { PortfolioSection, ProjectItem } from '@/types/portfolio';
 import ProjectShowcaseCard from '../Projects/ProjectShowcaseCard';
 import ProjectDetailPanel from '../Projects/ProjectDetailPanel';
@@ -95,60 +94,6 @@ const CATEGORY_DEFINITIONS: CategoryFilter[] = [
     },
 ];
 
-/**
- * Desktop Sticky Showcase Item
- * Glides into a sticky spotlight position and gracefully scales/recedes
- * as the subsequent card stacks over it during continuous natural scrolling.
- */
-function StickyShowcaseItem({
-    project,
-    index,
-    total,
-    isOff,
-    onOpenDetails,
-}: {
-    project: ProjectItem;
-    index: number;
-    total: number;
-    isOff: boolean;
-    onOpenDetails?: (project: ProjectItem) => void;
-}) {
-    const trackRef = useRef<HTMLDivElement>(null);
-    const { scrollYProgress } = useScroll({
-        target: trackRef,
-        offset: ['start start', 'end start'],
-    });
-
-    const isLast = index === total - 1;
-
-    // Subtle scale and depth diminution as the next card ascends and covers this card
-    const scale = useTransform(scrollYProgress, [0, 1], [1, isLast ? 1 : 0.96]);
-    const opacity = useTransform(scrollYProgress, [0, 1], [1, isLast ? 1 : 0.82]);
-
-    return (
-        <div
-            ref={trackRef}
-            className={`showcase-card-track relative flex flex-col justify-start ${
-                isLast ? 'min-h-[60vh] pb-12 lg:pb-16' : 'min-h-[75vh] lg:min-h-[82vh] xl:min-h-[86vh]'
-            }`}
-            style={{ zIndex: index + 10 }}
-        >
-            <motion.div
-                style={isOff ? undefined : { scale, opacity }}
-                className="sticky top-24 lg:top-28 xl:top-32 w-full origin-top"
-            >
-                <ProjectShowcaseCard
-                    project={project}
-                    index={index}
-                    isOff={isOff}
-                    onOpenDetails={onOpenDetails}
-                    isMobileLayout={false}
-                />
-            </motion.div>
-        </div>
-    );
-}
-
 export default function ProjectsSection({
     section,
     projects,
@@ -239,7 +184,7 @@ export default function ProjectsSection({
     return (
         <section
             id={section.key}
-            aria-label="Selected Work — Cinematic Project Showcase"
+            aria-label="Selected Work — Cinematic Stacking Project Showcase"
             className="relative w-full overflow-x-clip px-4 sm:px-8 lg:px-16 py-20 lg:py-28 select-none bg-[var(--bg)] border-t border-[var(--surface-border)]"
         >
             {/* Ambient Cosmic Horizon Glows in Site Palette */}
@@ -270,7 +215,7 @@ export default function ProjectsSection({
                 </div>
 
                 {/* Compact Functional Category Filter Bar */}
-                <div className="border-y border-[var(--surface-border)] py-3 mb-10 lg:mb-14">
+                <div className="border-y border-[var(--surface-border)] py-3 mb-12 lg:mb-16">
                     <div
                         className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1"
                         role="tablist"
@@ -315,18 +260,30 @@ export default function ProjectsSection({
                 </div>
 
                 {/* ==================================================================== */}
-                {/* DESKTOP SHOWCASE: Sticky Layered Scroll-Driven Project Deck          */}
+                {/* DESKTOP SHOWCASE: Direct Sticky Card Stacking Deck (Deck of Cards)  */}
+                {/* Each card becomes sticky in position. As the user continues         */}
+                {/* scrolling, the next card ascends and covers the previous one,       */}
+                {/* accumulating into a stacked deck in the shared container.          */}
                 {/* ==================================================================== */}
-                <div className="hidden lg:block relative">
+                <div className="hidden lg:block relative w-full">
                     {filteredProjects.map((project, idx) => (
-                        <StickyShowcaseItem
+                        <div
                             key={project.id}
-                            project={project}
-                            index={idx}
-                            total={filteredProjects.length}
-                            isOff={isOff}
-                            onOpenDetails={handleOpenDetails}
-                        />
+                            className="sticky w-full transition-all duration-300 origin-top"
+                            style={{
+                                top: `calc(5.5rem + ${idx * 1.35}rem)`,
+                                zIndex: idx + 10,
+                                marginBottom: idx === filteredProjects.length - 1 ? '5rem' : '42vh',
+                            }}
+                        >
+                            <ProjectShowcaseCard
+                                project={project}
+                                index={idx}
+                                isOff={isOff}
+                                onOpenDetails={handleOpenDetails}
+                                isMobileLayout={false}
+                            />
+                        </div>
                     ))}
                 </div>
 

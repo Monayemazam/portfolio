@@ -44,7 +44,8 @@ export default function ProjectShowcaseCard({
     return (
         <article
             aria-label={`${project.title} showcase presentation`}
-            className={`group relative w-full overflow-hidden rounded-2xl sm:rounded-3xl border border-[var(--surface-border)] bg-[var(--surface)] backdrop-blur-xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.65)] transition-all duration-300 hover:border-[var(--primary)]/50 ${
+            style={{ backgroundColor: 'var(--surface)' }}
+            className={`group relative w-full overflow-hidden rounded-2xl sm:rounded-3xl border border-[var(--surface-border)] shadow-[0_-12px_30px_rgba(0,0,0,0.45),0_25px_60px_-15px_rgba(0,0,0,0.7)] transition-all duration-300 hover:border-[var(--primary)]/60 ${
                 isMobileLayout ? 'flex flex-col' : 'grid grid-cols-1 lg:grid-cols-12 items-stretch'
             }`}
         >
@@ -175,7 +176,7 @@ export default function ProjectShowcaseCard({
                 }`}
             >
                 {/* Premium Browser-Style Presentation Frame */}
-                <div className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl border border-[var(--surface-border)] bg-[var(--bg)] shadow-2xl flex flex-col">
+                <div className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl border border-[var(--surface-border)] bg-[var(--bg)] shadow-xl flex flex-col">
                     
                     {/* Browser Chrome Header Bar */}
                     <div className="flex h-9 items-center justify-between border-b border-[var(--surface-border)] bg-[var(--surface)] px-4 shrink-0">
