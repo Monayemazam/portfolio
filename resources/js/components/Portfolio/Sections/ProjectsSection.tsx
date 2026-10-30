@@ -137,17 +137,6 @@ function StackingShowcaseCard({
             : ['100vh', '100vh', '0vh', '0vh']
     );
 
-    // Scale: subtly recedes to 0.97 when covered by subsequent card
-    const scale = useTransform(
-        scrollYProgress,
-        isLast
-            ? [0, 1]
-            : [0, end, nextEnd, 1],
-        isLast
-            ? [1, 1]
-            : [1, 1, 0.97, 0.97]
-    );
-
     // Opacity: subtle depth dimming when covered
     const opacity = useTransform(
         scrollYProgress,
@@ -161,13 +150,13 @@ function StackingShowcaseCard({
 
     return (
         <motion.div
-            className={`w-full origin-top ${
+            className={`w-full ${
                 isFirst ? 'relative' : 'absolute inset-x-0'
             }`}
             style={{
                 top: `calc(${index} * 1.25rem)`,
                 zIndex: index + 10,
-                ...(isOff ? {} : { y, scale, opacity }),
+                ...(isOff ? {} : { y, opacity }),
             }}
         >
             <ProjectShowcaseCard

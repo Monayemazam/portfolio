@@ -43,7 +43,7 @@ export default function ProjectShowcaseCard({
         <article
             aria-label={`${project.title} showcase presentation`}
             style={{ backgroundColor: 'var(--surface)' }}
-            className="group relative w-full overflow-hidden rounded-2xl sm:rounded-3xl border border-[var(--surface-border)] shadow-[0_-12px_30px_rgba(0,0,0,0.5),0_25px_60px_-15px_rgba(0,0,0,0.7)] transition-all duration-300 hover:border-[var(--primary)]/60 flex flex-col lg:grid lg:grid-cols-12 items-stretch"
+            className="group relative w-full box-border overflow-hidden rounded-2xl sm:rounded-3xl border border-[var(--surface-border)] shadow-[0_-12px_30px_rgba(0,0,0,0.5),0_25px_60px_-15px_rgba(0,0,0,0.7)] transition-all duration-300 hover:border-[var(--primary)]/60 flex flex-col lg:grid lg:grid-cols-12 items-stretch min-h-[480px] sm:min-h-[510px] lg:min-h-[520px] xl:min-h-[540px]"
         >
             {/* Ambient subtle corner glow on the card */}
             <div
@@ -105,7 +105,7 @@ export default function ProjectShowcaseCard({
                     )}
 
                     {/* Short Project Description */}
-                    <p className="mt-3 sm:mt-4 font-body text-xs sm:text-sm lg:text-base text-[var(--text-muted)] leading-relaxed line-clamp-2 sm:line-clamp-3 lg:line-clamp-4">
+                    <p className="mt-3 sm:mt-4 font-body text-xs sm:text-sm lg:text-base text-[var(--text-muted)] leading-relaxed line-clamp-2 sm:line-clamp-3 lg:line-clamp-4 min-h-[2.5rem] sm:min-h-[3rem] lg:min-h-[3.5rem]">
                         {project.summary || project.description}
                     </p>
                 </div>
