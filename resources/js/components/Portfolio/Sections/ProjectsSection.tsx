@@ -185,7 +185,7 @@ export default function ProjectsSection({
         <section
             id={section.key}
             aria-label="Selected Work — Cinematic Stacking Project Showcase"
-            className="relative w-full overflow-x-clip px-4 sm:px-8 lg:px-16 py-20 lg:py-28 select-none bg-[var(--bg)] border-t border-[var(--surface-border)]"
+            className="relative w-full overflow-x-clip px-4 sm:px-8 lg:px-16 pt-20 lg:pt-28 pb-8 lg:pb-12 select-none bg-[var(--bg)] border-t border-[var(--surface-border)]"
         >
             {/* Ambient Cosmic Horizon Glows in Site Palette */}
             <div
@@ -264,30 +264,33 @@ export default function ProjectsSection({
                 {/* Each card becomes sticky in position. As the user continues         */}
                 {/* scrolling, the next card ascends and covers the previous one,       */}
                 {/* accumulating into a stacked deck in the shared container.          */}
-                {/* Every card, including the final one (AYRA ESPAÑA), receives ample   */}
-                {/* scroll distance (45vh) to slide up, cover the previous card, reach  */}
-                {/* its sticky position, and settle properly before releasing.         */}
+                {/* When the final card (AYRA ESPAÑA) finishes stacking, the showcase   */}
+                {/* releases immediately, transitioning naturally to the Contact section */}
+                {/* with no excessive blank gap.                                       */}
                 {/* ==================================================================== */}
-                <div className="hidden lg:block relative w-full pb-12 lg:pb-16">
-                    {filteredProjects.map((project, idx) => (
-                        <div
-                            key={project.id}
-                            className="sticky w-full transition-all duration-300 origin-top"
-                            style={{
-                                top: `calc(5rem + ${idx * 1.25}rem)`,
-                                zIndex: idx + 10,
-                                marginBottom: '45vh',
-                            }}
-                        >
-                            <ProjectShowcaseCard
-                                project={project}
-                                index={idx}
-                                isOff={isOff}
-                                onOpenDetails={handleOpenDetails}
-                                isMobileLayout={false}
-                            />
-                        </div>
-                    ))}
+                <div className="hidden lg:block relative w-full">
+                    {filteredProjects.map((project, idx) => {
+                        const isLast = idx === filteredProjects.length - 1;
+                        return (
+                            <div
+                                key={project.id}
+                                className="sticky w-full transition-all duration-300 origin-top"
+                                style={{
+                                    top: `calc(5rem + ${idx * 1.25}rem)`,
+                                    zIndex: idx + 10,
+                                    marginBottom: isLast ? '6vh' : '36vh',
+                                }}
+                            >
+                                <ProjectShowcaseCard
+                                    project={project}
+                                    index={idx}
+                                    isOff={isOff}
+                                    onOpenDetails={handleOpenDetails}
+                                    isMobileLayout={false}
+                                />
+                            </div>
+                        );
+                    })}
                 </div>
 
                 {/* ==================================================================== */}
