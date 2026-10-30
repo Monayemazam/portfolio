@@ -73,7 +73,7 @@
             <title>{{ config('app.name', 'Monayem Azam - Space Portfolio') }}</title>
         </x-inertia::head>
     </head>
-    <body class="font-sans antialiased overflow-x-hidden selection:bg-[var(--primary)] selection:text-white">
+    <body class="font-sans antialiased overflow-x-clip selection:bg-[var(--primary)] selection:text-white">
         <x-inertia::app />
     </body>
 </html>

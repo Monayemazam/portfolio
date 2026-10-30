@@ -154,7 +154,7 @@ function StackingShowcaseCard({
                 isFirst ? 'relative' : 'absolute inset-x-0'
             }`}
             style={{
-                top: `calc(${index} * 1.25rem)`,
+                top: `calc(${index} * var(--card-tab-offset, 1.25rem))`,
                 zIndex: index + 10,
                 ...(isOff ? {} : { y, opacity }),
             }}
@@ -269,7 +269,7 @@ export default function ProjectsSection({
         <section
             id={section.key}
             aria-label="Selected Work — Cinematic Stacking Project Showcase"
-            className="relative w-full overflow-x-clip px-4 sm:px-8 lg:px-16 pt-16 sm:pt-20 lg:pt-24 pb-8 lg:pb-12 select-none bg-[var(--bg)] border-t border-[var(--surface-border)]"
+            className="relative w-full overflow-x-clip px-3.5 sm:px-8 lg:px-16 pt-16 sm:pt-20 lg:pt-24 pb-8 lg:pb-12 select-none bg-[var(--bg)] border-t border-[var(--surface-border)]"
         >
             {/* Ambient Cosmic Horizon Glows in Site Palette */}
             <div
@@ -353,12 +353,12 @@ export default function ProjectsSection({
                 {!isOff && totalProjects > 1 ? (
                     <div
                         ref={trackRef}
-                        className="relative w-full"
+                        className="relative w-full [--card-tab-offset:0.625rem] sm:[--card-tab-offset:0.875rem] lg:[--card-tab-offset:1.25rem] [--stack-step:75vh] sm:[--stack-step:65vh] lg:[--stack-step:60vh]"
                         style={{
-                            height: `calc(100vh + ${(totalProjects - 1) * 60}vh)`,
+                            height: `calc(100vh + ${(totalProjects - 1)} * var(--stack-step))`,
                         }}
                     >
-                        <div className="sticky top-16 sm:top-20 lg:top-24 w-full">
+                        <div className="sticky top-[72px] sm:top-20 lg:top-24 w-full">
                             {filteredProjects.map((project, idx) => (
                                 <StackingShowcaseCard
                                     key={project.id}

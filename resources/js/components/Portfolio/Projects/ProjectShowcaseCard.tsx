@@ -43,7 +43,7 @@ export default function ProjectShowcaseCard({
         <article
             aria-label={`${project.title} showcase presentation`}
             style={{ backgroundColor: 'var(--surface)' }}
-            className="group relative w-full box-border overflow-hidden rounded-2xl sm:rounded-3xl border border-[var(--surface-border)] shadow-[0_-12px_30px_rgba(0,0,0,0.5),0_25px_60px_-15px_rgba(0,0,0,0.7)] transition-all duration-300 hover:border-[var(--primary)]/60 flex flex-col lg:grid lg:grid-cols-12 items-stretch min-h-[480px] sm:min-h-[510px] lg:min-h-[520px] xl:min-h-[540px]"
+            className="group relative w-full box-border overflow-hidden rounded-2xl sm:rounded-3xl border border-[var(--surface-border)] shadow-[0_-12px_30px_rgba(0,0,0,0.5),0_25px_60px_-15px_rgba(0,0,0,0.7)] transition-all duration-300 hover:border-[var(--primary)]/60 flex flex-col lg:grid lg:grid-cols-12 items-stretch lg:min-h-[500px] xl:min-h-[520px]"
         >
             {/* Ambient subtle corner glow on the card */}
             <div
@@ -52,30 +52,32 @@ export default function ProjectShowcaseCard({
             />
 
             {/* ======================================================== */}
-            {/* LEFT SIDE — PROJECT INFORMATION (~50% width on Desktop) */}
+            {/* 1. PROJECT INFORMATION BLOCK                              */}
+            {/* Desktop: Column 5 (left side)                             */}
+            {/* Mobile: Top section above the website preview             */}
             {/* ======================================================== */}
-            <div className="order-2 lg:order-1 lg:col-span-5 xl:col-span-5 flex flex-col justify-between p-5 sm:p-7 lg:p-8 xl:p-10 z-10 border-t lg:border-t-0 border-[var(--surface-border)]">
+            <div className="order-1 lg:col-span-5 xl:col-span-5 flex flex-col justify-between p-4 sm:p-6 lg:p-8 xl:p-10 z-10">
                 <div>
                     {/* Category Label and Project Year */}
-                    <div className="flex items-center justify-between gap-3 border-b border-[var(--surface-border)] pb-2.5 sm:pb-3">
-                        <span className="font-mono text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[var(--primary)] truncate">
+                    <div className="flex items-center justify-between gap-2 border-b border-[var(--surface-border)] pb-2 sm:pb-3">
+                        <span className="font-mono text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[var(--primary)] truncate">
                             {categoryLabel}
                             {project.year && (
-                                <span className="text-[var(--text-muted)] font-normal ml-2">
+                                <span className="text-[var(--text-muted)] font-normal ml-1.5 sm:ml-2">
                                     • {project.year}
                                 </span>
                             )}
                         </span>
 
                         {project.is_featured && (
-                            <span className="shrink-0 rounded-full bg-[var(--primary)]/15 border border-[var(--primary)]/30 px-2.5 py-0.5 font-mono text-[9px] font-bold text-[var(--primary)] uppercase">
+                            <span className="shrink-0 rounded-full bg-[var(--primary)]/15 border border-[var(--primary)]/30 px-2 py-0.5 font-mono text-[8px] sm:text-[9px] font-bold text-[var(--primary)] uppercase">
                                 Spotlight
                             </span>
                         )}
                     </div>
 
                     {/* Project Name */}
-                    <h3 className="mt-3 sm:mt-4 font-display text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-black uppercase tracking-tight text-[var(--text)] leading-[1.15] group-hover:text-[var(--primary)] transition-colors">
+                    <h3 className="mt-2.5 sm:mt-3 lg:mt-4 font-display text-lg sm:text-2xl lg:text-3xl xl:text-4xl font-black uppercase tracking-tight text-[var(--text)] leading-[1.15] group-hover:text-[var(--primary)] transition-colors">
                         {onOpenDetails ? (
                             <button
                                 type="button"
@@ -90,28 +92,33 @@ export default function ProjectShowcaseCard({
                         )}
                     </h3>
 
-                    {/* Technology Stack Badges */}
+                    {/* Short Project Description underneath */}
+                    <p className="mt-1.5 sm:mt-2.5 lg:mt-4 font-body text-xs sm:text-sm lg:text-base text-[var(--text-muted)] leading-relaxed line-clamp-2 sm:line-clamp-3">
+                        {project.summary || project.description}
+                    </p>
+
+                    {/* Technology Stack Badges in Compact Layout */}
                     {project.tags && project.tags.length > 0 && (
-                        <div className="mt-3 sm:mt-4 flex flex-wrap gap-1.5 sm:gap-2">
-                            {project.tags.map((tag) => (
+                        <div className="mt-2.5 sm:mt-3 lg:mt-4 flex flex-wrap gap-1 sm:gap-1.5 lg:gap-2">
+                            {project.tags.slice(0, 5).map((tag) => (
                                 <span
                                     key={tag.id}
-                                    className="inline-flex items-center rounded-lg border border-[var(--surface-border)] bg-[var(--muted)]/40 px-2 sm:px-2.5 py-0.5 sm:py-1 font-mono text-[10px] sm:text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider"
+                                    className="inline-flex items-center rounded-md sm:rounded-lg border border-[var(--surface-border)] bg-[var(--muted)]/40 px-1.5 sm:px-2 py-0.5 font-mono text-[9px] sm:text-[10px] lg:text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider"
                                 >
                                     {tag.name}
                                 </span>
                             ))}
+                            {project.tags.length > 5 && (
+                                <span className="inline-flex items-center rounded-md border border-[var(--surface-border)] bg-[var(--muted)]/20 px-1.5 py-0.5 font-mono text-[9px] font-medium text-[var(--text-muted)]">
+                                    +{project.tags.length - 5}
+                                </span>
+                            )}
                         </div>
                     )}
-
-                    {/* Short Project Description */}
-                    <p className="mt-3 sm:mt-4 font-body text-xs sm:text-sm lg:text-base text-[var(--text-muted)] leading-relaxed line-clamp-2 sm:line-clamp-3 lg:line-clamp-4 min-h-[2.5rem] sm:min-h-[3rem] lg:min-h-[3.5rem]">
-                        {project.summary || project.description}
-                    </p>
                 </div>
 
-                {/* Action Buttons Deck */}
-                <div className="mt-5 sm:mt-6 lg:mt-8 pt-4 sm:pt-5 border-t border-[var(--surface-border)] flex flex-wrap items-center gap-2.5 sm:gap-3">
+                {/* Desktop Action Buttons Deck (Anchored at the bottom of left column on lg+) */}
+                <div className="hidden lg:flex mt-6 xl:mt-8 pt-4 sm:pt-5 border-t border-[var(--surface-border)] flex-wrap items-center gap-2.5 sm:gap-3">
                     {/* Live Preview Button */}
                     {liveUrl && (
                         <GravityItem radius={110} maxPull={4} strength={0.2} pushForce={5} disabled={isOff}>
@@ -160,29 +167,30 @@ export default function ProjectShowcaseCard({
             </div>
 
             {/* ======================================================== */}
-            {/* RIGHT SIDE — WEBSITE PREVIEW (~50% width on Desktop)    */}
+            {/* 2. WEBSITE PREVIEW BLOCK                                 */}
+            {/* Desktop: Column 7 (right side)                            */}
+            {/* Mobile: Below project info, above action buttons         */}
             {/* ======================================================== */}
-            <div className="order-1 lg:order-2 lg:col-span-7 xl:col-span-7 relative flex items-center justify-center p-3 sm:p-5 lg:p-6 xl:p-8">
+            <div className="order-2 lg:col-span-7 xl:col-span-7 relative flex items-center justify-center px-4 pt-1 pb-3 sm:px-6 sm:py-4 lg:p-6 xl:p-8">
                 {/* Premium Browser-Style Presentation Frame */}
                 <div className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl border border-[var(--surface-border)] bg-[var(--bg)] shadow-xl flex flex-col">
-                    
                     {/* Browser Chrome Header Bar */}
-                    <div className="flex h-8 sm:h-9 items-center justify-between border-b border-[var(--surface-border)] bg-[var(--surface)] px-3 sm:px-4 shrink-0">
+                    <div className="flex h-7 sm:h-8 lg:h-9 items-center justify-between border-b border-[var(--surface-border)] bg-[var(--surface)] px-2.5 sm:px-3 lg:px-4 shrink-0">
                         {/* macOS Window Controls */}
-                        <div className="flex items-center gap-1.5" aria-hidden="true">
-                            <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-[#FF5F56]/80" />
-                            <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-[#FFBD2E]/80" />
-                            <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-[#27C93F]/80" />
+                        <div className="flex items-center gap-1 sm:gap-1.5" aria-hidden="true">
+                            <span className="h-1.5 w-1.5 sm:h-2 sm:w-2 lg:h-2.5 lg:w-2.5 rounded-full bg-[#FF5F56]/80" />
+                            <span className="h-1.5 w-1.5 sm:h-2 sm:w-2 lg:h-2.5 lg:w-2.5 rounded-full bg-[#FFBD2E]/80" />
+                            <span className="h-1.5 w-1.5 sm:h-2 sm:w-2 lg:h-2.5 lg:w-2.5 rounded-full bg-[#27C93F]/80" />
                         </div>
 
                         {/* Centered Domain Address Pill */}
-                        <div className="flex items-center gap-1.5 rounded-md border border-[var(--surface-border)] bg-[var(--bg)] px-2.5 py-0.5 text-[9px] sm:text-[10px] font-mono text-[var(--text-muted)] truncate max-w-[180px] sm:max-w-[220px]">
-                            <span className="text-[8px] sm:text-[9px] text-[var(--primary)] select-none">https://</span>
+                        <div className="flex items-center gap-1 sm:gap-1.5 rounded-md border border-[var(--surface-border)] bg-[var(--bg)] px-2 py-0.5 text-[8px] sm:text-[9px] lg:text-[10px] font-mono text-[var(--text-muted)] truncate max-w-[150px] sm:max-w-[200px] lg:max-w-[220px]">
+                            <span className="text-[7px] sm:text-[8px] lg:text-[9px] text-[var(--primary)] select-none">https://</span>
                             <span className="truncate">{domain}</span>
                         </div>
 
                         {/* Balanced Spacer */}
-                        <div className="w-8 sm:w-10" aria-hidden="true" />
+                        <div className="w-6 sm:w-8 lg:w-10" aria-hidden="true" />
                     </div>
 
                     {/* Screenshot Display Frame */}
@@ -200,6 +208,48 @@ export default function ProjectShowcaseCard({
                         />
                     </div>
                 </div>
+            </div>
+
+            {/* ======================================================== */}
+            {/* 3. MOBILE ACTION BUTTONS DECK (< lg viewports)            */}
+            {/* Cleanly positioned at bottom of the card on mobile/tablet */}
+            {/* ======================================================== */}
+            <div className="order-3 flex lg:hidden px-4 pb-4 sm:px-6 sm:pb-6 pt-2 border-t border-[var(--surface-border)] flex-wrap items-center gap-2">
+                {liveUrl && (
+                    <a
+                        href={liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl border border-[var(--primary)] bg-[var(--primary)] px-3 py-2 font-mono text-[11px] font-bold uppercase tracking-wider text-white hover:brightness-110 shadow-sm transition-all min-h-[42px]"
+                    >
+                        <span>View Live</span>
+                        <ArrowAngularTopRight className="h-3.5 w-3.5" />
+                    </a>
+                )}
+
+                {repoUrl && (
+                    <a
+                        href={repoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-[var(--surface-border)] bg-[var(--bg)] px-3 py-2 font-mono text-[11px] font-bold uppercase tracking-wider text-[var(--text)] hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all min-h-[42px]"
+                    >
+                        <Github className="h-3.5 w-3.5" />
+                        <span>Code</span>
+                    </a>
+                )}
+
+                {onOpenDetails && (
+                    <button
+                        type="button"
+                        onClick={() => onOpenDetails(project)}
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl border border-[var(--surface-border)] bg-[var(--surface)] px-3 py-2 font-mono text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)] hover:border-[var(--text-muted)] hover:text-[var(--text)] transition-all min-h-[42px] cursor-pointer"
+                        aria-label={`View dossier for ${project.title}`}
+                    >
+                        <span>Details</span>
+                        <ArrowRight className="h-3.5 w-3.5" />
+                    </button>
+                )}
             </div>
         </article>
     );
